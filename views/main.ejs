@@ -5,8 +5,6 @@
     <title><%= og_title %></title>
     <meta name="description" content="<%= og_description %>">
 
-    <base href="<%= baseUrl %>">
-
     <link rel="icon" href="favicon.ico">
 
     <!-- css reset -->
@@ -24,7 +22,7 @@
     <meta property="og:site_name" content="とんかつ騎士団の公式ホームページ">
     <meta property="fb:admins" content="100001501165698">
 
-    <link rel="index" href="http://knights.ton-katsu.net/playtime/">
+    <link rel="index" href="<%= og_url %>">
 
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="version" content="1.0">
@@ -40,11 +38,14 @@
     <script src="http://knights.ton-katsu.net/tlib/dest/cjs_util-min.js"></script>
     <script src="http://knights.ton-katsu.net/tlib/dest/tonutil.js"></script>
 
-    <script src="scripts/_dest/bundle-min.js"></script>
+    <script src="scripts_dest/bundle-min.js"></script>
 
 </head>
 
 <body>
+
+<canvas id="canvas--main" width="1200" height="900"></canvas>
+
 </body>
 
 </html>
