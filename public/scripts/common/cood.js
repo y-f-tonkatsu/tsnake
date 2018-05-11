@@ -2,13 +2,12 @@ var Cood;
 
 (function () {
 
-    var UNIT = 60;
-
     Cood = {
-        "MAX_X":10,
-        "MAX_Y":10,
+        "UNIT":60,
+        "MAX_X":20,
+        "MAX_Y":15,
         "localToWorld": function (local) {
-            return local * UNIT;
+            return local * this.UNIT;
         }
     };
 

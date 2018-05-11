@@ -2,43 +2,96 @@ var Snake;
 
 (function () {
 
-    Snake = function (x, y) {
-        var head = new SnakeBody(x, y);
-        this.bodies = [head];
-        this.direction = DIRECTION.s;
+    Snake = function (stage, position) {
+        this.stage = stage;
+        this.bodies = [];
+        this.addBody(position);
+        this.addBody(position);
+        this.addBody(position);
+        this.addBody(position);
+        this.addBody(position);
+        this.addBody(position);
+        this.direction = DIRECTION.s.clone();
     };
 
     Snake.prototype = {
-        "addBody": function (v, isHead) {
-            var b = new SnakeBody(v, isHead);
+        "addBody": function (v) {
+            var b = new SnakeBody(this.stage, v, this.bodies.length == 0);
             this.bodies.push(b);
         },
+        "move": function (process) {
+            _.forEach(this.bodies, _.bind(function (b) {
+                b.update(b.direction.mult(process));
+            }, this));
+        },
         "update": function () {
-            var prev = new Vector(0, 0);
-            var next = new Vector(0, 0);
-            _.each(this.bodies, function (b) {
-                if (b.isHead) {
-                    next.isCopyOf(b.position);
-                    if (Math.random() > 0.5) {
-                        this.direction = DIRECTION.e;
-                    } else {
-                        this.direction = DIRECTION.s;
-                    }
-                    b.position.add(this.direction);
+
+            var prevDir;
+            var prevPos;
+            var i = 0;
+            _.forEach(this.bodies, _.bind(function (b) {
+                if (i == 0) {
+                    prevDir = b.direction.clone();
+                    prevPos = b.position.clone();
+                    b.position.add(b.direction);
+                    b.dir(this.direction);
                 } else {
-                    prev.isCopyOf(b.position);
-                    b.position.isCopyOf(next);
-                    next.isCopyOf(prev);
+                    var nextDir = b.direction.clone();
+                    var nextPos = b.position.clone();
+                    b.dir(prevDir);
+                    b.pos(prevPos);
+                    prevDir.isCopyOf(nextDir);
+                    prevPos.isCopyOf(nextPos);
                 }
+
                 while (b.position.x >= Cood.MAX_X) {
                     b.position.x -= Cood.MAX_X
                 }
                 while (b.position.y >= Cood.MAX_Y) {
                     b.position.y -= Cood.MAX_Y
                 }
-                b.update();
-            });
-        }
+                while (b.position.x < 0) {
+                    b.position.x += Cood.MAX_X
+                }
+                while (b.position.y < 0) {
+                    b.position.y += Cood.MAX_Y
+                }
+
+                b.update(new Vector(0, 0));
+                i++;
+            }, this));
+
+        },
+        "hitTest": function () {
+
+            var i = 0;
+            var headPos;
+            var flag = false;
+
+            _.forEach(this.bodies, _.bind(function (b) {
+                if (i == 0) {
+                    headPos = b.position;
+                } else {
+                    if(b.position.equals(headPos)){
+                        flag = true;
+                    }
+                }
+                i++;
+            }, this));
+
+            return flag;
+
+        },
+        "getHead": function () {
+            return this.bodies[0];
+        },
+        "setDirection": function (d) {
+            if (this.getHead().direction.clone().add(d).isZero()) {
+                return;
+            } else {
+                this.direction = d;
+            }
+        },
     };
 
 })();

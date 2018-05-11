@@ -16,14 +16,20 @@ Vector.prototype = {
     "add": function (v) {
         this.x += v.x;
         this.y += v.y;
+        return this;
     },
     "sub": function (v) {
         this.x -= v.x;
         this.y -= v.y;
     },
     "mult": function (s) {
-        this.x *= s;
-        this.y *= s;
+        return new Vector(this.x * s, this.y * s);
+    },
+    "isZero": function () {
+        return this.x == 0 && this.y == 0;
+    },
+    "equals": function (v) {
+        return this.x == v.x && this.y == v.y;
     },
 };
 
