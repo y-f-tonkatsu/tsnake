@@ -16,6 +16,8 @@ var SnakeBody;
     };
 
     SnakeBody.prototype = {
+        "effect": function () {
+        },
         "pos": function (p) {
             this.position.x = p.x;
             this.position.y = p.y;

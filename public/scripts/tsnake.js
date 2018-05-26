@@ -9,7 +9,9 @@ $(function () {
     cjsUtil.loadImages(function(){
         stage = new createjs.Stage($("#canvas--main").get(0));
         game = new Game(stage);
-        game.startGameLoop();
+        game.setMainTitle();
+
+        createjs.Ticker.init();
     });
 
 

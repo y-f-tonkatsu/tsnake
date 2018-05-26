@@ -4,7 +4,8 @@ var Areas;
 
     Areas= [
         {
-            "items":[]
+            "items":["apple", "coin", "key", "wine"],
+            "enemies":["frog"],
         }
     ];
 

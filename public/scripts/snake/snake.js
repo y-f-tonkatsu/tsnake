@@ -72,7 +72,7 @@ var Snake;
                 if (i == 0) {
                     headPos = b.position;
                 } else {
-                    if(b.position.equals(headPos)){
+                    if (b.position.equals(headPos)) {
                         flag = true;
                     }
                 }
