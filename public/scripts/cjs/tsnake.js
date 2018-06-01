@@ -52,6 +52,20 @@ function getMCSymbolPrototype(symbol, nominalBounds, frameBounds) {
 p.nominalBounds = new cjs.Rectangle(0.3,0.6,59.6,58.4);
 
 
+(lib.PowerGauge = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// レイヤー_1
+	this.shape = new cjs.Shape();
+	this.shape.graphics.f("#3366FF").s().p("AvnDIIAAmPIfPAAIAAGPg");
+	this.shape.setTransform(100,20);
+
+	this.timeline.addTween(cjs.Tween.get(this.shape).wait(1));
+
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(0,0,200,40);
+
+
 (lib.Eye = function(mode,startPosition,loop) {
 	this.initialize(mode,startPosition,loop,{});
 
@@ -106,17 +120,18 @@ p.nominalBounds = new cjs.Rectangle(0,0,107.9,38.2);
 p.nominalBounds = new cjs.Rectangle(0,0,97.4,97.4);
 
 
-(lib.Goods = function(mode,startPosition,loop) {
+(lib.KeyBase = function(mode,startPosition,loop) {
 	this.initialize(mode,startPosition,loop,{});
 
-	// flash0.ai
+	// レイヤー_1
 	this.shape = new cjs.Shape();
 	this.shape.graphics.f("#FFE537").s().p("AAJEMIgGAAIgGAAQgQAAgLgLQgMgMAAgQIAAkOQgXgJgUgTQgigiAAgwQAAgwAigiQAigiAwAAQAvAAAjAiQAhAiAAAwQAAAwghAiQgUATgXAJIAAB9IA1AAQAMAAAJAJQAKAJAAAOQAAANgKAJQgJAKgMAAIg1AAIAAA4IA1AAQAMAAAJAKQAKAJAAANQAAANgKAKQgJAJgMAAgAgdiyQgMALAAAQQAAAQAMALQALALAPAAQAPAAALgLQALgLAAgQQAAgQgLgLQgLgLgPAAQgPAAgLALg");
-	this.shape.setTransform(30,29.8);
+	this.shape.setTransform(12,26.8);
 
 	this.timeline.addTween(cjs.Tween.get(this.shape).wait(1));
 
-}).prototype = getMCSymbolPrototype(lib.Goods, new cjs.Rectangle(18,3,24,53.7), null);
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(0,0,24,53.7);
 
 
 (lib.FrogFace_defeated_lower = function(mode,startPosition,loop) {
@@ -298,6 +313,21 @@ p.nominalBounds = new cjs.Rectangle(0,0,1200,900);
 p.nominalBounds = new cjs.Rectangle(0,0,1216.6,933.2);
 
 
+(lib.StatusBar = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// レイヤー_1
+	this.powerGauge = new lib.PowerGauge();
+	this.powerGauge.name = "powerGauge";
+	this.powerGauge.parent = this;
+	this.powerGauge.setTransform(114.8,35.8,1,1,0,0,0,98.8,19.8);
+
+	this.timeline.addTween(cjs.Tween.get(this.powerGauge).wait(1));
+
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(16,16,200,40);
+
+
 (lib.Head = function(mode,startPosition,loop) {
 	this.initialize(mode,startPosition,loop,{});
 
@@ -364,6 +394,68 @@ p.nominalBounds = new cjs.Rectangle(0,0,97.4,97.4);
 
 }).prototype = p = new cjs.MovieClip();
 p.nominalBounds = new cjs.Rectangle(0,0,97.4,97.4);
+
+
+(lib.Key_spawn = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// レイヤー_1
+	this.instance = new lib.KeyBase("synched",0);
+	this.instance.parent = this;
+	this.instance.setTransform(12,26.9,0.018,0.018,0,0,0,11,27.4);
+
+	this.timeline.addTween(cjs.Tween.get(this.instance).to({regX:12,regY:26.8,scaleX:1,scaleY:1,rotation:732.7},11,cjs.Ease.quadOut).to({rotation:718.3,x:12.1},2).wait(1).to({rotation:720,x:12,y:26.8},0).wait(1));
+
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(11.8,26.4,0.4,1);
+
+
+(lib.Key_normal = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// レイヤー_1
+	this.instance = new lib.KeyBase("synched",0);
+	this.instance.parent = this;
+	this.instance.setTransform(12,26.8,1,1,0,0,0,12,26.8);
+
+	this.timeline.addTween(cjs.Tween.get(this.instance).wait(1));
+
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(0,0,24,53.7);
+
+
+(lib.Key = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{spawn:0,normal:8});
+
+	// Key
+	this.spawn = new lib.Key_spawn();
+	this.spawn.name = "spawn";
+	this.spawn.parent = this;
+	this.spawn.setTransform(30,26.8,1,1,0,0,0,12,26.8);
+
+	this.normal = new lib.Key_normal();
+	this.normal.name = "normal";
+	this.normal.parent = this;
+	this.normal.setTransform(18,0);
+
+	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.spawn}]}).to({state:[{t:this.normal}]},8).wait(6));
+
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(29.8,26.4,0.4,1);
+
+
+(lib.Items = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// obj
+	this.key = new lib.Key();
+	this.key.name = "key";
+	this.key.parent = this;
+	this.key.setTransform(30,29.8,1,1,0,0,0,12,26.8);
+
+	this.timeline.addTween(cjs.Tween.get(this.key).wait(1));
+
+}).prototype = getMCSymbolPrototype(lib.Items, new cjs.Rectangle(47.8,29.4,0.5,1), null);
 
 
 (lib.Frog_normal = function(mode,startPosition,loop) {
@@ -533,7 +625,7 @@ p.nominalBounds = new cjs.Rectangle(0,900,97.4,97.4);
 
 
 (lib.Frog = function(mode,startPosition,loop) {
-	this.initialize(mode,startPosition,loop,{normal:0,spawn:7,fear:16,defeated:22});
+	this.initialize(mode,startPosition,loop,{"normal":0,"spawn":7,fear:16,defeated:22});
 
 	// Frog
 	this.normal = new lib.Frog_normal();
@@ -627,51 +719,58 @@ p.nominalBounds = new cjs.Rectangle(0,0,1200,997.4);
 
 	this.timeline.addTween(cjs.Tween.get(this.instance).wait(1));
 
-	// Snake
-	this.instance_1 = new lib.SnakeHead();
+	// statusBar
+	this.instance_1 = new lib.StatusBar();
 	this.instance_1.parent = this;
-	this.instance_1.setTransform(180.1,263.5,1,1,0,0,0,27.1,27.1);
+	this.instance_1.setTransform(100,20,1,1,0,0,0,100,20);
 
-	this.instance_2 = new lib.SnakeBody();
+	this.timeline.addTween(cjs.Tween.get(this.instance_1).wait(1));
+
+	// Snake
+	this.instance_2 = new lib.SnakeHead();
 	this.instance_2.parent = this;
-	this.instance_2.setTransform(116.9,264,1,1,0,0,0,27.1,27.1);
+	this.instance_2.setTransform(180.1,263.5,1,1,0,0,0,27.1,27.1);
 
-	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.instance_2},{t:this.instance_1}]}).wait(1));
+	this.instance_3 = new lib.SnakeBody();
+	this.instance_3.parent = this;
+	this.instance_3.setTransform(116.9,264,1,1,0,0,0,27.1,27.1);
+
+	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.instance_3},{t:this.instance_2}]}).wait(1));
 
 	// Enemies
-	this.instance_3 = new lib.Enemies();
-	this.instance_3.parent = this;
-	this.instance_3.setTransform(66.6,138.9,1,1,0,0,0,30,30);
-
-	this.timeline.addTween(cjs.Tween.get(this.instance_3).wait(1));
-
-	// Goods
-	this.instance_4 = new lib.Goods();
+	this.instance_4 = new lib.Enemies();
 	this.instance_4.parent = this;
-	this.instance_4.setTransform(174.2,133.7,1,1,0,0,0,30,29.8);
+	this.instance_4.setTransform(66.6,138.9,1,1,0,0,0,30,30);
 
 	this.timeline.addTween(cjs.Tween.get(this.instance_4).wait(1));
 
-	// MainTitle
-	this.instance_5 = new lib.MainTitle("synched",0);
+	// Goods
+	this.instance_5 = new lib.Items();
 	this.instance_5.parent = this;
-	this.instance_5.setTransform(596.1,431.7,1,1,0,0,0,596.1,431.7);
+	this.instance_5.setTransform(174.2,133.7,1,1,0,0,0,30,29.8);
 
 	this.timeline.addTween(cjs.Tween.get(this.instance_5).wait(1));
 
-	// AreaTitle
-	this.instance_6 = new lib.AreaTitle("synched",0);
+	// MainTitle
+	this.instance_6 = new lib.MainTitle("synched",0);
 	this.instance_6.parent = this;
 	this.instance_6.setTransform(596.1,431.7,1,1,0,0,0,596.1,431.7);
 
 	this.timeline.addTween(cjs.Tween.get(this.instance_6).wait(1));
 
-	// Background
-	this.instance_7 = new lib.Background("synched",0);
+	// AreaTitle
+	this.instance_7 = new lib.AreaTitle("synched",0);
 	this.instance_7.parent = this;
-	this.instance_7.setTransform(600,498.7,1,1,0,0,0,600,498.7);
+	this.instance_7.setTransform(596.1,431.7,1,1,0,0,0,596.1,431.7);
 
 	this.timeline.addTween(cjs.Tween.get(this.instance_7).wait(1));
+
+	// Background
+	this.instance_8 = new lib.Background();
+	this.instance_8.parent = this;
+	this.instance_8.setTransform(600,498.7,1,1,0,0,0,600,498.7);
+
+	this.timeline.addTween(cjs.Tween.get(this.instance_8).wait(1));
 
 }).prototype = p = new cjs.MovieClip();
 p.nominalBounds = new cjs.Rectangle(600,450,1216.6,997.4);

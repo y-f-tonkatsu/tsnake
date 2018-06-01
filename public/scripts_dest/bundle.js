@@ -6,6 +6,7 @@ var Game
 
     var tasks = [];
     var backgroundMc;
+    var statusBarMc;
 
     Game = function (stage) {
 
@@ -15,6 +16,7 @@ var Game
 
         this.tiles = [];
         this.enemies = [];
+        this.items = [];
 
         this.speed = 3;
         this.process = 0;
@@ -25,6 +27,13 @@ var Game
 
     Game.prototype = {
 
+        "isFree": function (p) {
+            var b = true;
+            _.each(_.concat(this.enemies, this.items), _.bind(function (obj) {
+                if(obj.position.equals(p)){b = false;}
+            }, this));
+            return b;
+        },
         "loop": function () {
             _.each(tasks, _.bind(function (task) {
                 task();
@@ -82,6 +91,10 @@ var Game
             backgroundMc = cjsUtil.createMc("Background");
             backgroundMc.gotoAndStop(this.area);
             this.stage.addChild(backgroundMc);
+
+            statusBarMc = cjsUtil.createMc("StatusBar");
+            this.stage.addChild(statusBarMc);
+
         },
         "createMap": function (size) {
 
@@ -99,21 +112,40 @@ var Game
         },
         "gameLoop": function () {
 
+            this.snake.powerDown(1, _.bind(function () {
+                this.gameOver();
+            }, this));
+
+            statusBarMc.powerGauge.scaleX = this.snake.power * 0.0001;
+            statusBarMc.powerGauge.x = 16;
+
             if (this.process >= Cood.UNIT) {
                 this.process = 0;
                 this.snake.update();
                 this.spawnEnemy();
+                this.spawnItem();
                 if (this.snake.hitTest()) {
                     this.gameOver();
                 }
 
                 _.forEach(this.enemies, _.bind(function (enemy) {
                     enemy.update();
-                    console.log(this.snake.bodies[0].position);
-                    console.log(enemy.position);
-                    if(enemy.hitTest(this.snake.bodies[0].position)){
+                    if (enemy.hitTest(this.snake.bodies[0].position)) {
                         this.gameOver();
                     }
+                }, this));
+
+                _.forEach(this.items, _.bind(function (item) {
+                    item.update();
+                    if (item.hitTest(this.snake.bodies[0].position)) {
+                        console.log("item hit");
+                        item.effect(this, this.snake);
+                        item.remove();
+                    }
+                }, this));
+
+                _.remove(this.items, _.bind(function (item) {
+                    return item.state == "removed";
                 }, this));
 
             } else {
@@ -175,9 +207,28 @@ var Game
 
             var x = Math.floor(Math.random() * Cood.MAX_X);
             var y = Math.floor(Math.random() * Cood.MAX_Y);
+            var v = new Vector(x, y);
 
-            var enemy = new Enemy(stage, new Vector(x, y), "Frog");
-            this.enemies.push(enemy);
+            if(this.isFree(v)){
+                var enemy = new Enemy(stage, v, "Frog");
+                this.enemies.push(enemy);
+            }
+
+        },
+        "spawnItem": function () {
+
+            if (Math.random() > 0.1) {
+                return;
+            }
+
+            var x = Math.floor(Math.random() * Cood.MAX_X);
+            var y = Math.floor(Math.random() * Cood.MAX_Y);
+            var v = new Vector(x, y);
+
+            if(this.isFree(v)){
+                var item = new Item(stage, v, "Key");
+                this.items.push(item);
+            }
 
         },
 
@@ -215,6 +266,115 @@ var Areas;
     ];
 
 })();
+var Cood;
+
+(function () {
+
+    Cood = {
+        "UNIT":60,
+        "MAX_X":20,
+        "MAX_Y":15,
+        "localToWorld": function (local) {
+            return local * this.UNIT;
+        }
+    };
+
+})();
+
+
+
+var FieldObject = function(stage, pos, id){
+    if(stage){
+        this.init(stage, pos, id);
+    }
+};
+
+FieldObject.prototype = {
+    "init": function (stage, pos, id) {
+        this.stage = stage;
+        this.id = id;
+        this.position = pos.clone();
+        this.mc = cjsUtil.createMc(id);
+        this.mc.x = this.position.x;
+        this.mc.y = this.position.y;
+        stage.addChild(this.mc);
+        this.spawn();
+    },
+    "update": function (process) {
+        this.mc.x = Cood.localToWorld(this.position.x);
+        this.mc.y = Cood.localToWorld(this.position.y);
+    },
+    "spawn":function(){
+        this.state = "spawn";
+        this.mc.gotoAndStop("spawn");
+
+        this.onSpawnEndListener = _.bind(function (e) {
+            if (this.mc[this.state].currentFrame == this.mc[this.state].totalFrames - 1) {
+                this.mc.gotoAndStop("normal");
+                this.mc.removeEventListener("tick", this.onSpawnEndListener);
+                this.state = "normal"
+            }
+        }, this);
+
+        this.mc[this.state].addEventListener("tick", this.onSpawnEndListener);
+    },
+    "hitTest":function(p){
+        if(this.state == "spawn"){
+            return false;
+        }
+        return this.position.equals(p);
+    },
+    "remove":function(){
+        this.mc.stop();
+        this.stage.removeChild(this.mc);
+        this.mc = null;
+        this.state = "removed";
+    }
+}
+var Vector = function (x, y) {
+    this.x = x;
+    this.y = y;
+};
+
+var DIRECTION;
+
+Vector.prototype = {
+    "clone": function () {
+        return new Vector(this.x, this.y);
+    },
+    "isCopyOf": function (v) {
+        this.x = v.x;
+        this.y = v.y;
+    },
+    "add": function (v) {
+        this.x += v.x;
+        this.y += v.y;
+        return this;
+    },
+    "sub": function (v) {
+        this.x -= v.x;
+        this.y -= v.y;
+    },
+    "mult": function (s) {
+        return new Vector(this.x * s, this.y * s);
+    },
+    "isZero": function () {
+        return this.x == 0 && this.y == 0;
+    },
+    "equals": function (v) {
+        return this.x == v.x && this.y == v.y;
+    },
+};
+
+DIRECTION = {
+    "n": new Vector(0, -1),
+    "e": new Vector(1, 0),
+    "s": new Vector(0, 1),
+    "w": new Vector(-1, 0)
+};
+
+
+
 (function (cjs, an) {
 
 var p; // shortcut to reference prototypes
@@ -267,6 +427,20 @@ function getMCSymbolPrototype(symbol, nominalBounds, frameBounds) {
 
 }).prototype = p = new cjs.MovieClip();
 p.nominalBounds = new cjs.Rectangle(0.3,0.6,59.6,58.4);
+
+
+(lib.PowerGauge = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// レイヤー_1
+	this.shape = new cjs.Shape();
+	this.shape.graphics.f("#3366FF").s().p("AvnDIIAAmPIfPAAIAAGPg");
+	this.shape.setTransform(100,20);
+
+	this.timeline.addTween(cjs.Tween.get(this.shape).wait(1));
+
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(0,0,200,40);
 
 
 (lib.Eye = function(mode,startPosition,loop) {
@@ -323,17 +497,18 @@ p.nominalBounds = new cjs.Rectangle(0,0,107.9,38.2);
 p.nominalBounds = new cjs.Rectangle(0,0,97.4,97.4);
 
 
-(lib.Goods = function(mode,startPosition,loop) {
+(lib.KeyBase = function(mode,startPosition,loop) {
 	this.initialize(mode,startPosition,loop,{});
 
-	// flash0.ai
+	// レイヤー_1
 	this.shape = new cjs.Shape();
 	this.shape.graphics.f("#FFE537").s().p("AAJEMIgGAAIgGAAQgQAAgLgLQgMgMAAgQIAAkOQgXgJgUgTQgigiAAgwQAAgwAigiQAigiAwAAQAvAAAjAiQAhAiAAAwQAAAwghAiQgUATgXAJIAAB9IA1AAQAMAAAJAJQAKAJAAAOQAAANgKAJQgJAKgMAAIg1AAIAAA4IA1AAQAMAAAJAKQAKAJAAANQAAANgKAKQgJAJgMAAgAgdiyQgMALAAAQQAAAQAMALQALALAPAAQAPAAALgLQALgLAAgQQAAgQgLgLQgLgLgPAAQgPAAgLALg");
-	this.shape.setTransform(30,29.8);
+	this.shape.setTransform(12,26.8);
 
 	this.timeline.addTween(cjs.Tween.get(this.shape).wait(1));
 
-}).prototype = getMCSymbolPrototype(lib.Goods, new cjs.Rectangle(18,3,24,53.7), null);
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(0,0,24,53.7);
 
 
 (lib.FrogFace_defeated_lower = function(mode,startPosition,loop) {
@@ -515,6 +690,21 @@ p.nominalBounds = new cjs.Rectangle(0,0,1200,900);
 p.nominalBounds = new cjs.Rectangle(0,0,1216.6,933.2);
 
 
+(lib.StatusBar = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// レイヤー_1
+	this.powerGauge = new lib.PowerGauge();
+	this.powerGauge.name = "powerGauge";
+	this.powerGauge.parent = this;
+	this.powerGauge.setTransform(114.8,35.8,1,1,0,0,0,98.8,19.8);
+
+	this.timeline.addTween(cjs.Tween.get(this.powerGauge).wait(1));
+
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(16,16,200,40);
+
+
 (lib.Head = function(mode,startPosition,loop) {
 	this.initialize(mode,startPosition,loop,{});
 
@@ -581,6 +771,68 @@ p.nominalBounds = new cjs.Rectangle(0,0,97.4,97.4);
 
 }).prototype = p = new cjs.MovieClip();
 p.nominalBounds = new cjs.Rectangle(0,0,97.4,97.4);
+
+
+(lib.Key_spawn = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// レイヤー_1
+	this.instance = new lib.KeyBase("synched",0);
+	this.instance.parent = this;
+	this.instance.setTransform(12,26.9,0.018,0.018,0,0,0,11,27.4);
+
+	this.timeline.addTween(cjs.Tween.get(this.instance).to({regX:12,regY:26.8,scaleX:1,scaleY:1,rotation:732.7},11,cjs.Ease.quadOut).to({rotation:718.3,x:12.1},2).wait(1).to({rotation:720,x:12,y:26.8},0).wait(1));
+
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(11.8,26.4,0.4,1);
+
+
+(lib.Key_normal = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// レイヤー_1
+	this.instance = new lib.KeyBase("synched",0);
+	this.instance.parent = this;
+	this.instance.setTransform(12,26.8,1,1,0,0,0,12,26.8);
+
+	this.timeline.addTween(cjs.Tween.get(this.instance).wait(1));
+
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(0,0,24,53.7);
+
+
+(lib.Key = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{spawn:0,normal:8});
+
+	// Key
+	this.spawn = new lib.Key_spawn();
+	this.spawn.name = "spawn";
+	this.spawn.parent = this;
+	this.spawn.setTransform(30,26.8,1,1,0,0,0,12,26.8);
+
+	this.normal = new lib.Key_normal();
+	this.normal.name = "normal";
+	this.normal.parent = this;
+	this.normal.setTransform(18,0);
+
+	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.spawn}]}).to({state:[{t:this.normal}]},8).wait(6));
+
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(29.8,26.4,0.4,1);
+
+
+(lib.Items = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// obj
+	this.key = new lib.Key();
+	this.key.name = "key";
+	this.key.parent = this;
+	this.key.setTransform(30,29.8,1,1,0,0,0,12,26.8);
+
+	this.timeline.addTween(cjs.Tween.get(this.key).wait(1));
+
+}).prototype = getMCSymbolPrototype(lib.Items, new cjs.Rectangle(47.8,29.4,0.5,1), null);
 
 
 (lib.Frog_normal = function(mode,startPosition,loop) {
@@ -750,7 +1002,7 @@ p.nominalBounds = new cjs.Rectangle(0,900,97.4,97.4);
 
 
 (lib.Frog = function(mode,startPosition,loop) {
-	this.initialize(mode,startPosition,loop,{normal:0,spawn:7,fear:16,defeated:22});
+	this.initialize(mode,startPosition,loop,{"normal":0,"spawn":7,fear:16,defeated:22});
 
 	// Frog
 	this.normal = new lib.Frog_normal();
@@ -844,51 +1096,58 @@ p.nominalBounds = new cjs.Rectangle(0,0,1200,997.4);
 
 	this.timeline.addTween(cjs.Tween.get(this.instance).wait(1));
 
-	// Snake
-	this.instance_1 = new lib.SnakeHead();
+	// statusBar
+	this.instance_1 = new lib.StatusBar();
 	this.instance_1.parent = this;
-	this.instance_1.setTransform(180.1,263.5,1,1,0,0,0,27.1,27.1);
+	this.instance_1.setTransform(100,20,1,1,0,0,0,100,20);
 
-	this.instance_2 = new lib.SnakeBody();
+	this.timeline.addTween(cjs.Tween.get(this.instance_1).wait(1));
+
+	// Snake
+	this.instance_2 = new lib.SnakeHead();
 	this.instance_2.parent = this;
-	this.instance_2.setTransform(116.9,264,1,1,0,0,0,27.1,27.1);
+	this.instance_2.setTransform(180.1,263.5,1,1,0,0,0,27.1,27.1);
 
-	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.instance_2},{t:this.instance_1}]}).wait(1));
+	this.instance_3 = new lib.SnakeBody();
+	this.instance_3.parent = this;
+	this.instance_3.setTransform(116.9,264,1,1,0,0,0,27.1,27.1);
+
+	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.instance_3},{t:this.instance_2}]}).wait(1));
 
 	// Enemies
-	this.instance_3 = new lib.Enemies();
-	this.instance_3.parent = this;
-	this.instance_3.setTransform(66.6,138.9,1,1,0,0,0,30,30);
-
-	this.timeline.addTween(cjs.Tween.get(this.instance_3).wait(1));
-
-	// Goods
-	this.instance_4 = new lib.Goods();
+	this.instance_4 = new lib.Enemies();
 	this.instance_4.parent = this;
-	this.instance_4.setTransform(174.2,133.7,1,1,0,0,0,30,29.8);
+	this.instance_4.setTransform(66.6,138.9,1,1,0,0,0,30,30);
 
 	this.timeline.addTween(cjs.Tween.get(this.instance_4).wait(1));
 
-	// MainTitle
-	this.instance_5 = new lib.MainTitle("synched",0);
+	// Goods
+	this.instance_5 = new lib.Items();
 	this.instance_5.parent = this;
-	this.instance_5.setTransform(596.1,431.7,1,1,0,0,0,596.1,431.7);
+	this.instance_5.setTransform(174.2,133.7,1,1,0,0,0,30,29.8);
 
 	this.timeline.addTween(cjs.Tween.get(this.instance_5).wait(1));
 
-	// AreaTitle
-	this.instance_6 = new lib.AreaTitle("synched",0);
+	// MainTitle
+	this.instance_6 = new lib.MainTitle("synched",0);
 	this.instance_6.parent = this;
 	this.instance_6.setTransform(596.1,431.7,1,1,0,0,0,596.1,431.7);
 
 	this.timeline.addTween(cjs.Tween.get(this.instance_6).wait(1));
 
-	// Background
-	this.instance_7 = new lib.Background("synched",0);
+	// AreaTitle
+	this.instance_7 = new lib.AreaTitle("synched",0);
 	this.instance_7.parent = this;
-	this.instance_7.setTransform(600,498.7,1,1,0,0,0,600,498.7);
+	this.instance_7.setTransform(596.1,431.7,1,1,0,0,0,596.1,431.7);
 
 	this.timeline.addTween(cjs.Tween.get(this.instance_7).wait(1));
+
+	// Background
+	this.instance_8 = new lib.Background();
+	this.instance_8.parent = this;
+	this.instance_8.setTransform(600,498.7,1,1,0,0,0,600,498.7);
+
+	this.timeline.addTween(cjs.Tween.get(this.instance_8).wait(1));
 
 }).prototype = p = new cjs.MovieClip();
 p.nominalBounds = new cjs.Rectangle(600,450,1216.6,997.4);
@@ -961,113 +1220,35 @@ an.getComposition = function(id) {
 
 })(createjs = createjs||{}, AdobeAn = AdobeAn||{});
 var createjs, AdobeAn;
-var Cood;
+var Item = function (stage, pos, id) {
+    this.init(stage, pos, id);
+};
 
-(function () {
+(function(){
 
-    Cood = {
-        "UNIT":60,
-        "MAX_X":20,
-        "MAX_Y":15,
-        "localToWorld": function (local) {
-            return local * this.UNIT;
-        }
+    var effects = {
+        "Key":function(game, snake){
+            snake.powerUp(1000);
+        },
+    };
+
+    Item.prototype = new FieldObject();
+
+    Item.prototype.effect = function (game, snake) {
+        effects[this.id](game, snake);
     };
 
 })();
 
-
-
-var FieldObject = function(){
+var Enemy = function(stage, pos, id){
+    this.init(stage, pos, id);
 };
-
-FieldObject.prototype = {
-    "update": function (process) {
-        this.mc.x = Cood.localToWorld(this.position.x);
-        this.mc.y = Cood.localToWorld(this.position.y);
-    },
-    "spawn":function(){
-        this.mc.gotoAndStop("spawn");
-    },
-    "hitTest":function(p){
-        return this.position.equals(p);
-    },
-}
-var Vector = function (x, y) {
-    this.x = x;
-    this.y = y;
-};
-
-var DIRECTION;
-
-Vector.prototype = {
-    "clone": function () {
-        return new Vector(this.x, this.y);
-    },
-    "isCopyOf": function (v) {
-        this.x = v.x;
-        this.y = v.y;
-    },
-    "add": function (v) {
-        this.x += v.x;
-        this.y += v.y;
-        return this;
-    },
-    "sub": function (v) {
-        this.x -= v.x;
-        this.y -= v.y;
-    },
-    "mult": function (s) {
-        return new Vector(this.x * s, this.y * s);
-    },
-    "isZero": function () {
-        return this.x == 0 && this.y == 0;
-    },
-    "equals": function (v) {
-        return this.x == v.x && this.y == v.y;
-    },
-};
-
-DIRECTION = {
-    "n": new Vector(0, -1),
-    "e": new Vector(1, 0),
-    "s": new Vector(0, 1),
-    "w": new Vector(-1, 0)
-};
-
-
-
-var Enemy = function (stage, pos, mcName) {
-    this.position = pos.clone();
-    this.mc = cjsUtil.createMc(mcName);
-    this.mc.x = this.position.x;
-    this.mc.y = this.position.y;
-    stage.addChild(this.mc);
-    this.spawn();
-}
 
 Enemy.prototype = new FieldObject();
-
-
-Enemy.prototype.spawn = function () {
-    this.state = "spawn";
-    this.mc.gotoAndStop("spawn");
-
-    this.onSpawnEndListener = _.bind(function (e) {
-        console.log(this.mc[this.state].currentFrame);
-        if (this.mc[this.state].currentFrame == this.mc[this.state].totalFrames - 1) {
-            this.mc.gotoAndStop("normal");
-            this.mc.removeEventListener("tick", this.onSpawnEndListener);
-        }
-    }, this);
-
-    this.mc[this.state].addEventListener("tick", this.onSpawnEndListener);
-};
 
 Enemy.prototype.attackedTest = function (p) {
     return false;
 };
-
 
 
 var KeyManager;
@@ -1157,9 +1338,11 @@ var Snake;
         this.addBody(position);
         this.addBody(position);
         this.direction = DIRECTION.s.clone();
+        this.power = 10000;
     };
 
     Snake.prototype = {
+        "POWER_MAX": 100000,
         "addBody": function (v) {
             var b = new SnakeBody(this.stage, v, this.bodies.length == 0);
             this.bodies.push(b);
@@ -1168,6 +1351,18 @@ var Snake;
             _.forEach(this.bodies, _.bind(function (b) {
                 b.update(b.direction.mult(process));
             }, this));
+        },
+        "powerUp": function (v) {
+            this.power += v;
+            if(this.power >= this.POWER_MAX){
+                this.power = this.POWER_MAX;
+            }
+        },
+        "powerDown": function (v, onDead) {
+            this.power -= v;
+            if(this.power <= 0){
+                onDead();
+            }
         },
         "update": function () {
 

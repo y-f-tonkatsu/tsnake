@@ -6,6 +6,7 @@ var Game
 
     var tasks = [];
     var backgroundMc;
+    var statusBarMc;
 
     Game = function (stage) {
 
@@ -15,6 +16,7 @@ var Game
 
         this.tiles = [];
         this.enemies = [];
+        this.items = [];
 
         this.speed = 3;
         this.process = 0;
@@ -25,6 +27,13 @@ var Game
 
     Game.prototype = {
 
+        "isFree": function (p) {
+            var b = true;
+            _.each(_.concat(this.enemies, this.items), _.bind(function (obj) {
+                if(obj.position.equals(p)){b = false;}
+            }, this));
+            return b;
+        },
         "loop": function () {
             _.each(tasks, _.bind(function (task) {
                 task();
@@ -82,6 +91,10 @@ var Game
             backgroundMc = cjsUtil.createMc("Background");
             backgroundMc.gotoAndStop(this.area);
             this.stage.addChild(backgroundMc);
+
+            statusBarMc = cjsUtil.createMc("StatusBar");
+            this.stage.addChild(statusBarMc);
+
         },
         "createMap": function (size) {
 
@@ -99,21 +112,40 @@ var Game
         },
         "gameLoop": function () {
 
+            this.snake.powerDown(1, _.bind(function () {
+                this.gameOver();
+            }, this));
+
+            statusBarMc.powerGauge.scaleX = this.snake.power * 0.0001;
+            statusBarMc.powerGauge.x = 16;
+
             if (this.process >= Cood.UNIT) {
                 this.process = 0;
                 this.snake.update();
                 this.spawnEnemy();
+                this.spawnItem();
                 if (this.snake.hitTest()) {
                     this.gameOver();
                 }
 
                 _.forEach(this.enemies, _.bind(function (enemy) {
                     enemy.update();
-                    console.log(this.snake.bodies[0].position);
-                    console.log(enemy.position);
-                    if(enemy.hitTest(this.snake.bodies[0].position)){
+                    if (enemy.hitTest(this.snake.bodies[0].position)) {
                         this.gameOver();
                     }
+                }, this));
+
+                _.forEach(this.items, _.bind(function (item) {
+                    item.update();
+                    if (item.hitTest(this.snake.bodies[0].position)) {
+                        console.log("item hit");
+                        item.effect(this, this.snake);
+                        item.remove();
+                    }
+                }, this));
+
+                _.remove(this.items, _.bind(function (item) {
+                    return item.state == "removed";
                 }, this));
 
             } else {
@@ -175,9 +207,28 @@ var Game
 
             var x = Math.floor(Math.random() * Cood.MAX_X);
             var y = Math.floor(Math.random() * Cood.MAX_Y);
+            var v = new Vector(x, y);
 
-            var enemy = new Enemy(stage, new Vector(x, y), "Frog");
-            this.enemies.push(enemy);
+            if(this.isFree(v)){
+                var enemy = new Enemy(stage, v, "Frog");
+                this.enemies.push(enemy);
+            }
+
+        },
+        "spawnItem": function () {
+
+            if (Math.random() > 0.1) {
+                return;
+            }
+
+            var x = Math.floor(Math.random() * Cood.MAX_X);
+            var y = Math.floor(Math.random() * Cood.MAX_Y);
+            var v = new Vector(x, y);
+
+            if(this.isFree(v)){
+                var item = new Item(stage, v, "Key");
+                this.items.push(item);
+            }
 
         },
 

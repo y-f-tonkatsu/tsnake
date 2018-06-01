@@ -12,9 +12,11 @@ var Snake;
         this.addBody(position);
         this.addBody(position);
         this.direction = DIRECTION.s.clone();
+        this.power = 10000;
     };
 
     Snake.prototype = {
+        "POWER_MAX": 100000,
         "addBody": function (v) {
             var b = new SnakeBody(this.stage, v, this.bodies.length == 0);
             this.bodies.push(b);
@@ -23,6 +25,18 @@ var Snake;
             _.forEach(this.bodies, _.bind(function (b) {
                 b.update(b.direction.mult(process));
             }, this));
+        },
+        "powerUp": function (v) {
+            this.power += v;
+            if(this.power >= this.POWER_MAX){
+                this.power = this.POWER_MAX;
+            }
+        },
+        "powerDown": function (v, onDead) {
+            this.power -= v;
+            if(this.power <= 0){
+                onDead();
+            }
         },
         "update": function () {
 
