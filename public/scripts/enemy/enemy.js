@@ -1,10 +1,19 @@
-var Enemy = function(stage, pos, id){
-    this.init(stage, pos, id);
-};
+var Enemy;
 
-Enemy.prototype = new FieldObject();
+(function(){
 
-Enemy.prototype.attackedTest = function (p) {
-    return false;
-};
+    StartTasks.push(function(){
 
+        Enemy = function(map, pos, id){
+            this.init(map, pos, id);
+        };
+
+        Enemy.prototype = new FieldObject();
+
+        Enemy.prototype.attackedTest = function (p) {
+            return false;
+        };
+
+    });
+
+})();

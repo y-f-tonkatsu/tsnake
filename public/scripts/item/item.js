@@ -1,19 +1,32 @@
-var Item = function (stage, pos, id) {
-    this.init(stage, pos, id);
-};
+var Item;
 
-(function(){
+(function () {
 
-    var effects = {
-        "Key":function(game, snake){
-            snake.powerUp(1000);
-        },
-    };
+    StartTasks.push(function () {
 
-    Item.prototype = new FieldObject();
+        var effects = {
+            "Key": function (game, snake) {
+                game.addKey();
+            },
+            "Apple": function (game, snake) {
+                snake.addBody();
+            },
+            "Wine": function (game, snake) {
+                snake.powerUp(100);
+            },
+        };
 
-    Item.prototype.effect = function (game, snake) {
-        effects[this.id](game, snake);
-    };
+        Item = function (map, pos, id) {
+            this.init(map, pos, id);
+        };
+
+        Item.prototype = new FieldObject();
+
+        Item.prototype.effect = function (game, snake) {
+            effects[this.id](game, snake);
+        };
+
+    });
+
 
 })();

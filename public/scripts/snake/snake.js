@@ -2,8 +2,8 @@ var Snake;
 
 (function () {
 
-    Snake = function (stage, position) {
-        this.stage = stage;
+    Snake = function (map, position) {
+        this.map = map;
         this.bodies = [];
         this.addBody(position);
         this.addBody(position);
@@ -18,7 +18,10 @@ var Snake;
     Snake.prototype = {
         "POWER_MAX": 100000,
         "addBody": function (v) {
-            var b = new SnakeBody(this.stage, v, this.bodies.length == 0);
+            if(!v){
+                v = this.bodies[this.bodies.length - 1].position.clone();
+            }
+            var b = new SnakeBody(this.map, v, this.bodies.length == 0);
             this.bodies.push(b);
         },
         "move": function (process) {

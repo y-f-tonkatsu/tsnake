@@ -2,15 +2,15 @@ var SnakeBody;
 
 (function () {
 
-    SnakeBody = function (stage, position, isHead) {
-        this.stage = stage;
+    SnakeBody = function (map, position, isHead) {
+        this.map = map;
         if (isHead) {
             this.mc = cjsUtil.createMc("SnakeHead");
         } else {
             this.mc = cjsUtil.createMc("SnakeBody");
         }
         this.mc.body.gotoAndPlay(Math.floor(Math.random() * 60));
-        this.stage.addChildAt(this.mc, this.stage.numChildren);
+        this.map.addChildAt(this.mc, this.map.numChildren);
         this.position = position.clone();
         this.direction = DIRECTION.s.clone();
     };
