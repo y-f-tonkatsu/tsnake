@@ -1,9 +1,9 @@
 var FieldObject;
 
-(function(){
+(function () {
 
-    FieldObject = function(map, pos, id){
-        if(map){
+    FieldObject = function (map, pos, id) {
+        if (map) {
             this.init(map, pos, id);
         }
     };
@@ -23,27 +23,32 @@ var FieldObject;
             this.mc.x = Cood.localToWorld(this.position.x);
             this.mc.y = Cood.localToWorld(this.position.y);
         },
-        "spawn":function(){
-            this.state = "spawn";
-            this.mc.gotoAndStop("spawn");
+        "setState": function (state, endListener) {
+            this.state = state;
+            this.mc.gotoAndStop(state);
+            if (endListener) {
+                this.onEndListener = _.bind(function (e) {
+                    if (this.mc[this.state].currentFrame == this.mc[this.state].totalFrames - 1) {
+                        this.mc.removeEventListener("tick", this.onEndListener);
+                        endListener();
+                    }
+                }, this);
+                this.mc[this.state].addEventListener("tick", this.onEndListener);
+            }
 
-            this.onSpawnEndListener = _.bind(function (e) {
-                if (this.mc[this.state].currentFrame == this.mc[this.state].totalFrames - 1) {
-                    this.mc.gotoAndStop("normal");
-                    this.mc.removeEventListener("tick", this.onSpawnEndListener);
-                    this.state = "normal"
-                }
-            }, this);
-
-            this.mc[this.state].addEventListener("tick", this.onSpawnEndListener);
         },
-        "hitTest":function(p){
-            if(this.state == "spawn"){
+        "spawn": function () {
+            this.setState("spawn", _.bind(function (e) {
+                this.setState("normal");
+            }, this));
+        },
+        "hitTest": function (p) {
+            if (this.state == "spawn") {
                 return false;
             }
             return this.position.equals(p);
         },
-        "remove":function(){
+        "remove": function () {
             this.mc.stop();
             this.map.removeChild(this.mc);
             this.mc = null;

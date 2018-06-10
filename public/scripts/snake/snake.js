@@ -12,11 +12,11 @@ var Snake;
         this.addBody(position);
         this.addBody(position);
         this.direction = DIRECTION.s.clone();
-        this.power = 10000;
+        this.power = 1000;
     };
 
     Snake.prototype = {
-        "POWER_MAX": 100000,
+        "POWER_MAX": 5000,
         "addBody": function (v) {
             if(!v){
                 v = this.bodies[this.bodies.length - 1].position.clone();

@@ -26,6 +26,8 @@ var Game
         this.process = 0;
         this.numKeys = 0;
 
+        this.vmax = 0;
+
         this.onClearListener = onClearListener;
         this.onGameOverListener = onGameOverListener;
 
@@ -53,7 +55,11 @@ var Game
             _rootMc.addChild(_backgroundMc);
 
             _statusBarMc = cjsUtil.createMc("StatusBar");
-            this.stage.addChild(_statusBarMc);
+            var graphics = new createjs.Graphics();
+            _statusBarMc.powerGauge = new createjs.Shape(graphics);
+            _statusBarMc.powerGauge.graphics = graphics;
+            _statusBarMc.addChild(_statusBarMc.powerGauge);
+            _rootMc.addChild(_statusBarMc);
 
         },
         "createMap": function (size) {
@@ -81,28 +87,49 @@ var Game
                 this.gameOver();
             }, this));
 
-            _statusBarMc.powerGauge.scaleX = this.snake.power * 0.0001;
-            _statusBarMc.powerGauge.x = 16;
+            _statusBarMc.powerGauge.graphics.clear().beginFill("#ff0000").dr(16, 16, this.snake.power * 0.1, 40);
+
 
             if (this.process >= Cood.UNIT) {
+
                 this.time++;
                 this.speed = Math.min(Math.floor(this.time / 30) + 2, _SPEEDS.length - 1);
                 this.process = 0;
                 this.snake.update();
+
                 this.spawnEnemy();
                 this.spawnItem();
+
                 if (this.snake.hitTest()) {
                     this.gameOver();
                 }
 
                 _.forEach(this.enemies, _.bind(function (enemy) {
-                    enemy.update();
-                    if (enemy.hitTest(this.snake.bodies[0].position)) {
-                        this.gameOver();
+                    if (enemy.state == "removed") {
+                        return;
                     }
+                    if (enemy.hitTest(this.snake.bodies[0].position)) {
+                        if (this.vmax > 0) {
+                            enemy.defeat();
+                        } else {
+                            this.gameOver();
+                        }
+                    } else {
+                        if (this.vmax > 0) {
+                            console.log("!!");
+                            console.log(enemy.state);
+                            enemy.setFear();
+                        } else {
+                            enemy.endFear();
+                        }
+                    }
+                    enemy.update();
                 }, this));
 
                 _.forEach(this.items, _.bind(function (item) {
+                    if (item.state == "removed") {
+                        return;
+                    }
                     item.update();
                     if (item.hitTest(this.snake.bodies[0].position)) {
                         console.log("item hit");
@@ -111,9 +138,15 @@ var Game
                     }
                 }, this));
 
-                _.remove(this.items, _.bind(function (item) {
-                    return item.state == "removed";
+                _.remove(this.enemies, _.bind(function (obj) {
+                    return obj.state == "removed";
                 }, this));
+
+                _.remove(this.items, _.bind(function (obj) {
+                    return obj.state == "removed";
+                }, this));
+
+                this.vmax--;
 
             } else {
                 this.snake.move(this.process);
@@ -170,7 +203,7 @@ var Game
         },
         "spawnItem": function () {
 
-            if (Math.random() > 0.1) {
+            if (Math.random() > 0.3) {
                 return;
             }
 
@@ -178,14 +211,58 @@ var Game
             var y = Math.floor(Math.random() * Cood.MAX_Y);
             var v = new Vector(x, y);
 
-            if (this.isFree(v)) {
+            if (!this.isFree(v)) {
+                return;
+            }
+
+            if (Math.random() < 0.5) {
                 var item = new Item(_mapMc, v, "Apple");
+                this.items.push(item);
+            } else if (Math.random() < 0.75) {
+                var item = new Item(_mapMc, v, "Key");
+                this.items.push(item);
+            } else {
+                var item = new Item(_mapMc, v, "Wine");
                 this.items.push(item);
             }
 
         },
-        "addKey": function () {
+        "setVmax": function (v) {
+            this.vmax = v;
+        },
+        "endVmax": function () {
+            this.vmax = 0;
+            _.forEach(this.enemies, _.bind(function (enemy) {
+                enemy.endFear();
+            }, this));
+        },
+        "throwItem": function (id, from, to) {
+            var mc = cjsUtil.createMc(id);
+            mc.gotoAndStop("normal");
+            var time = 0.1;
+            var speed = new Vector((to.x - from.x) * time, (to.y - from.y) * time);
+            mc.x = from.x;
+            mc.y = from.y;
+            _mapMc.addChild(mc);
+            console.log(from.x, from.y, to.x, to.y);
+            var listener = _.bind(function(){
+                mc.x += speed.x;
+                mc.y += speed.y;
+                if(Math.abs(mc.x - to.x) < Math.abs(speed.x) &&
+                    Math.abs(mc.y - to.y) < Math.abs(speed.y)){
+                    this.stage.removeEventListener("tick", listener);
+                    _mapMc.removeChild(mc);
+                }
+            }, this);
+            this.stage.addEventListener("tick", listener);
+        },
+        "addKey": function (pos) {
+            this.throwItem("Key", new Vector(
+                Cood.localToWorld(pos.x),
+                Cood.localToWorld(pos.y)
+            ), new Vector(1080, -50));
             this.numKeys++;
+            _statusBarMc.keyText.text = this.numKeys;
             if (this.numKeys >= _NUM_KEYS_MAX) {
                 this.clear();
             }

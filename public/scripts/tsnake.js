@@ -35,29 +35,30 @@ var TSnake;
 
             var mainTitleMc = cjsUtil.createMc("MainTitle");
             this.stage.addChild(mainTitleMc);
-            var g = new createjs.Graphics();
-            g.setStrokeStyle(1);
-            g.beginStroke("#000000");
-            g.beginFill("red");
-            g.drawCircle(0, 0, 30);
-            var shape = new createjs.Shape(g);
-            mainTitleMc.addChild(shape);
 
-            var x = 0;
-            var y = 0;
-            this.addTask(function () {
-                g.mt(x, y);
-                x += Math.random();
-                y += Math.random();
-                g.lt(x, y);
-            });
-
-            var titleClickListener = _.bind(function () {
-                this.stage.removeChild(mainTitleMc);
-                this.stage.removeEventListener("click", titleClickListener);
-                this.setAreaTitle();
+            var mainTitleEndListener = _.bind(function () {
+                if (mainTitleMc.currentFrame == mainTitleMc.totalFrames - 1) {
+                    this.stage.removeEventListener("tick", mainTitleEndListener);
+                    this.stage.removeChild(mainTitleMc);
+                    this.setAreaTitle();
+                }
             }, this);
-            this.stage.addEventListener("click", titleClickListener);
+
+            var startButtonClickListener = _.bind(function () {
+                mainTitleMc.startButton.removeEventListener("click", startButtonClickListener);
+                mainTitleMc.gotoAndPlay("toArea");
+                this.stage.addEventListener("tick", mainTitleEndListener);
+            }, this);
+
+            var onMainTitleStopListener = _.bind(function () {
+                if (mainTitleMc.currentLabel == "waitToStart") {
+                    mainTitleMc.removeEventListener("tick", onMainTitleStopListener);
+                    mainTitleMc.stop();
+                    mainTitleMc.startButton.addEventListener("click", startButtonClickListener);
+                }
+            }, this);
+
+            mainTitleMc.addEventListener("tick", onMainTitleStopListener);
 
         },
         "setAreaTitle": function () {
@@ -68,23 +69,42 @@ var TSnake;
             this.stage.addChild(areaTitleMc);
             areaTitleMc.gotoAndStop(this.area);
 
-            var titleClickListener = _.bind(function () {
-                this.stage.removeChild(areaTitleMc);
-                this.createGame();
-                this.stage.removeEventListener("click", titleClickListener);
+            var areaTitleAnim = areaTitleMc.areaTitleAnim;
+            var areaTitleEndListener = _.bind(function () {
+                if (areaTitleAnim.currentFrame == areaTitleAnim.totalFrames - 1) {
+                    this.stage.removeEventListener("tick", areaTitleEndListener);
+                    this.stage.removeChild(areaTitleMc);
+                    this.createGame();
+                }
             }, this);
-            this.stage.addEventListener("click", titleClickListener);
+
+            var goButtonClickListener = _.bind(function () {
+                areaTitleAnim.goButton.removeEventListener("click", goButtonClickListener);
+                areaTitleAnim.play();
+                this.stage.addEventListener("tick", areaTitleEndListener);
+            }, this);
+
+
+            var onAreaTitleStopListener = _.bind(function () {
+                if (areaTitleAnim.currentLabel == "waitToGo") {
+                    areaTitleAnim.removeEventListener("tick", onAreaTitleStopListener);
+                    areaTitleAnim.stop();
+                    areaTitleAnim.goButton.addEventListener("click", goButtonClickListener);
+                }
+            }, this);
+
+            areaTitleAnim.addEventListener("tick", onAreaTitleStopListener);
 
         },
         "createGame": function () {
 
             this.clearTasks();
 
-            this.game = new Game(this.stage, this.area, _.bind(function(){
+            this.game = new Game(this.stage, this.area, _.bind(function () {
                 this.clearTasks();
                 this.area++;
-                setAreaTitle(this.area);
-            }, this), _.bind(function(){
+                this.setAreaTitle(this.area);
+            }, this), _.bind(function () {
                 this.clearTasks();
                 this.area = 0;
                 this.game.kill();

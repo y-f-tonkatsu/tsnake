@@ -6,13 +6,14 @@ var Item;
 
         var effects = {
             "Key": function (game, snake) {
-                game.addKey();
+                game.addKey(this.position.clone());
             },
             "Apple": function (game, snake) {
+                snake.powerUp(300);
                 snake.addBody();
             },
             "Wine": function (game, snake) {
-                snake.powerUp(100);
+                game.setVmax(100);
             },
         };
 
@@ -23,7 +24,7 @@ var Item;
         Item.prototype = new FieldObject();
 
         Item.prototype.effect = function (game, snake) {
-            effects[this.id](game, snake);
+            _.bind(effects[this.id], this)(game, snake);
         };
 
     });
