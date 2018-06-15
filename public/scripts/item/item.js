@@ -5,6 +5,9 @@ var Item;
     StartTasks.push(function () {
 
         var effects = {
+            "Gate": function (game, snake) {
+                game.nextArea(this.position.clone());
+            },
             "Key": function (game, snake) {
                 game.addKey(this.position.clone());
             },
@@ -22,6 +25,8 @@ var Item;
         };
 
         Item.prototype = new FieldObject();
+
+        Item.prototype.LIMIT = 40;
 
         Item.prototype.effect = function (game, snake) {
             _.bind(effects[this.id], this)(game, snake);

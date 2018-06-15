@@ -201,7 +201,7 @@ var Game
             }
 
         },
-        "spawnItem": function () {
+        "spawnItem": function (id) {
 
             if (Math.random() > 0.3) {
                 return;
@@ -264,8 +264,15 @@ var Game
             this.numKeys++;
             _statusBarMc.keyText.text = this.numKeys;
             if (this.numKeys >= _NUM_KEYS_MAX) {
-                this.clear();
+                this.putGate();
             }
+        },
+        "putGate": function () {
+            spawnItem("Gate");
+        },
+        "nextArea": function () {
+            console.log("clear");
+            this.onClearListener();
         },
         "clear": function () {
             console.log("clear");
