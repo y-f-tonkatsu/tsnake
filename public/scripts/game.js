@@ -1,4 +1,4 @@
-var Game
+var Game;
 
 (function () {
 
@@ -22,7 +22,7 @@ var Game
         this.items = [];
 
         this.time = 0;
-        this.speed = 3;
+        this.speed = 4;
         this.process = 0;
         this.numKeys = 0;
 
@@ -41,6 +41,9 @@ var Game
             this.stage.removeChild(_rootMc);
         },
         "isFree": function (p) {
+            if (!p) {
+                return;
+            }
             var b = true;
             _.each(_.concat(this.enemies, this.items, this.snake.bodies), _.bind(function (obj) {
                 if (obj.position.equals(p)) {
@@ -97,8 +100,13 @@ var Game
                 this.process = 0;
                 this.snake.update();
 
-                this.spawnEnemy();
-                this.spawnItem();
+                if (Math.random() < 0.2) {
+                    this.spawnEnemy();
+                }
+                if (Math.random() < 0.3) {
+                    this.spawnItem();
+                }
+
 
                 if (this.snake.hitTest()) {
                     this.gameOver();
@@ -116,8 +124,6 @@ var Game
                         }
                     } else {
                         if (this.vmax > 0) {
-                            console.log("!!");
-                            console.log(enemy.state);
                             enemy.setFear();
                         } else {
                             enemy.endFear();
@@ -187,10 +193,6 @@ var Game
         },
         "spawnEnemy": function () {
 
-            if (Math.random() > 0.1) {
-                return;
-            }
-
             var x = Math.floor(Math.random() * Cood.MAX_X);
             var y = Math.floor(Math.random() * Cood.MAX_Y);
             var v = new Vector(x, y);
@@ -203,28 +205,24 @@ var Game
         },
         "spawnItem": function (id) {
 
-            if (Math.random() > 0.3) {
-                return;
+            var x, y, v;
+            while (!this.isFree(v)) {
+                x = Math.floor(Math.random() * Cood.MAX_X);
+                y = Math.floor(Math.random() * Cood.MAX_Y);
+                v = new Vector(x, y);
             }
 
-            var x = Math.floor(Math.random() * Cood.MAX_X);
-            var y = Math.floor(Math.random() * Cood.MAX_Y);
-            var v = new Vector(x, y);
+            if (!id) {
 
-            if (!this.isFree(v)) {
-                return;
+                if (Math.random() < 0.5) {
+                    id = "Apple";
+                } else if (Math.random() < 0.75) {
+                    id = "Key";
+                } else {
+                    id = "Wine";
+                }
             }
-
-            if (Math.random() < 0.5) {
-                var item = new Item(_mapMc, v, "Apple");
-                this.items.push(item);
-            } else if (Math.random() < 0.75) {
-                var item = new Item(_mapMc, v, "Key");
-                this.items.push(item);
-            } else {
-                var item = new Item(_mapMc, v, "Wine");
-                this.items.push(item);
-            }
+            this.items.push(new Item(_mapMc, v, id));
 
         },
         "setVmax": function (v) {
@@ -245,11 +243,11 @@ var Game
             mc.y = from.y;
             _mapMc.addChild(mc);
             console.log(from.x, from.y, to.x, to.y);
-            var listener = _.bind(function(){
+            var listener = _.bind(function () {
                 mc.x += speed.x;
                 mc.y += speed.y;
-                if(Math.abs(mc.x - to.x) < Math.abs(speed.x) &&
-                    Math.abs(mc.y - to.y) < Math.abs(speed.y)){
+                if (Math.abs(mc.x - to.x) < Math.abs(speed.x) &&
+                    Math.abs(mc.y - to.y) < Math.abs(speed.y)) {
                     this.stage.removeEventListener("tick", listener);
                     _mapMc.removeChild(mc);
                 }
@@ -268,7 +266,7 @@ var Game
             }
         },
         "putGate": function () {
-            spawnItem("Gate");
+            this.spawnItem("Gate");
         },
         "nextArea": function () {
             console.log("clear");

@@ -2,17 +2,17 @@ var Snake;
 
 (function () {
 
-    Snake = function (map, position) {
+    Snake = function (map, position, numBody) {
         this.map = map;
         this.bodies = [];
-        this.addBody(position);
-        this.addBody(position);
-        this.addBody(position);
-        this.addBody(position);
-        this.addBody(position);
-        this.addBody(position);
+
+        if(!numBody){numBody = 6;}
+        _.times(6, _.bind(function(){
+            this.addBody(position);
+        }, this));
+
         this.direction = DIRECTION.s.clone();
-        this.power = 1000;
+        this.power = 2000;
     };
 
     Snake.prototype = {
