@@ -9,7 +9,7 @@ Vector.prototype = {
     "clone": function () {
         return new Vector(this.x, this.y);
     },
-    "isCopyOf": function (v) {
+    "set": function (v) {
         this.x = v.x;
         this.y = v.y;
     },

@@ -16,11 +16,19 @@ var SnakeBody;
     };
 
     SnakeBody.prototype = {
+        "remove": function () {
+            this.map.removeChild(this.mc);
+            this.mc = null;
+        },
         "effect": function () {
         },
         "pos": function (p) {
             this.position.x = p.x;
             this.position.y = p.y;
+        },
+        "isStopped": function () {
+            return this.direction.x == 0 &&
+                this.direction.y == 0;
         },
         "dir": function (d) {
 

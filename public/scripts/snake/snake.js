@@ -5,24 +5,30 @@ var Snake;
     Snake = function (map, position, numBody) {
         this.map = map;
         this.bodies = [];
+        this.isLocked = false;
 
-        if(!numBody){numBody = 6;}
-        _.times(6, _.bind(function(){
+        if (!numBody) {
+            numBody = 6;
+        }
+        _.times(6, _.bind(function () {
             this.addBody(position);
         }, this));
 
         this.direction = DIRECTION.s.clone();
-        this.power = 2000;
+        this.power = 1000;
     };
 
     Snake.prototype = {
         "POWER_MAX": 5000,
         "addBody": function (v) {
-            if(!v){
+            if (!v) {
                 v = this.bodies[this.bodies.length - 1].position.clone();
             }
             var b = new SnakeBody(this.map, v, this.bodies.length == 0);
             this.bodies.push(b);
+        },
+        "removeBody": function () {
+            this.bodies.pop().remove();
         },
         "move": function (process) {
             _.forEach(this.bodies, _.bind(function (b) {
@@ -31,15 +37,25 @@ var Snake;
         },
         "powerUp": function (v) {
             this.power += v;
-            if(this.power >= this.POWER_MAX){
+            if (this.power >= this.POWER_MAX) {
                 this.power = this.POWER_MAX;
             }
         },
         "powerDown": function (v, onDead) {
             this.power -= v;
-            if(this.power <= 0){
+            if (this.power <= 0) {
                 onDead();
             }
+        },
+        "finish": function () {
+            this.getHead().position.sub(this.direction);
+            this.setDirection(new Vector(0, 0));
+            this.isLocked = true;
+        },
+        "isFinished": function () {
+            return _.every(this.bodies, function (b) {
+                return b.isStopped();
+            });
         },
         "update": function () {
 
@@ -57,8 +73,8 @@ var Snake;
                     var nextPos = b.position.clone();
                     b.dir(prevDir);
                     b.pos(prevPos);
-                    prevDir.isCopyOf(nextDir);
-                    prevPos.isCopyOf(nextPos);
+                    prevDir.set(nextDir);
+                    prevPos.set(nextPos);
                 }
 
                 while (b.position.x >= Cood.MAX_X) {
@@ -79,7 +95,7 @@ var Snake;
             }, this));
 
         },
-        "hitTest": function () {
+        "selfHitTest": function () {
 
             var i = 0;
             var headPos;
@@ -102,7 +118,16 @@ var Snake;
         "getHead": function () {
             return this.bodies[0];
         },
+        "pos": function (p) {
+            this.position = p;
+        },
+        "dir": function (d) {
+            this.direction = d;
+        },
         "setDirection": function (d) {
+            if (this.isLocked) {
+                return;
+            }
             if (this.getHead().direction.clone().add(d).isZero()) {
                 return;
             } else {

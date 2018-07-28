@@ -6,17 +6,23 @@ var Item;
 
         var effects = {
             "Gate": function (game, snake) {
-                game.nextArea(this.position.clone());
+                game.nextArea(this);
             },
             "Key": function (game, snake) {
                 game.addKey(this.position.clone());
             },
+            "Coin": function (game, snake) {
+                game.addCoin(this.position.clone());
+            },
             "Apple": function (game, snake) {
-                snake.powerUp(300);
+                snake.powerUp(100);
                 snake.addBody();
             },
             "Wine": function (game, snake) {
-                game.setVmax(100);
+                game.setVmax(50);
+            },
+            "Berry": function (game, snake) {
+                snake.removeBody();
             },
         };
 

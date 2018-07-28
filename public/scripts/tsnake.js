@@ -12,6 +12,7 @@ var TSnake;
         createjs.Ticker.addEventListener("tick", _.bind(this.mainLoop, this));
 
         this.area = 0;
+        this.numCoins = 0;
 
         this.setMainTitle();
     }
@@ -100,16 +101,18 @@ var TSnake;
 
             this.clearTasks();
 
-            this.game = new Game(this.stage, this.area, _.bind(function () {
+            this.game = new Game(this.stage, this.area, _.bind(function (coins) {
                 this.clearTasks();
                 this.area++;
+                this.numCoins += coins;
                 this.setAreaTitle(this.area);
             }, this), _.bind(function () {
                 this.clearTasks();
                 this.area = 0;
+                this.numCoins = 0;
                 this.game.kill();
                 this.setMainTitle();
-            }, this));
+            }, this), this.numCoins);
 
             this.addTask(_.bind(this.game.gameLoop, this.game));
 

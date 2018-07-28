@@ -4,6 +4,12 @@ var Enemy;
 
     StartTasks.push(function () {
 
+        var data = {
+            "Frog": {
+                "dropItemRate": 0.1,
+            },
+        };
+
         Enemy = function (map, pos, id) {
             this.init(map, pos, id);
         };
@@ -14,23 +20,28 @@ var Enemy;
             return false;
         };
 
+        Enemy.prototype.isAlive = function () {
+            return this.state !== "defeated" &&
+                this.state !== "removed";
+        }
+
         Enemy.prototype.defeat = function () {
-            this.setState("defeated", _.bind(function(){
+            this.setState("defeated", _.bind(function () {
                 this.remove();
             }, this));
-            return false;
+            return Math.random() < data[this.id].dropItemRate;
         };
 
         Enemy.prototype.setFear = function () {
             if (this.state == "normal") {
-                this.setState( "fear");
+                this.setState("fear");
             }
             return false;
         };
 
         Enemy.prototype.endFear = function () {
             if (this.state == "fear") {
-                this.setState( "normal");
+                this.setState("normal");
             }
             return false;
         };

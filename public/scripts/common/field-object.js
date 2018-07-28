@@ -9,7 +9,7 @@ var FieldObject;
     };
 
     FieldObject.prototype = {
-        "init": function (map, pos, id) {
+        "init": function (map, pos, id, state) {
             this.map = map;
             this.id = id;
             this.position = pos.clone();
@@ -17,7 +17,12 @@ var FieldObject;
             this.mc.x = this.position.x;
             this.mc.y = this.position.y;
             this.map.addChild(this.mc);
-            this.spawn();
+            if(!state || state === "spawn"){
+                this.spawn();
+            } else {
+                this.setState(state);
+            }
+            this.update(0);
         },
         "update": function (process) {
             this.mc.x = Cood.localToWorld(this.position.x);
