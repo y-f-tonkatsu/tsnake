@@ -3395,13 +3395,13 @@ lib.properties = {
 	color: "#CCCCCC",
 	opacity: 1.00,
 	manifest: [
-		{src:"../../images/coin.png", id:"coin"},
-		{src:"../../images/T.png", id:"T"},
-		{src:"../../images/tunnel_0001.jpg", id:"tunnel_0001"},
-		{src:"../../images/tunnel_0002.jpg", id:"tunnel_0002"},
-		{src:"../../images/tunnel_0003.jpg", id:"tunnel_0003"},
-		{src:"../../images/wasd.png", id:"wasd"},
-		{src:"../../images/yfts.png", id:"yfts"}
+		{src:"images/coin.png", id:"coin"},
+		{src:"images/T.png", id:"T"},
+		{src:"images/tunnel_0001.jpg", id:"tunnel_0001"},
+		{src:"images/tunnel_0002.jpg", id:"tunnel_0002"},
+		{src:"images/tunnel_0003.jpg", id:"tunnel_0003"},
+		{src:"images/wasd.png", id:"wasd"},
+		{src:"images/yfts.png", id:"yfts"}
 	],
 	preloads: []
 };
@@ -3644,6 +3644,26 @@ var Enemy;
 
 })();
 
+var KeyManager;
+
+(function () {
+
+    $(window).keypress(function (e) {
+        if(KeyManager.listeners[e.which]){
+            KeyManager.listeners[e.which]();
+        }
+    });
+
+    KeyManager = {
+        "listeners": {},
+        "setKeyListeners": function (args) {
+            _.each(args, _.bind(function (callback, key) {
+                this.listeners[key] = callback;
+            }, this));
+        }
+    };
+
+})();
 var Item;
 
 (function () {
@@ -3689,26 +3709,6 @@ var Item;
 
 })();
 
-var KeyManager;
-
-(function () {
-
-    $(window).keypress(function (e) {
-        if(KeyManager.listeners[e.which]){
-            KeyManager.listeners[e.which]();
-        }
-    });
-
-    KeyManager = {
-        "listeners": {},
-        "setKeyListeners": function (args) {
-            _.each(args, _.bind(function (callback, key) {
-                this.listeners[key] = callback;
-            }, this));
-        }
-    };
-
-})();
 var SnakeBody;
 
 (function () {
