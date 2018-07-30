@@ -9,12 +9,6 @@ lib.ssMetadata = [];
 
 
 
-(lib.coin = function() {
-	this.initialize(img.coin);
-}).prototype = p = new cjs.Bitmap();
-p.nominalBounds = new cjs.Rectangle(0,0,60,60);
-
-
 (lib.T = function() {
 	this.initialize(img.T);
 }).prototype = p = new cjs.Bitmap();
@@ -432,14 +426,41 @@ p.nominalBounds = new cjs.Rectangle(0,0,24,53.7);
 (lib.CoinBase = function(mode,startPosition,loop) {
 	this.initialize(mode,startPosition,loop,{});
 
-	// coin.png
-	this.instance = new lib.coin();
-	this.instance.parent = this;
+	// レイヤー_4
+	this.shape = new cjs.Shape();
+	this.shape.graphics.f().s("#333333").ss(1,1,1).p("AC9AAQAABPg4A3Qg3A3hOAAQhOAAg3g3Qg3g3AAhPQAAhOA3g3QA3g3BOAAQBOAAA3A3QA4A3AABOg");
+	this.shape.setTransform(30.1,30);
 
-	this.timeline.addTween(cjs.Tween.get(this.instance).wait(1));
+	this.shape_1 = new cjs.Shape();
+	this.shape_1.graphics.f().s("#333333").ss(0.3,1,1).p("ADjAAQAABehDBCQhCBDheAAQhdAAhChDQhDhCAAheQAAhdBDhCQBChDBdAAQBeAABCBDQBDBCAABdg");
+	this.shape_1.setTransform(30.1,30.1);
+
+	this.shape_2 = new cjs.Shape();
+	this.shape_2.graphics.f().s("#333333").ss(0.2,1,1).p("AClAAQAABFgwAwQgxAwhEAAQhDAAgwgwQgxgwAAhFQAAhDAxgwQAwgxBDAAQBEAAAxAxQAwAwAABDg");
+	this.shape_2.setTransform(30.1,30.1);
+
+	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.shape_2},{t:this.shape_1},{t:this.shape}]}).wait(1));
+
+	// レイヤー_2
+	this.shape_3 = new cjs.Shape();
+	this.shape_3.graphics.f().s("#333333").ss(1,1,1).p("Ag/gYQASAxAugBQAvAAAQgv");
+	this.shape_3.setTransform(29.9,34.6);
+
+	this.shape_4 = new cjs.Shape();
+	this.shape_4.graphics.f("#333333").s().p("AhPAIQgCgDAAgEQAAgEACgDQACgDADAAQADAAACADQACADAAAEQAAAEgCADQgCADgDAAQgDAAgCgDgABGAHQgCgDAAgEQAAgEACgDQACgDADAAQADAAACADQACADAAAEQAAAEgCADQgCADgDAAQgDAAgCgDg");
+	this.shape_4.setTransform(29.4,21.7);
+
+	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.shape_4},{t:this.shape_3}]}).wait(1));
+
+	// レイヤー_3
+	this.shape_5 = new cjs.Shape();
+	this.shape_5.graphics.lf(["#FFCC33","#FCE192"],[0,1],14.1,17.7,-14.1,-17.7).s().p("AifCgQhChCAAheQAAhdBChCQBDhCBcABQBdgBBCBCQBDBCAABdQAABehDBCQhCBBhdABQhcgBhDhBg");
+	this.shape_5.setTransform(30,30);
+
+	this.timeline.addTween(cjs.Tween.get(this.shape_5).wait(1));
 
 }).prototype = p = new cjs.MovieClip();
-p.nominalBounds = new cjs.Rectangle(0,0,60,60);
+p.nominalBounds = new cjs.Rectangle(6.4,6.4,47.4,47.4);
 
 
 (lib.BerryBase = function(mode,startPosition,loop) {
@@ -892,7 +913,7 @@ p.nominalBounds = new cjs.Rectangle(0,0,1200,900);
 	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.shape},{t:this.instance_1},{t:this.coinText},{t:this.instance},{t:this.keyText}]}).wait(1));
 
 }).prototype = p = new cjs.MovieClip();
-p.nominalBounds = new cjs.Rectangle(928,6.8,265.3,46);
+p.nominalBounds = new cjs.Rectangle(928,6.8,265.3,44.1);
 
 
 (lib.Head = function(mode,startPosition,loop) {
@@ -1121,7 +1142,7 @@ p.nominalBounds = new cjs.Rectangle(0,0,60,60);
 	this.timeline.addTween(cjs.Tween.get(this.instance).to({scaleX:1,scaleY:1,rotation:360,x:30,y:30},5).wait(1));
 
 }).prototype = p = new cjs.MovieClip();
-p.nominalBounds = new cjs.Rectangle(26.1,26.1,8,8);
+p.nominalBounds = new cjs.Rectangle(26.1,26.1,8.1,8.1);
 
 
 (lib.Coin_normal = function(mode,startPosition,loop) {
@@ -1135,7 +1156,7 @@ p.nominalBounds = new cjs.Rectangle(26.1,26.1,8,8);
 	this.timeline.addTween(cjs.Tween.get(this.instance).wait(1));
 
 }).prototype = p = new cjs.MovieClip();
-p.nominalBounds = new cjs.Rectangle(0,0,60,60);
+p.nominalBounds = new cjs.Rectangle(6.4,6.4,47.4,47.4);
 
 
 (lib.Coin = function(mode,startPosition,loop) {
@@ -1154,7 +1175,7 @@ p.nominalBounds = new cjs.Rectangle(0,0,60,60);
 	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.normal}]}).to({state:[{t:this.spawn}]},6).wait(9));
 
 }).prototype = p = new cjs.MovieClip();
-p.nominalBounds = new cjs.Rectangle(0,0,60,60);
+p.nominalBounds = new cjs.Rectangle(7.3,7.3,45.7,45.7);
 
 
 (lib.Berry_spawn = function(mode,startPosition,loop) {
@@ -2808,7 +2829,6 @@ lib.properties = {
 	color: "#CCCCCC",
 	opacity: 1.00,
 	manifest: [
-		{src:"../../images/coin.png", id:"coin"},
 		{src:"../../images/T.png", id:"T"},
 		{src:"../../images/tunnel_0001.jpg", id:"tunnel_0001"},
 		{src:"../../images/tunnel_0002.jpg", id:"tunnel_0002"},
