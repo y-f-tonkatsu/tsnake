@@ -3368,12 +3368,12 @@ lib.properties = {
 	color: "#CCCCCC",
 	opacity: 1.00,
 	manifest: [
-		{src:"../../images/T.png", id:"T"},
-		{src:"../../images/tunnel_0001.jpg", id:"tunnel_0001"},
-		{src:"../../images/tunnel_0002.jpg", id:"tunnel_0002"},
-		{src:"../../images/tunnel_0003.jpg", id:"tunnel_0003"},
-		{src:"../../images/wasd.png", id:"wasd"},
-		{src:"../../images/yfts.png", id:"yfts"}
+		{src:"images/T.png", id:"T"},
+		{src:"images/tunnel_0001.jpg", id:"tunnel_0001"},
+		{src:"images/tunnel_0002.jpg", id:"tunnel_0002"},
+		{src:"images/tunnel_0003.jpg", id:"tunnel_0003"},
+		{src:"images/wasd.png", id:"wasd"},
+		{src:"images/yfts.png", id:"yfts"}
 	],
 	preloads: []
 };
@@ -3433,54 +3433,6 @@ an.getComposition = function(id) {
 
 })(createjs = createjs||{}, AdobeAn = AdobeAn||{});
 var createjs, AdobeAn;
-var Areas;
-
-(function () {
-
-    Areas = [
-        {
-            "items": [
-                {
-                    "id": "Apple",
-                    "spawnRate": 0.2,
-                },
-                {
-                    "id": "Wine",
-                    "spawnRate": 0.03,
-                }
-            ],
-            "dropItems": [
-                {
-                    "id": "Berry",
-                    "dropRate": 0.6,
-                },
-                {
-                    "id": "Coin",
-                    "dropRate": 0.7,
-                },
-                {
-                    "id": "Key",
-                    "dropRate": 0.2,
-                }
-            ],
-            "enemies": [
-                {
-                    "id": "Frog",
-                    "spawnRate": 0.4,
-                    "dropItemRate": 0.4
-                }
-            ],
-            "initialSpeed": 4
-        }, {
-            "items": ["Apple", "Coin", "Key", "Wine", "Berry"],
-            "enemies": ["frog"],
-            "spawnEnemyRate": 0.5,
-            "spawnItemRate": 0.3,
-            "initialSpeed": 8
-        }
-    ];
-
-})();
 var Cood;
 
 (function () {
@@ -3612,6 +3564,54 @@ DIRECTION = {
 
 
 
+var Areas;
+
+(function () {
+
+    Areas = [
+        {
+            "items": [
+                {
+                    "id": "Apple",
+                    "spawnRate": 0.2,
+                },
+                {
+                    "id": "Wine",
+                    "spawnRate": 0.03,
+                }
+            ],
+            "dropItems": [
+                {
+                    "id": "Berry",
+                    "dropRate": 0.6,
+                },
+                {
+                    "id": "Coin",
+                    "dropRate": 0.7,
+                },
+                {
+                    "id": "Key",
+                    "dropRate": 0.2,
+                }
+            ],
+            "enemies": [
+                {
+                    "id": "Frog",
+                    "spawnRate": 0.4,
+                    "dropItemRate": 0.4
+                }
+            ],
+            "initialSpeed": 4
+        }, {
+            "items": ["Apple", "Coin", "Key", "Wine", "Berry"],
+            "enemies": ["frog"],
+            "spawnEnemyRate": 0.5,
+            "spawnItemRate": 0.3,
+            "initialSpeed": 8
+        }
+    ];
+
+})();
 var Enemy;
 
 (function () {
@@ -3661,6 +3661,71 @@ var Enemy;
         };
 
     });
+
+})();
+
+var KeyManager;
+
+(function () {
+
+    $(window).keypress(function (e) {
+        if(KeyManager.listeners[e.which]){
+            KeyManager.listeners[e.which]();
+        }
+    });
+
+    KeyManager = {
+        "listeners": {},
+        "setKeyListeners": function (args) {
+            _.each(args, _.bind(function (callback, key) {
+                this.listeners[key] = callback;
+            }, this));
+        }
+    };
+
+})();
+var Item;
+
+(function () {
+
+    StartTasks.push(function () {
+
+        var effects = {
+            "Gate": function (game, snake) {
+                game.nextArea(this);
+            },
+            "Key": function (game, snake) {
+                game.addKey(this.position.clone());
+            },
+            "Coin": function (game, snake) {
+                game.addCoin(this.position.clone());
+            },
+            "Apple": function (game, snake) {
+                snake.powerUp(100);
+                snake.addBody();
+            },
+            "Wine": function (game, snake) {
+                game.setVmax(50);
+            },
+            "Berry": function (game, snake) {
+                snake.removeBody();
+            },
+        };
+
+        Item = function (map, pos, id) {
+            this.init(map, pos, id);
+        };
+
+        Item.prototype = new FieldObject();
+
+        Item.prototype.LIMIT = 40;
+
+        Item.prototype.effect = function (game, snake) {
+            _.bind(effects[this.id], this)(game, snake);
+        };
+
+    });
+
 
 })();
 
@@ -3861,71 +3926,6 @@ var Snake;
                 this.direction = d;
             }
         },
-    };
-
-})();
-var Item;
-
-(function () {
-
-    StartTasks.push(function () {
-
-        var effects = {
-            "Gate": function (game, snake) {
-                game.nextArea(this);
-            },
-            "Key": function (game, snake) {
-                game.addKey(this.position.clone());
-            },
-            "Coin": function (game, snake) {
-                game.addCoin(this.position.clone());
-            },
-            "Apple": function (game, snake) {
-                snake.powerUp(100);
-                snake.addBody();
-            },
-            "Wine": function (game, snake) {
-                game.setVmax(50);
-            },
-            "Berry": function (game, snake) {
-                snake.removeBody();
-            },
-        };
-
-        Item = function (map, pos, id) {
-            this.init(map, pos, id);
-        };
-
-        Item.prototype = new FieldObject();
-
-        Item.prototype.LIMIT = 40;
-
-        Item.prototype.effect = function (game, snake) {
-            _.bind(effects[this.id], this)(game, snake);
-        };
-
-    });
-
-
-})();
-
-var KeyManager;
-
-(function () {
-
-    $(window).keypress(function (e) {
-        if(KeyManager.listeners[e.which]){
-            KeyManager.listeners[e.which]();
-        }
-    });
-
-    KeyManager = {
-        "listeners": {},
-        "setKeyListeners": function (args) {
-            _.each(args, _.bind(function (callback, key) {
-                this.listeners[key] = callback;
-            }, this));
-        }
     };
 
 })();

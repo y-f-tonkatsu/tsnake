@@ -5,6 +5,8 @@ var _ = require('lodash');
 var minify = require('gulp-minify');
 var concat = require('gulp-concat');
 var clean = require('gulp-clean');
+var replace = require('gulp-replace');
+
 
 var fs = require('fs');
 var path = require('path');
@@ -23,6 +25,7 @@ gulp.task('bundle_js', function () {
 
     return gulp.src(getScriptSrc())
         .pipe(concat('bundle.js'))
+        .pipe(replace('src:"../../', 'src:"'))
         .pipe(minify())
         .pipe(gulp.dest(getScriptDest()));
 });
