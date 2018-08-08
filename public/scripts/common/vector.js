@@ -22,8 +22,14 @@ Vector.prototype = {
         this.x -= v.x;
         this.y -= v.y;
     },
-    "mult": function (s) {
-        return new Vector(this.x * s, this.y * s);
+    "mult": function (v) {
+        return new Vector(this.x * v, this.y * v);
+    },
+    "dist": function (v) {
+        return Math.sqrt(Math.pow(this.x - v.x, 2) + Math.pow(this.x - v.x, 2));
+    },
+    "sdist": function (v) {
+        return Math.abs(this.x - v.x) + Math.abs(this.y - v.y);
     },
     "isZero": function () {
         return this.x == 0 && this.y == 0;

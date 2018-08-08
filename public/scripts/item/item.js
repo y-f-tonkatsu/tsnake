@@ -15,11 +15,11 @@ var Item;
                 game.addCoin(this.position.clone());
             },
             "Apple": function (game, snake) {
-                snake.powerUp(100);
+                snake.powerUp(200);
                 snake.addBody();
             },
             "Wine": function (game, snake) {
-                game.setVmax(50);
+                game.setVmax(Item.VMAX_DURATION);
             },
             "Berry": function (game, snake) {
                 snake.removeBody();
@@ -32,7 +32,8 @@ var Item;
 
         Item.prototype = new FieldObject();
 
-        Item.prototype.LIMIT = 40;
+        Item.LIMIT = 40;
+        Item.VMAX_DURATION = 30;
 
         Item.prototype.effect = function (game, snake) {
             _.bind(effects[this.id], this)(game, snake);

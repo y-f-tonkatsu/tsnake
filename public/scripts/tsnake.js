@@ -106,6 +106,7 @@ var TSnake;
                 this.area++;
                 this.numCoins += coins;
                 this.setAreaTitle(this.area);
+                this.game.kill();
             }, this), _.bind(function () {
                 this.clearTasks();
                 this.area = 0;

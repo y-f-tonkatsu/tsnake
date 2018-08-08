@@ -3,11 +3,56 @@ var Areas;
 (function () {
 
     Areas = [
+        //1
         {
             "items": [
                 {
                     "id": "Apple",
                     "spawnRate": 0.2,
+                },
+                {
+                    "id": "Berry",
+                    "spawnRate": 0.1,
+                },
+                {
+                    "id": "Wine",
+                    //"spawnRate": 0.03,
+                    "spawnRate": 0.2,
+                }
+            ],
+            "dropItems": [
+                {
+                    "id": "Berry",
+                    "dropRate": 0.8,
+                },
+                {
+                    "id": "Coin",
+                    "dropRate": 0.7,
+                },
+                {
+                    "id": "Key",
+                    "dropRate": 0.9,
+                }
+            ],
+            "enemies": [
+                {
+                    "id": "Frog",
+                    "spawnRate": 0.4,
+                }
+            ],
+            "initialSpeed": 4
+        },
+
+        //2
+        {
+            "items": [
+                {
+                    "id": "Apple",
+                    "spawnRate": 0.2,
+                },
+                {
+                    "id": "Berry",
+                    "spawnRate": 0.1,
                 },
                 {
                     "id": "Wine",
@@ -17,7 +62,7 @@ var Areas;
             "dropItems": [
                 {
                     "id": "Berry",
-                    "dropRate": 0.6,
+                    "dropRate": 0.8,
                 },
                 {
                     "id": "Coin",
@@ -25,24 +70,18 @@ var Areas;
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.2,
+                    "dropRate": 0.9,
                 }
             ],
             "enemies": [
                 {
                     "id": "Frog",
-                    "spawnRate": 0.4,
+                    "spawnRate": 0.8,
                     "dropItemRate": 0.4
                 }
             ],
             "initialSpeed": 4
-        }, {
-            "items": ["Apple", "Coin", "Key", "Wine", "Berry"],
-            "enemies": ["frog"],
-            "spawnEnemyRate": 0.5,
-            "spawnItemRate": 0.3,
-            "initialSpeed": 8
-        }
+        },
     ];
 
 })();

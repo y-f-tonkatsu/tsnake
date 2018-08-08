@@ -9,13 +9,19 @@ var SnakeBody;
         } else {
             this.mc = cjsUtil.createMc("SnakeBody");
         }
+        this.setState("normal");
         this.mc.body.gotoAndPlay(Math.floor(Math.random() * 60));
         this.map.addChildAt(this.mc, this.map.numChildren);
         this.position = position.clone();
         this.direction = DIRECTION.s.clone();
+        this.update(new Vector(0, 0));
     };
 
     SnakeBody.prototype = {
+        "setState": function (label) {
+            this.state = label;
+            this.mc.gotoAndStop(label);
+        },
         "remove": function () {
             this.map.removeChild(this.mc);
             this.mc = null;
@@ -30,6 +36,13 @@ var SnakeBody;
             return this.direction.x == 0 &&
                 this.direction.y == 0;
         },
+        "setRotation": function (v) {
+            _.forEach([this.mc.body, this.mc.bodyVmax, this.mc.bodyVmaxWeak], _.bind(function (b) {
+                if (b) {
+                    b.rotation = v;
+                }
+            }, this));
+        },
         "dir": function (d) {
 
             if (d.x == this.direction.x &&
@@ -40,14 +53,14 @@ var SnakeBody;
             this.direction.x = d.x;
             this.direction.y = d.y;
             if (d.x == -1) {
-                this.mc.body.rotation = 180;
+                this.setRotation(180);
             } else if (d.x == 1) {
-                this.mc.body.rotation = 0;
+                this.setRotation(0);
             } else {
                 if (d.y == 1) {
-                    this.mc.body.rotation = 90;
+                    this.setRotation(90);
                 } else {
-                    this.mc.body.rotation = 270;
+                    this.setRotation(270);
                 }
             }
             this.mc.body.gotoAndPlay(Math.floor(Math.random() * 60));

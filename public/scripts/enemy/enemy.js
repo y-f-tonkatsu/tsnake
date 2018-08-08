@@ -6,7 +6,7 @@ var Enemy;
 
         var data = {
             "Frog": {
-                "dropItemRate": 0.1,
+                "dropItemRate": 0.9,
             },
         };
 

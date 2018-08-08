@@ -15,11 +15,11 @@ var Snake;
         }, this));
 
         this.direction = DIRECTION.s.clone();
-        this.power = 1000;
+        this.power = 1500;
     };
 
     Snake.prototype = {
-        "POWER_MAX": 5000,
+        "POWER_MAX": 4000,
         "addBody": function (v) {
             if (!v) {
                 v = this.bodies[this.bodies.length - 1].position.clone();
@@ -27,8 +27,25 @@ var Snake;
             var b = new SnakeBody(this.map, v, this.bodies.length == 0);
             this.bodies.push(b);
         },
+        "remove": function () {
+            _.forEach(this.bodies, _.bind(function (b) {
+                b.remove();
+            }, this));
+            this.bodies = [];
+        },
         "removeBody": function () {
-            this.bodies.pop().remove();
+            if(this.bodies.length > 1){
+                this.bodies.pop().remove();
+            }
+        },
+        "startVmax":function(){
+            this.getHead().setState("vmax");
+        },
+        "setVmaxWeak":function(){
+            this.getHead().setState("vmax_weak");
+        },
+        "endVmax":function(){
+            this.getHead().setState("normal");
         },
         "move": function (process) {
             _.forEach(this.bodies, _.bind(function (b) {

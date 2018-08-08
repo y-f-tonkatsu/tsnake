@@ -11,6 +11,8 @@ var Game;
 
     const _STATUS_BAR_HEIGHT = 60;
     const _NUM_KEYS_MAX = 4;
+    const _NUM_HEARTS_MAX = 8;
+    const _UNIT_POWER = 500;
 
     Game = function (stage, areaNo, onClearListener, onGameOverListener, numCoins) {
 
@@ -74,10 +76,6 @@ var Game;
             _rootMc.addChild(_backgroundMc);
 
             _statusBarMc = cjsUtil.createMc("StatusBar");
-            var graphics = new createjs.Graphics();
-            _statusBarMc.powerGauge = new createjs.Shape(graphics);
-            _statusBarMc.powerGauge.graphics = graphics;
-            _statusBarMc.addChild(_statusBarMc.powerGauge);
             _rootMc.addChild(_statusBarMc);
 
         },
@@ -118,11 +116,49 @@ var Game;
                 return;
             }
 
-            this.snake.powerDown(1, _.bind(function () {
-                this.gameOver();
-            }, this));
+            if (this.vmax <= 0) {
+                this.snake.powerDown(1, _.bind(function () {
+                    this.gameOver();
+                }, this));
+            }
 
-            _statusBarMc.powerGauge.graphics.clear().beginFill("#ff0000").dr(16, 16, this.snake.power * 0.1, 40);
+            _.times(_NUM_HEARTS_MAX, _.bind(function (i) {
+                var mc = _statusBarMc["powerGauge_" + i];
+
+                if (Math.floor(this.snake.power / _UNIT_POWER) < i) {
+                    mc.visible = false;
+                    mc.gotoAndStop("beat_strong");
+                } else if (Math.floor(this.snake.power / _UNIT_POWER) == i) {
+                    mc.visible = true;
+                    if (this.snake.power % _UNIT_POWER > _UNIT_POWER * 0.6) {
+                        mc.gotoAndPlay("beat_strong");
+                    } else if (this.snake.power % _UNIT_POWER > _UNIT_POWER * 0.3) {
+                        mc.gotoAndPlay("beat_normal");
+                    } else {
+                        mc.gotoAndPlay("beat_weak");
+                    }
+                } else {
+                    mc.visible = true;
+                    mc.gotoAndStop("stop");
+                }
+            }, this));
+        },
+        "updateVmaxGauge": function () {
+
+            if (this.isFinishing) {
+                return;
+            }
+
+            _statusBarMc.vmaxGauge.progress.gotoAndStop(Item.VMAX_DURATION - this.vmax);
+
+            if (this.vmax <= 0) {
+                _statusBarMc.vmaxGauge.progress.cover.visible = true;
+                _statusBarMc.vmaxGauge.progress.frame.gotoAndStop(0);
+            } else {
+                _statusBarMc.vmaxGauge.progress.cover.visible = false;
+                _statusBarMc.vmaxGauge.progress.frame.play();
+            }
+
         },
         "updateEnemies": function () {
 
@@ -156,7 +192,8 @@ var Game;
                     return;
                 }
                 item.update();
-                if (item.hitTest(this.snake.bodies[0].position)) {
+                if (this.snake.bodies.length > 0 &&
+                    item.hitTest(this.snake.bodies[0].position)) {
                     item.effect(this, this.snake);
                     if (item.id !== "Gate") {
                         item.remove();
@@ -168,6 +205,11 @@ var Game;
         "updateVmaxState": function () {
             if (this.vmax > 0) {
                 this.vmax--;
+                if (this.vmax <= 0) {
+                    this.endVmax();
+                } else if (this.vmax < 10) {
+                    this.snake.setVmaxWeak();
+                }
             }
         },
         "existEnemies": function () {
@@ -176,6 +218,11 @@ var Game;
                     return enemy.isAlive();
                 });
         },
+        "killAnEnemy": function () {
+            _.find(this.enemies, function (enemy) {
+                return enemy.isAlive();
+            }).defeat();
+        },
         "gameLoop": function () {
 
             if (this.isGameLoopLocked) {
@@ -183,6 +230,7 @@ var Game;
             }
 
             this.updatePower();
+            this.updateVmaxGauge();
 
             if (this.process >= Cood.UNIT) {
 
@@ -192,11 +240,10 @@ var Game;
                 if (this.isFinishing) {
 
                     if (this.existEnemies()) {
-                        _.find(this.enemies, function (enemy) {
-                            return enemy.isAlive();
-                        }).defeat();
+                        this.killAnEnemy();
                     } else {
                         if (this.snake.isFinished()) {
+                            this.snake.remove();
                             this.animateGate();
                         }
                     }
@@ -219,8 +266,18 @@ var Game;
                 this.removeObjects();
 
             } else {
-                this.snake.move(this.process);
-                this.process += _SPEEDS[this.speed];
+
+                if (this.isFinishing) {
+
+                    if (this.existEnemies()) {
+                        this.killAnEnemy();
+                    }
+
+                } else {
+                    this.snake.move(this.process);
+                    this.process += _SPEEDS[this.speed];
+                }
+
             }
 
         },
@@ -270,6 +327,8 @@ var Game;
 
             var mc = cjsUtil.createMc("Gate");
             mc.gotoAndStop("go");
+            mc.go.areaTitle.gotoAndStop("area_" + this.areaNo);
+            mc.go.areaTitle.areaTitleAnim.gotoAndStop(0);
             var time = 0.05;
             var speed = new Vector((to.x - from.x) * time, (to.y - from.y) * time);
             mc.x = from.x;
@@ -324,17 +383,20 @@ var Game;
         },
         "setVmax": function (v) {
             this.vmax = v;
+            this.snake.startVmax();
         },
         "endVmax": function () {
             this.vmax = 0;
             _.forEach(this.enemies, _.bind(function (enemy) {
                 enemy.endFear();
             }, this));
+            this.snake.endVmax();
         },
         "throwItem": function (id, from, to, endListener) {
+            console.log(from.x, to.x, from.y, to.y);
             var mc = cjsUtil.createMc(id);
             mc.gotoAndStop("normal");
-            var time = 0.1;
+            var time = Math.max(Math.min(0.00001 * (to.sdist(from) + 1000), 0.1), 0.05);
             var speed = new Vector((to.x - from.x) * time, (to.y - from.y) * time);
             mc.x = from.x;
             mc.y = from.y;
@@ -342,8 +404,8 @@ var Game;
             var listener = _.bind(function () {
                 mc.x += speed.x;
                 mc.y += speed.y;
-                if (Math.abs(mc.x - to.x) < Math.abs(speed.x) &&
-                    Math.abs(mc.y - to.y) < Math.abs(speed.y)) {
+                if (Math.abs(mc.x - to.x) <= Math.abs(speed.x) &&
+                    Math.abs(mc.y - to.y) <= Math.abs(speed.y)) {
                     endListener();
                     this.stage.removeEventListener("tick", listener);
                     _mapMc.removeChild(mc);
@@ -364,9 +426,9 @@ var Game;
             this.throwItem("Key", new Vector(
                 Cood.localToWorld(pos.x),
                 Cood.localToWorld(pos.y)
-            ), new Vector(927, -50), function () {
+            ), new Vector(927, -50), _.bind(function () {
                 _statusBarMc.keyText.text = this.numKeys;
-            });
+            }, this));
             this.numKeys++;
             if (this.numKeys >= _NUM_KEYS_MAX) {
                 this.putGate();
