@@ -4,8 +4,10 @@ var SnakeBody;
 
     SnakeBody = function (map, position, isHead) {
         this.map = map;
+        this.direction = new Vector(0, 0);
         if (isHead) {
             this.mc = cjsUtil.createMc("SnakeHead");
+            this.dir(DIRECTION.s.clone());
         } else {
             this.mc = cjsUtil.createMc("SnakeBody");
         }
@@ -13,7 +15,6 @@ var SnakeBody;
         this.mc.body.gotoAndPlay(Math.floor(Math.random() * 60));
         this.map.addChildAt(this.mc, this.map.numChildren);
         this.position = position.clone();
-        this.direction = DIRECTION.s.clone();
         this.update(new Vector(0, 0));
     };
 

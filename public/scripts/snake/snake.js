@@ -65,7 +65,9 @@ var Snake;
             }
         },
         "finish": function () {
-            this.getHead().position.sub(this.direction);
+            _.forEach(this.bodies, _.bind(function (b) {
+                b.position.sub(b.direction);
+            }, this));
             this.setDirection(new Vector(0, 0));
             this.isLocked = true;
         },
@@ -107,7 +109,9 @@ var Snake;
                     b.position.y += Cood.MAX_Y
                 }
 
-                b.update(new Vector(0, 0));
+                if(!b.direction.isZero()){
+                    b.update(new Vector(0, 0));
+                }
                 i++;
             }, this));
 

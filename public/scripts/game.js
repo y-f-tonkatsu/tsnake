@@ -219,9 +219,15 @@ var Game;
                 });
         },
         "killAnEnemy": function () {
+
+            if (!this.existEnemies()) {
+                return;
+            }
+
             _.find(this.enemies, function (enemy) {
                 return enemy.isAlive();
             }).defeat();
+
         },
         "gameLoop": function () {
 
@@ -267,15 +273,15 @@ var Game;
 
             } else {
 
+                this.snake.move(this.process);
+                var currentSpeed = this.speed;
+                if (this.vmax > 0) {
+                    currentSpeed = Math.min(currentSpeed + 1, _SPEEDS.length - 1);
+                }
+                this.process += _SPEEDS[currentSpeed];
+
                 if (this.isFinishing) {
-
-                    if (this.existEnemies()) {
-                        this.killAnEnemy();
-                    }
-
-                } else {
-                    this.snake.move(this.process);
-                    this.process += _SPEEDS[this.speed];
+                    this.killAnEnemy();
                 }
 
             }
@@ -327,8 +333,10 @@ var Game;
 
             var mc = cjsUtil.createMc("Gate");
             mc.gotoAndStop("go");
-            mc.go.areaTitle.gotoAndStop("area_" + this.areaNo);
-            mc.go.areaTitle.areaTitleAnim.gotoAndStop(0);
+            var tickListener = _.bind(function () {
+                mc.go.areaTitle.gotoAndStop("area_" + (this.areaNo + 1));
+            }, this);
+            mc.addEventListener("tick", tickListener);
             var time = 0.05;
             var speed = new Vector((to.x - from.x) * time, (to.y - from.y) * time);
             mc.x = from.x;
@@ -339,6 +347,7 @@ var Game;
                     Math.abs(mc.y - to.y) < Math.abs(speed.y)) {
                     if (mc.go.currentFrame == mc.go.totalFrames - 1) {
                         this.stage.removeEventListener("tick", listener);
+                        mc.removeEventListener("tick", tickListener);
                         this.clear();
                     }
                 } else {
@@ -349,6 +358,20 @@ var Game;
             this.stage.addEventListener("tick", listener);
 
 
+        },
+        "getNumItems": function (id) {
+
+            var n = 0;
+            _.forEach(this.items, _.bind(function (item) {
+                if (item.state == "removed") {
+                    return;
+                }
+                if (item.id == id) {
+                    n++;
+                }
+            }, this));
+
+            return n;
         },
         "spawnObjects": function () {
             _.forEach(this.area.enemies, _.bind(function (enemy) {
@@ -393,10 +416,9 @@ var Game;
             this.snake.endVmax();
         },
         "throwItem": function (id, from, to, endListener) {
-            console.log(from.x, to.x, from.y, to.y);
             var mc = cjsUtil.createMc(id);
             mc.gotoAndStop("normal");
-            var time = Math.max(Math.min(0.00001 * (to.sdist(from) + 1000), 0.1), 0.05);
+            var time = Math.min(0.00001 * (20000 - to.sdist(from)), 0.1);
             var speed = new Vector((to.x - from.x) * time, (to.y - from.y) * time);
             mc.x = from.x;
             mc.y = from.y;

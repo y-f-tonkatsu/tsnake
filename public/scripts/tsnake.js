@@ -7,6 +7,7 @@ var TSnake;
     TSnake = function () {
 
         this.stage = new createjs.Stage($("#canvas--main").get(0));
+        this.stage.enableMouseOver();
 
         createjs.Ticker.init();
         createjs.Ticker.addEventListener("tick", _.bind(this.mainLoop, this));
@@ -56,6 +57,7 @@ var TSnake;
                     mainTitleMc.removeEventListener("tick", onMainTitleStopListener);
                     mainTitleMc.stop();
                     mainTitleMc.startButton.addEventListener("click", startButtonClickListener);
+                    mainTitleMc.startButton.cursor = "pointer";
                 }
             }, this);
 
@@ -68,9 +70,9 @@ var TSnake;
 
             var areaTitleMc = cjsUtil.createMc("AreaTitle");
             this.stage.addChild(areaTitleMc);
-            areaTitleMc.gotoAndStop(this.area);
+            areaTitleMc.gotoAndStop("area_" + this.area);
 
-            var areaTitleAnim = areaTitleMc.areaTitleAnim;
+            var areaTitleAnim = areaTitleMc["areaTitleAnim_" + this.area];
             var areaTitleEndListener = _.bind(function () {
                 if (areaTitleAnim.currentFrame == areaTitleAnim.totalFrames - 1) {
                     this.stage.removeEventListener("tick", areaTitleEndListener);
@@ -80,8 +82,9 @@ var TSnake;
             }, this);
 
             var goButtonClickListener = _.bind(function () {
+                areaTitleAnim.removeEventListener("tick", onAreaTitleStopListener);
                 areaTitleAnim.goButton.removeEventListener("click", goButtonClickListener);
-                areaTitleAnim.play();
+                areaTitleAnim.gotoAndPlay("waitToGo");
                 this.stage.addEventListener("tick", areaTitleEndListener);
             }, this);
 
@@ -90,7 +93,9 @@ var TSnake;
                 if (areaTitleAnim.currentLabel == "waitToGo") {
                     areaTitleAnim.removeEventListener("tick", onAreaTitleStopListener);
                     areaTitleAnim.stop();
+                } else if (areaTitleAnim.currentLabel == "goButtonReady"){
                     areaTitleAnim.goButton.addEventListener("click", goButtonClickListener);
+                    areaTitleAnim.goButton.cursor = "pointer";
                 }
             }, this);
 
