@@ -96,6 +96,23 @@ p.nominalBounds = new cjs.Rectangle(0,0,14.7,17.2);
 p.nominalBounds = new cjs.Rectangle(0.3,0.6,59.6,58.4);
 
 
+(lib.Eye_weak = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// レイヤー_1
+	this.shape = new cjs.Shape();
+	this.shape.graphics.f().s("#333333").ss(1,1,1).p("AAMgVIgXAr");
+	this.shape.setTransform(-2.7,-1);
+
+	this.shape_1 = new cjs.Shape();
+	this.shape_1.graphics.f("#333333").s().p("AgKALQgFgFABgGQgBgFAFgFQAFgFAFABQAGgBAFAFQAFAFgBAFQABAGgFAFQgFAFgGgBQgFABgFgFg");
+
+	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.shape_1},{t:this.shape}]}).wait(1));
+
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(-4.9,-4.2,6.5,6.5);
+
+
 (lib.Eye_vmax_weak = function(mode,startPosition,loop) {
 	this.initialize(mode,startPosition,loop,{});
 
@@ -141,6 +158,22 @@ p.nominalBounds = new cjs.Rectangle(-7,-3.4,8.6,7.5);
 
 }).prototype = p = new cjs.MovieClip();
 p.nominalBounds = new cjs.Rectangle(-1.5,-1.5,3.1,3.1);
+
+
+(lib.BodyPart_weak = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// レイヤー_1
+	this.shape = new cjs.Shape();
+	this.shape.graphics.f("#66FFFF").s().p("Ah/CAQg0g1AAhLQAAhKA0g1QA1g0BKAAQBLAAA1A0QA0A1AABKQAABLg0A1Qg1A0hLAAQhKAAg1g0g");
+
+	this.shape_1 = new cjs.Shape();
+	this.shape_1.graphics.f("#00CC00").s().p("Ah/CAQg0g1AAhLQAAhKA0g1QA1g0BKAAQBLAAA1A0QA0A1AABKQAABLg0A1Qg1A0hLAAQhKAAg1g0g");
+
+	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.shape}]}).to({state:[{t:this.shape_1}]},2).wait(2));
+
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(-18,-18,36,36);
 
 
 (lib.BodyPart_vmax_weak = function(mode,startPosition,loop) {
@@ -1228,6 +1261,33 @@ p.nominalBounds = new cjs.Rectangle(-3,-3,206,36);
 
 }).prototype = p = new cjs.MovieClip();
 p.nominalBounds = new cjs.Rectangle(-3,-3,206.7,36);
+
+
+(lib.Head_weak = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// Eye
+	this.instance = new lib.Eye_weak("synched",0);
+	this.instance.parent = this;
+	this.instance.setTransform(6,4.5,1,1,0,180,0);
+
+	this.timeline.addTween(cjs.Tween.get(this.instance).to({y:-1.8},18).to({y:17.8},24).to({y:5.1},21).wait(1));
+
+	// Eye
+	this.instance_1 = new lib.Eye_weak("synched",0);
+	this.instance_1.parent = this;
+	this.instance_1.setTransform(5.8,-7.4);
+
+	this.timeline.addTween(cjs.Tween.get(this.instance_1).to({y:-13.7},18).to({y:5.9},24).to({y:-6.8},21).wait(1));
+
+	// BodyPart
+	this.instance_2 = new lib.BodyPart_weak("synched",0);
+	this.instance_2.parent = this;
+
+	this.timeline.addTween(cjs.Tween.get(this.instance_2).to({y:-7.7},19).to({y:12.2},24).to({y:0.6},20).wait(1));
+
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(-18,-18,36,36);
 
 
 (lib.Head_vmax_weak = function(mode,startPosition,loop) {
@@ -2817,7 +2877,7 @@ p.nominalBounds = new cjs.Rectangle(0,0,1200,900);
 
 
 (lib.SnakeHead = function(mode,startPosition,loop) {
-	this.initialize(mode,startPosition,loop,{"normal":0,vmax:11,vmax_weak:24});
+	this.initialize(mode,startPosition,loop,{"normal":0,vmax:11,vmax_weak:24,weak:35});
 
 	// Head
 	this.body = new lib.Head();
@@ -2835,7 +2895,12 @@ p.nominalBounds = new cjs.Rectangle(0,0,1200,900);
 	this.bodyVmaxWeak.parent = this;
 	this.bodyVmaxWeak.setTransform(30,30);
 
-	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.body}]}).to({state:[{t:this.bodyVmax}]},11).to({state:[{t:this.bodyVmaxWeak}]},13).wait(11));
+	this.bodyWeak = new lib.Head_weak();
+	this.bodyWeak.name = "bodyWeak";
+	this.bodyWeak.parent = this;
+	this.bodyWeak.setTransform(30,30);
+
+	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.body}]}).to({state:[{t:this.bodyVmax}]},11).to({state:[{t:this.bodyVmaxWeak}]},13).to({state:[{t:this.bodyWeak}]},11).wait(9));
 
 }).prototype = p = new cjs.MovieClip();
 p.nominalBounds = new cjs.Rectangle(12,12,36,36);

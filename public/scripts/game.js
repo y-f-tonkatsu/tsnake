@@ -120,6 +120,11 @@ var Game;
                 this.snake.powerDown(1, _.bind(function () {
                     this.gameOver();
                 }, this));
+                if(this.snake.power <= _UNIT_POWER){
+                    this.snake.setWeak();
+                } else if(this.snake.getState() == "weak"){
+                    this.snake.setNormal();
+                }
             }
 
             _.times(_NUM_HEARTS_MAX, _.bind(function (i) {
@@ -359,6 +364,28 @@ var Game;
 
 
         },
+        "getNumAllEnemies": function () {
+
+            var n = 0;
+            _.forEach(this.enemies, _.bind(function (enemy) {
+                if (enemy.state !== "removed") {
+                    n++;
+                }
+            }, this));
+
+            return n;
+        },
+        "getNumAllItems": function () {
+
+            var n = 0;
+            _.forEach(this.items, _.bind(function (item) {
+                if (item.state !== "removed") {
+                    n++;
+                }
+            }, this));
+
+            return n;
+        },
         "getNumItems": function (id) {
 
             var n = 0;
@@ -386,7 +413,13 @@ var Game;
             }, this));
         },
         "dropItem": function (from) {
+            if (this.getNumAllItems() >= Item.LIMIT) {
+                return;
+            }
             _.forEach(this.area.dropItems, _.bind(function (item) {
+                if (this.hasSpace(item.id)) {
+                    return;
+                }
                 if (item.dropRate > Math.random()) {
                     var to = this.getFreePosition();
                     this.throwItem(item.id, Cood.localToWorld(from), Cood.localToWorld(to), _.bind(function () {
@@ -396,10 +429,20 @@ var Game;
                 }
             }, this));
         },
+        "hasSpace": function (id) {
+            return this.getNumAllItems() >= Item.LIMIT ||
+                this.getNumItems(id) >= Item.DROP_LIMITS[id];
+        },
         "spawnItem": function (id) {
+            if (this.hasSpace(id)) {
+                return;
+            }
             this.items.push(new Item(_mapMc, this.getFreePosition(), id));
         },
         "spawnEnemy": function (id) {
+            if (this.getNumAllEnemies() >= Enemy.LIMIT) {
+                return;
+            }
             var enemy = new Enemy(_mapMc, this.getFreePosition(), id);
             this.enemies.push(enemy);
 

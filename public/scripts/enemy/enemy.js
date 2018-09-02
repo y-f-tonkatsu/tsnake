@@ -14,6 +14,8 @@ var Enemy;
             this.init(map, pos, id);
         };
 
+        Enemy.LIMIT = 60;
+
         Enemy.prototype = new FieldObject();
 
         Enemy.prototype.attackedTest = function (p) {

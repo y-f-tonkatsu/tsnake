@@ -30,9 +30,18 @@ var Item;
             this.init(map, pos, id);
         };
 
+        Item.DROP_LIMITS = {
+            "Gate": 1,
+            "Key": 1,
+            "Coin": 30,
+            "Apple": 30,
+            "Wine": 1,
+            "Berry": 15,
+        }
+
         Item.prototype = new FieldObject();
 
-        Item.LIMIT = 40;
+        Item.LIMIT = 60;
         Item.VMAX_DURATION = 30;
 
         Item.prototype.effect = function (game, snake) {

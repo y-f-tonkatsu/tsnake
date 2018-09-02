@@ -38,6 +38,18 @@ var Snake;
                 this.bodies.pop().remove();
             }
         },
+        "getState":function(){
+            return this.getHead().state;
+        },
+        "setState":function(state){
+            return this.getHead().setState(state);
+        },
+        "setNormal":function(){
+            this.getHead().setState("normal");
+        },
+        "setWeak":function(){
+            this.getHead().setState("weak");
+        },
         "startVmax":function(){
             this.getHead().setState("vmax");
         },

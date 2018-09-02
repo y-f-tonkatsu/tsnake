@@ -38,7 +38,7 @@ var SnakeBody;
                 this.direction.y == 0;
         },
         "setRotation": function (v) {
-            _.forEach([this.mc.body, this.mc.bodyVmax, this.mc.bodyVmaxWeak], _.bind(function (b) {
+            _.forEach([this.mc.body, this.mc.bodyVmax, this.mc.bodyVmaxWeak, this.mc.bodyWeak], _.bind(function (b) {
                 if (b) {
                     b.rotation = v;
                 }
