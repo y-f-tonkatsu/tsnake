@@ -29,7 +29,7 @@ Vector.prototype = {
         return Math.sqrt(Math.pow(this.x - v.x, 2) + Math.pow(this.x - v.x, 2));
     },
     "sdist": function (v) {
-        return Math.abs(this.x - v.x) + Math.abs(this.y - v.y     );
+        return Math.abs(this.x - v.x) + Math.abs(this.y - v.y);
     },
     "isZero": function () {
         return this.x == 0 && this.y == 0;

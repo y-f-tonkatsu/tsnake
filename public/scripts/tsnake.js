@@ -93,7 +93,7 @@ var TSnake;
                 if (areaTitleAnim.currentLabel == "waitToGo") {
                     areaTitleAnim.removeEventListener("tick", onAreaTitleStopListener);
                     areaTitleAnim.stop();
-                } else if (areaTitleAnim.currentLabel == "goButtonReady"){
+                } else if (areaTitleAnim.currentLabel == "goButtonReady") {
                     areaTitleAnim.goButton.addEventListener("click", goButtonClickListener);
                     areaTitleAnim.goButton.cursor = "pointer";
                 }
@@ -102,23 +102,30 @@ var TSnake;
             areaTitleAnim.addEventListener("tick", onAreaTitleStopListener);
 
         },
+        "resetGame": function () {
+            this.game.kill();
+            this.clearTasks();
+            this.area = 0;
+            this.numCoins = 0;
+        },
         "createGame": function () {
 
             this.clearTasks();
 
-            this.game = new Game(this.stage, this.area, _.bind(function (coins) {
-                this.clearTasks();
-                this.area++;
-                this.numCoins += coins;
-                this.setAreaTitle(this.area);
-                this.game.kill();
-            }, this), _.bind(function () {
-                this.clearTasks();
-                this.area = 0;
-                this.numCoins = 0;
-                this.game.kill();
-                this.setMainTitle();
-            }, this), this.numCoins);
+            this.game = new Game(this.stage, this.area,
+                //onClearListener
+                _.bind(function (coins) {
+                    this.clearTasks();
+                    this.area++;
+                    this.numCoins += coins;
+                    this.setAreaTitle(this.area);
+                    this.game.kill();
+                }, this),
+                //onGameOverListener
+                _.bind(function () {
+                    this.resetGame();
+                    this.setMainTitle();
+                }, this), this.numCoins);
 
             this.addTask(_.bind(this.game.gameLoop, this.game));
 
