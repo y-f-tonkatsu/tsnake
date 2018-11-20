@@ -1,5 +1,7 @@
 var Game;
 
+const _CHEAT_ON = true;
+
 (function () {
 
     const _SPEEDS = [0, 1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30, 60];
@@ -320,6 +322,15 @@ var Game;
                     this.snake.setDirection(DIRECTION.e.clone());
                 }, this),
             });
+
+            if(_CHEAT_ON){
+                KeyManager.setKeyListeners({
+                    //q
+                    "113": _.bind(function () {
+                        this.addKey(new Vector(0, 0));
+                    }, this),
+                });
+            }
 
             _statusBarMc.coinText.text = this.numCoins;
 
