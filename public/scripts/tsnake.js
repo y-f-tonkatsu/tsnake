@@ -68,13 +68,11 @@ var TSnake;
 
             this.clearTasks();
 
-            var areaTitleMc = cjsUtil.createMc("AreaTitle");
+            var areaTitleMc = cjsUtil.createMc("Area_" + (parseInt(this.area) + 1));
             this.stage.addChild(areaTitleMc);
-            areaTitleMc.gotoAndStop("area_" + this.area);
-
-            var areaTitleAnim = areaTitleMc["areaTitleAnim_" + this.area];
             var areaTitleEndListener = _.bind(function () {
-                if (areaTitleAnim.currentFrame == areaTitleAnim.totalFrames - 1) {
+                console.log(areaTitleMc.currentFrame);
+                if (areaTitleMc.currentFrame == areaTitleMc.totalFrames - 1) {
                     this.stage.removeEventListener("tick", areaTitleEndListener);
                     this.stage.removeChild(areaTitleMc);
                     this.createGame();
@@ -82,24 +80,24 @@ var TSnake;
             }, this);
 
             var goButtonClickListener = _.bind(function () {
-                areaTitleAnim.removeEventListener("tick", onAreaTitleStopListener);
-                areaTitleAnim.goButton.removeEventListener("click", goButtonClickListener);
-                areaTitleAnim.gotoAndPlay("waitToGo");
+                areaTitleMc.removeEventListener("tick", onAreaTitleStopListener);
+                areaTitleMc.goButton.removeEventListener("click", goButtonClickListener);
+                areaTitleMc.gotoAndPlay("waitToGo");
                 this.stage.addEventListener("tick", areaTitleEndListener);
             }, this);
 
 
             var onAreaTitleStopListener = _.bind(function () {
-                if (areaTitleAnim.currentLabel == "waitToGo") {
-                    areaTitleAnim.removeEventListener("tick", onAreaTitleStopListener);
-                    areaTitleAnim.stop();
-                } else if (areaTitleAnim.currentLabel == "goButtonReady") {
-                    areaTitleAnim.goButton.addEventListener("click", goButtonClickListener);
-                    areaTitleAnim.goButton.cursor = "pointer";
+                if (areaTitleMc.currentLabel == "waitToGo") {
+                    areaTitleMc.removeEventListener("tick", onAreaTitleStopListener);
+                    areaTitleMc.stop();
+                } else if (areaTitleMc.currentLabel == "goButtonReady") {
+                    areaTitleMc.goButton.addEventListener("click", goButtonClickListener);
+                    areaTitleMc.goButton.cursor = "pointer";
                 }
             }, this);
 
-            areaTitleAnim.addEventListener("tick", onAreaTitleStopListener);
+            areaTitleMc.addEventListener("tick", onAreaTitleStopListener);
 
         },
         "resetGame": function () {
@@ -123,8 +121,8 @@ var TSnake;
                 }, this),
                 //onGameOverListener
                 _.bind(function () {
-                    this.resetGame();
-                    this.setMainTitle();
+                    //this.resetGame();
+                    //this.setMainTitle();
                 }, this), this.numCoins);
 
             this.addTask(_.bind(this.game.gameLoop, this.game));

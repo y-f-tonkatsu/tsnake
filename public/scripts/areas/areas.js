@@ -38,7 +38,7 @@ var Areas;
                 {
                     "id": "Frog",
                     "spawnRate": 0.4,
-                }
+                },
             ],
             "initialSpeed": 4
         },
@@ -77,7 +77,10 @@ var Areas;
                 {
                     "id": "Frog",
                     "spawnRate": 0.8,
-                    "dropItemRate": 0.4
+                },
+                {
+                    "id": "Cancer",
+                    "spawnRate": 0.2,
                 }
             ],
             "initialSpeed": 4
@@ -117,7 +120,14 @@ var Areas;
                 {
                     "id": "Frog",
                     "spawnRate": 0.8,
-                    "dropItemRate": 0.4
+                },
+                {
+                    "id": "Cancer",
+                    "spawnRate": 0.3,
+                },
+                {
+                    "id": "Hedgehog",
+                    "spawnRate": 0.2,
                 }
             ],
             "initialSpeed": 4
@@ -157,8 +167,11 @@ var Areas;
                 {
                     "id": "Frog",
                     "spawnRate": 0.8,
-                    "dropItemRate": 0.4
-                }
+                },
+                {
+                    "id": "Mouse",
+                    "spawnRate": 0.5,
+                },
             ],
             "initialSpeed": 4
         },
@@ -197,7 +210,18 @@ var Areas;
                 {
                     "id": "Frog",
                     "spawnRate": 0.8,
-                    "dropItemRate": 0.4
+                },
+                {
+                    "id": "Mouse",
+                    "spawnRate": 0.4,
+                },
+                {
+                    "id": "Cancer",
+                    "spawnRate": 0.2,
+                },
+                {
+                    "id": "Hedgehog",
+                    "spawnRate": 0.2,
                 }
             ],
             "initialSpeed": 4
@@ -237,7 +261,18 @@ var Areas;
                 {
                     "id": "Frog",
                     "spawnRate": 0.8,
-                    "dropItemRate": 0.4
+                },
+                {
+                    "id": "Bear",
+                    "spawnRate": 0.3,
+                },
+                {
+                    "id": "Cancer",
+                    "spawnRate": 0.3,
+                },
+                {
+                    "id": "Hedgehog",
+                    "spawnRate": 0.3,
                 }
             ],
             "initialSpeed": 4
@@ -277,7 +312,22 @@ var Areas;
                 {
                     "id": "Frog",
                     "spawnRate": 0.8,
-                    "dropItemRate": 0.4
+                },
+                {
+                    "id": "Spider",
+                    "spawnRate": 0.3,
+                },
+                {
+                    "id": "Bear",
+                    "spawnRate": 0.3,
+                },
+                {
+                    "id": "Cancer",
+                    "spawnRate": 0.3,
+                },
+                {
+                    "id": "Hedgehog",
+                    "spawnRate": 0.3,
                 }
             ],
             "initialSpeed": 4
@@ -315,9 +365,24 @@ var Areas;
             ],
             "enemies": [
                 {
-                    "id": "Frog",
-                    "spawnRate": 0.8,
-                    "dropItemRate": 0.4
+                    "id": "Mouse",
+                    "spawnRate": 0.4,
+                },
+                {
+                    "id": "Spider",
+                    "spawnRate": 0.3,
+                },
+                {
+                    "id": "Bear",
+                    "spawnRate": 0.3,
+                },
+                {
+                    "id": "Cancer",
+                    "spawnRate": 0.3,
+                },
+                {
+                    "id": "Hedgehog",
+                    "spawnRate": 0.3,
                 }
             ],
             "initialSpeed": 4

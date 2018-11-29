@@ -8,6 +8,21 @@ var Enemy;
             "Frog": {
                 "dropItemRate": 0.9,
             },
+            "Cancer": {
+                "dropItemRate": 0.9,
+            },
+            "Hedgehog": {
+                "dropItemRate": 0.9,
+            },
+            "Mouse": {
+                "dropItemRate": 0.9,
+            },
+            "Bear": {
+                "dropItemRate": 0.9,
+            },
+            "Spider": {
+                "dropItemRate": 0.9,
+            }
         };
 
         Enemy = function (map, pos, id) {
@@ -35,6 +50,9 @@ var Enemy;
         };
 
         Enemy.prototype.setFear = function () {
+            if (this.id == "Bear") {
+                return;
+            }
             if (this.state == "normal") {
                 this.setState("fear");
             }
@@ -46,6 +64,24 @@ var Enemy;
                 this.setState("normal");
             }
             return false;
+        };
+
+        Enemy.prototype.saHitTest = function (p) {
+            if (this.state == "spawn") {
+                return false;
+            }
+            if (this.id == "Cancer") {
+                return this.position.y == p.y &&
+                    Math.abs(this.position.x - p.x) == 1;
+            } else if (this.id == "Hedgehog") {
+                return this.position.x == p.x &&
+                    Math.abs(this.position.y - p.y) == 1;
+            } else if (this.id == "Spider") {
+                return Math.abs(this.position.x - p.x) <= 1 &&
+                    Math.abs(this.position.y - p.y) <= 1;
+            } else {
+                return false;
+            }
         };
 
     });

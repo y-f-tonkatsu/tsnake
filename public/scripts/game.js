@@ -122,9 +122,9 @@ const _CHEAT_ON = true;
                 this.snake.powerDown(1, _.bind(function () {
                     this.gameOver();
                 }, this));
-                if(this.snake.power <= _UNIT_POWER){
+                if (this.snake.power <= _UNIT_POWER) {
                     this.snake.setWeak();
-                } else if(this.snake.getState() == "weak"){
+                } else if (this.snake.getState() == "weak") {
                     this.snake.setNormal();
                 }
             }
@@ -174,11 +174,17 @@ const _CHEAT_ON = true;
                     return;
                 }
                 if (enemy.hitTest(this.snake.bodies[0].position)) {
-                    if (this.vmax > 0) {
+                    if (this.vmax > 0 &&
+                        enemy.id !== "Bear") {
                         if (enemy.defeat()) {
                             this.dropItem(enemy.position.clone());
                         }
                     } else {
+                        this.gameOver();
+                    }
+                } else if (enemy.saHitTest(this.snake.bodies[0].position)) {
+                    if (this.vmax <= 0) {
+                        enemy.setState("sa");
                         this.gameOver();
                     }
                 } else {
@@ -323,7 +329,7 @@ const _CHEAT_ON = true;
                 }, this),
             });
 
-            if(_CHEAT_ON){
+            if (_CHEAT_ON) {
                 KeyManager.setKeyListeners({
                     //q
                     "113": _.bind(function () {
@@ -358,9 +364,13 @@ const _CHEAT_ON = true;
             mc.x = from.x;
             mc.y = from.y;
             _mapMc.addChild(mc);
+            console.log("from:");
+            console.log(from);
+            console.log("to:");
+            console.log(to);
             var listener = _.bind(function () {
-                if (Math.abs(mc.x - to.x) < Math.abs(speed.x) &&
-                    Math.abs(mc.y - to.y) < Math.abs(speed.y)) {
+                if (Math.abs(mc.x - to.x) <= Math.abs(speed.x) &&
+                    Math.abs(mc.y - to.y) <= Math.abs(speed.y)) {
                     if (mc.go.currentFrame == mc.go.totalFrames - 1) {
                         this.stage.removeEventListener("tick", listener);
                         mc.removeEventListener("tick", tickListener);
