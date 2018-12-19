@@ -6,22 +6,28 @@ var Enemy;
 
         var data = {
             "Frog": {
-                "dropItemRate": 0.9,
+                "dropItemRate": 0.2,
+                "score": 2
             },
             "Cancer": {
-                "dropItemRate": 0.9,
+                "dropItemRate": 0.25,
+                "score": 3
             },
             "Hedgehog": {
-                "dropItemRate": 0.9,
+                "dropItemRate": 0.25,
+                "score": 3
             },
             "Mouse": {
-                "dropItemRate": 0.9,
+                "dropItemRate": 0.1,
+                "score": 1
             },
             "Bear": {
-                "dropItemRate": 0.9,
+                "dropItemRate": 0.5,
+                "score": 5
             },
             "Spider": {
-                "dropItemRate": 0.9,
+                "dropItemRate": 0.3,
+                "score": 5
             }
         };
 
@@ -64,6 +70,10 @@ var Enemy;
                 this.setState("normal");
             }
             return false;
+        };
+
+        Enemy.prototype.getScore = function () {
+            return data[this.id].score;
         };
 
         Enemy.prototype.saHitTest = function (p) {

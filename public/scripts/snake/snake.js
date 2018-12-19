@@ -15,11 +15,9 @@ var Snake;
         }, this));
 
         this.direction = DIRECTION.s.clone();
-        this.power = 1500;
     };
 
     Snake.prototype = {
-        "POWER_MAX": 4000,
         "addBody": function (v) {
             if (!v) {
                 v = this.bodies[this.bodies.length - 1].position.clone();
@@ -63,18 +61,6 @@ var Snake;
             _.forEach(this.bodies, _.bind(function (b) {
                 b.update(b.direction.mult(process));
             }, this));
-        },
-        "powerUp": function (v) {
-            this.power += v;
-            if (this.power >= this.POWER_MAX) {
-                this.power = this.POWER_MAX;
-            }
-        },
-        "powerDown": function (v, onDead) {
-            this.power -= v;
-            if (this.power <= 0) {
-                onDead();
-            }
         },
         "finish": function () {
             _.forEach(this.bodies, _.bind(function (b) {

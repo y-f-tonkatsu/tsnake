@@ -11,14 +11,14 @@ const _CHEAT_ON = true;
     var _statusBarMc;
     var _mapMc;
 
+    const _TIME_FOR_SPEED_UP = 120;
     const _STATUS_BAR_HEIGHT = 60;
     const _NUM_KEYS_MAX = 4;
-    const _NUM_HEARTS_MAX = 8;
-    const _UNIT_POWER = 500;
+    const _SCORE_PER_COIN = 10;
 
-    Game = function (stage, areaNo, onClearListener, onGameOverListener, numCoins) {
+    Game = function (stage, areaNo, onClearListener, onGameOverListener, score) {
 
-        this.numCoins = numCoins;
+        this.score = score;
 
         this.stage = stage;
         this.areaNo = areaNo;
@@ -29,6 +29,7 @@ const _CHEAT_ON = true;
         this.items = [];
 
         this.time = 0;
+        this.totalTime = 0;
         this.speed = this.area.initialSpeed;
         this.process = 0;
         this.numKeys = 0;
@@ -110,45 +111,10 @@ const _CHEAT_ON = true;
             }, this));
         },
         "updateSpeed": function () {
-            this.speed = Math.min(Math.floor(this.time / 120) + this.area.initialSpeed, _SPEEDS.length - 1);
+            this.speed = Math.min(Math.floor(this.time / _TIME_FOR_SPEED_UP) + this.area.initialSpeed, _SPEEDS.length - 1);
         },
-        "updatePower": function () {
-
-            if (this.isFinishing) {
-                return;
-            }
-
-            if (this.vmax <= 0) {
-                this.snake.powerDown(1, _.bind(function () {
-                    this.gameOver();
-                }, this));
-                if (this.snake.power <= _UNIT_POWER) {
-                    this.snake.setWeak();
-                } else if (this.snake.getState() == "weak") {
-                    this.snake.setNormal();
-                }
-            }
-
-            _.times(_NUM_HEARTS_MAX, _.bind(function (i) {
-                var mc = _statusBarMc["powerGauge_" + i];
-
-                if (Math.floor(this.snake.power / _UNIT_POWER) < i) {
-                    mc.visible = false;
-                    mc.gotoAndStop("beat_strong");
-                } else if (Math.floor(this.snake.power / _UNIT_POWER) == i) {
-                    mc.visible = true;
-                    if (this.snake.power % _UNIT_POWER > _UNIT_POWER * 0.6) {
-                        mc.gotoAndPlay("beat_strong");
-                    } else if (this.snake.power % _UNIT_POWER > _UNIT_POWER * 0.3) {
-                        mc.gotoAndPlay("beat_normal");
-                    } else {
-                        mc.gotoAndPlay("beat_weak");
-                    }
-                } else {
-                    mc.visible = true;
-                    mc.gotoAndStop("stop");
-                }
-            }, this));
+        "speedDown": function () {
+            this.time = Math.min(this.time - (this.time % _TIME_FOR_SPEED_UP) - _TIME_FOR_SPEED_UP, this.area.initialSpeed);
         },
         "updateVmaxGauge": function () {
 
@@ -156,12 +122,11 @@ const _CHEAT_ON = true;
                 return;
             }
 
-            _statusBarMc.vmaxGauge.progress.gotoAndStop(Item.VMAX_DURATION - this.vmax);
-
             if (this.vmax <= 0) {
                 _statusBarMc.vmaxGauge.progress.cover.visible = true;
                 _statusBarMc.vmaxGauge.progress.frame.gotoAndStop(0);
             } else {
+                _statusBarMc.vmaxGauge.progress.gotoAndStop(Item.VMAX_DURATION - this.vmax);
                 _statusBarMc.vmaxGauge.progress.cover.visible = false;
                 _statusBarMc.vmaxGauge.progress.frame.play();
             }
@@ -176,6 +141,7 @@ const _CHEAT_ON = true;
                 if (enemy.hitTest(this.snake.bodies[0].position)) {
                     if (this.vmax > 0 &&
                         enemy.id !== "Bear") {
+                        this.addScore(enemy.getScore());
                         if (enemy.defeat()) {
                             this.dropItem(enemy.position.clone());
                         }
@@ -211,6 +177,14 @@ const _CHEAT_ON = true;
                     if (item.id !== "Gate") {
                         item.remove();
                     }
+                } else {
+                    if(item.id !== "Gate"){
+                        if(item.life <= 0){
+                            item.remove();
+                        } else {
+                            item.life--;
+                        }
+                    }
                 }
             }, this));
 
@@ -237,9 +211,11 @@ const _CHEAT_ON = true;
                 return;
             }
 
-            _.find(this.enemies, function (enemy) {
+            var enemy = _.find(this.enemies, function (enemy) {
                 return enemy.isAlive();
-            }).defeat();
+            });
+            enemy.defeat();
+            this.addScore(enemy.getScore());
 
         },
         "gameLoop": function () {
@@ -248,7 +224,6 @@ const _CHEAT_ON = true;
                 return;
             }
 
-            this.updatePower();
             this.updateVmaxGauge();
 
             if (this.process >= Cood.UNIT) {
@@ -270,6 +245,7 @@ const _CHEAT_ON = true;
                 } else {
 
                     this.time++;
+                    this.totalTime++;
 
                     this.updateSpeed();
                     if (this.snake.selfHitTest()) {
@@ -338,7 +314,7 @@ const _CHEAT_ON = true;
                 });
             }
 
-            _statusBarMc.coinText.text = this.numCoins;
+            _statusBarMc.scoreText.text = this.score;
 
         },
         "animateGate": function () {
@@ -427,18 +403,25 @@ const _CHEAT_ON = true;
                     this.spawnEnemy(enemy.id);
                 }
             }, this));
+            _.forEach(this.area.comp, _.bind(function(compTime){
+                if(compTime == this.totalTime){
+                    console.log("comp");
+                    this.spawnItem("Apple");
+                }
+            }, this));
             _.forEach(this.area.items, _.bind(function (item) {
                 if (item.spawnRate > Math.random()) {
                     this.spawnItem(item.id);
                 }
             }, this));
+
         },
         "dropItem": function (from) {
             if (this.getNumAllItems() >= Item.LIMIT) {
                 return;
             }
             _.forEach(this.area.dropItems, _.bind(function (item) {
-                if (this.hasSpace(item.id)) {
+                if (!this.hasItemSpace(item.id)) {
                     return;
                 }
                 if (item.dropRate > Math.random()) {
@@ -450,12 +433,12 @@ const _CHEAT_ON = true;
                 }
             }, this));
         },
-        "hasSpace": function (id) {
-            return this.getNumAllItems() >= Item.LIMIT ||
-                this.getNumItems(id) >= Item.DROP_LIMITS[id];
+        "hasItemSpace": function (id) {
+            return this.getNumAllItems() < Item.LIMIT &&
+                this.getNumItems(id) < Item.DROP_LIMITS[id];
         },
         "spawnItem": function (id) {
-            if (this.hasSpace(id)) {
+            if (!this.hasItemSpace(id)) {
                 return;
             }
             this.items.push(new Item(_mapMc, this.getFreePosition(), id));
@@ -500,13 +483,17 @@ const _CHEAT_ON = true;
             this.stage.addEventListener("tick", listener);
         },
         "addCoin": function (pos) {
+            const _POS_SCORE_TEXT = new Vector(1060, -50);
             this.throwItem("Coin", new Vector(
                 Cood.localToWorld(pos.x),
                 Cood.localToWorld(pos.y)
-            ), new Vector(1027, -50), _.bind(function () {
-                _statusBarMc.coinText.text = this.numCoins;
+            ), _POS_SCORE_TEXT, _.bind(function () {
+                this.addScore(_SCORE_PER_COIN);
             }, this));
-            this.numCoins++;
+        },
+        "addScore": function (v) {
+            this.score += v;
+            _statusBarMc.scoreText.text = this.score;
         },
         "addKey": function (pos) {
             this.throwItem("Key", new Vector(
@@ -535,7 +522,7 @@ const _CHEAT_ON = true;
         },
         "clear": function () {
             console.log("clear");
-            this.onClearListener(this.numCoins);
+            this.onClearListener(this.score);
         },
         "gameOver": function () {
             console.log("GameOver");

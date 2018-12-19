@@ -13,7 +13,7 @@ var TSnake;
         createjs.Ticker.addEventListener("tick", _.bind(this.mainLoop, this));
 
         this.area = 0;
-        this.numCoins = 0;
+        this.score = 0;
 
         this.setMainTitle();
     }
@@ -71,7 +71,6 @@ var TSnake;
             var areaTitleMc = cjsUtil.createMc("Area_" + (parseInt(this.area) + 1));
             this.stage.addChild(areaTitleMc);
             var areaTitleEndListener = _.bind(function () {
-                console.log(areaTitleMc.currentFrame);
                 if (areaTitleMc.currentFrame == areaTitleMc.totalFrames - 1) {
                     this.stage.removeEventListener("tick", areaTitleEndListener);
                     this.stage.removeChild(areaTitleMc);
@@ -104,7 +103,7 @@ var TSnake;
             this.game.kill();
             this.clearTasks();
             this.area = 0;
-            this.numCoins = 0;
+            this.score = 0;
         },
         "createGame": function () {
 
@@ -112,18 +111,18 @@ var TSnake;
 
             this.game = new Game(this.stage, this.area,
                 //onClearListener
-                _.bind(function (coins) {
+                _.bind(function (score) {
                     this.clearTasks();
                     this.area++;
-                    this.numCoins += coins;
+                    this.score += score;
                     this.setAreaTitle(this.area);
                     this.game.kill();
                 }, this),
                 //onGameOverListener
                 _.bind(function () {
-                    //this.resetGame();
-                    //this.setMainTitle();
-                }, this), this.numCoins);
+                    this.resetGame();
+                    this.setMainTitle();
+                }, this), this.score);
 
             this.addTask(_.bind(this.game.gameLoop, this.game));
 

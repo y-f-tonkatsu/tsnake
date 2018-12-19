@@ -15,19 +15,20 @@ var Item;
                 game.addCoin(this.position.clone());
             },
             "Apple": function (game, snake) {
-                snake.powerUp(200);
+                game.setVmax(Item.VMAX_DURATION);
                 snake.addBody();
             },
             "Wine": function (game, snake) {
-                game.setVmax(Item.VMAX_DURATION);
+                snake.removeBody();
             },
             "Berry": function (game, snake) {
-                snake.removeBody();
+                game.speedDown();
             },
         };
 
         Item = function (map, pos, id) {
             this.init(map, pos, id);
+            this.life = Item.LIFETIME[id];
         };
 
         Item.DROP_LIMITS = {
@@ -39,10 +40,19 @@ var Item;
             "Berry": 15,
         }
 
+        Item.LIFETIME = {
+            "Gate": 0,
+            "Key": 60,
+            "Coin": 60,
+            "Apple": 60,
+            "Wine": 60,
+            "Berry": 60,
+        }
+
         Item.prototype = new FieldObject();
 
         Item.LIMIT = 60;
-        Item.VMAX_DURATION = 30;
+        Item.VMAX_DURATION = 40;
 
         Item.prototype.effect = function (game, snake) {
             _.bind(effects[this.id], this)(game, snake);
