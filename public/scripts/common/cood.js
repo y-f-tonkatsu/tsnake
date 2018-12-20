@@ -8,6 +8,7 @@ var Cood;
         "MAX_GY":900,
         "MAX_X":14,
         "MAX_Y":14,
+        "_STATUS_BAR_HEIGHT":60,
         "localToWorld": function (local) {
             if(typeof local == "object"){
                 return local.mult(this.UNIT);

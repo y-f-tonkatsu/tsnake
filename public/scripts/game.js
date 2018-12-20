@@ -11,8 +11,7 @@ const _CHEAT_ON = true;
     var _statusBarMc;
     var _mapMc;
 
-    const _TIME_FOR_SPEED_UP = 120;
-    const _STATUS_BAR_HEIGHT = 60;
+    const _TIME_FOR_SPEED_UP = 130;
     const _NUM_KEYS_MAX = 4;
     const _SCORE_PER_COIN = 10;
 
@@ -27,6 +26,7 @@ const _CHEAT_ON = true;
         this.tiles = [];
         this.enemies = [];
         this.items = [];
+        this.scorePopUps = [];
 
         this.time = 0;
         this.totalTime = 0;
@@ -86,7 +86,7 @@ const _CHEAT_ON = true;
 
             _mapMc = new createjs.MovieClip();
             _mapMc.x = 0;
-            _mapMc.y = _STATUS_BAR_HEIGHT;
+            _mapMc.y = Cood._STATUS_BAR_HEIGHT;
             _rootMc.addChild(_mapMc);
 
             var that = this;
@@ -141,7 +141,7 @@ const _CHEAT_ON = true;
                 if (enemy.hitTest(this.snake.bodies[0].position)) {
                     if (this.vmax > 0 &&
                         enemy.id !== "Bear") {
-                        this.addScore(enemy.getScore());
+                        this.addScore(enemy.getScore(), enemy.position);
                         if (enemy.defeat()) {
                             this.dropItem(enemy.position.clone());
                         }
@@ -178,8 +178,8 @@ const _CHEAT_ON = true;
                         item.remove();
                     }
                 } else {
-                    if(item.id !== "Gate"){
-                        if(item.life <= 0){
+                    if (item.id !== "Gate") {
+                        if (item.life <= 0) {
                             item.remove();
                         } else {
                             item.life--;
@@ -215,7 +215,7 @@ const _CHEAT_ON = true;
                 return enemy.isAlive();
             });
             enemy.defeat();
-            this.addScore(enemy.getScore());
+            this.addScore(enemy.getScore(), enemy.position);
 
         },
         "gameLoop": function () {
@@ -403,8 +403,8 @@ const _CHEAT_ON = true;
                     this.spawnEnemy(enemy.id);
                 }
             }, this));
-            _.forEach(this.area.comp, _.bind(function(compTime){
-                if(compTime == this.totalTime){
+            _.forEach(this.area.comp, _.bind(function (compTime) {
+                if (compTime == this.totalTime) {
                     console.log("comp");
                     this.spawnItem("Apple");
                 }
@@ -488,10 +488,16 @@ const _CHEAT_ON = true;
                 Cood.localToWorld(pos.x),
                 Cood.localToWorld(pos.y)
             ), _POS_SCORE_TEXT, _.bind(function () {
-                this.addScore(_SCORE_PER_COIN);
+                this.addScore(_SCORE_PER_COIN, pos);
             }, this));
         },
-        "addScore": function (v) {
+        "addScore": function (v, pos) {
+            if (pos) {
+                var score = new Score(this.stage, v, pos, function(){
+                    this.scorePopUps.pop();
+                });
+                this.scorePopUps.push(score);
+            }
             this.score += v;
             _statusBarMc.scoreText.text = this.score;
         },

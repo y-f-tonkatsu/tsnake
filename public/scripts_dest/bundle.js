@@ -11,8 +11,7 @@ const _CHEAT_ON = true;
     var _statusBarMc;
     var _mapMc;
 
-    const _TIME_FOR_SPEED_UP = 120;
-    const _STATUS_BAR_HEIGHT = 60;
+    const _TIME_FOR_SPEED_UP = 130;
     const _NUM_KEYS_MAX = 4;
     const _SCORE_PER_COIN = 10;
 
@@ -27,6 +26,7 @@ const _CHEAT_ON = true;
         this.tiles = [];
         this.enemies = [];
         this.items = [];
+        this.scorePopUps = [];
 
         this.time = 0;
         this.totalTime = 0;
@@ -86,7 +86,7 @@ const _CHEAT_ON = true;
 
             _mapMc = new createjs.MovieClip();
             _mapMc.x = 0;
-            _mapMc.y = _STATUS_BAR_HEIGHT;
+            _mapMc.y = Cood._STATUS_BAR_HEIGHT;
             _rootMc.addChild(_mapMc);
 
             var that = this;
@@ -141,7 +141,7 @@ const _CHEAT_ON = true;
                 if (enemy.hitTest(this.snake.bodies[0].position)) {
                     if (this.vmax > 0 &&
                         enemy.id !== "Bear") {
-                        this.addScore(enemy.getScore());
+                        this.addScore(enemy.getScore(), enemy.position);
                         if (enemy.defeat()) {
                             this.dropItem(enemy.position.clone());
                         }
@@ -178,8 +178,8 @@ const _CHEAT_ON = true;
                         item.remove();
                     }
                 } else {
-                    if(item.id !== "Gate"){
-                        if(item.life <= 0){
+                    if (item.id !== "Gate") {
+                        if (item.life <= 0) {
                             item.remove();
                         } else {
                             item.life--;
@@ -215,7 +215,7 @@ const _CHEAT_ON = true;
                 return enemy.isAlive();
             });
             enemy.defeat();
-            this.addScore(enemy.getScore());
+            this.addScore(enemy.getScore(), enemy.position);
 
         },
         "gameLoop": function () {
@@ -403,8 +403,8 @@ const _CHEAT_ON = true;
                     this.spawnEnemy(enemy.id);
                 }
             }, this));
-            _.forEach(this.area.comp, _.bind(function(compTime){
-                if(compTime == this.totalTime){
+            _.forEach(this.area.comp, _.bind(function (compTime) {
+                if (compTime == this.totalTime) {
                     console.log("comp");
                     this.spawnItem("Apple");
                 }
@@ -488,10 +488,16 @@ const _CHEAT_ON = true;
                 Cood.localToWorld(pos.x),
                 Cood.localToWorld(pos.y)
             ), _POS_SCORE_TEXT, _.bind(function () {
-                this.addScore(_SCORE_PER_COIN);
+                this.addScore(_SCORE_PER_COIN, pos);
             }, this));
         },
-        "addScore": function (v) {
+        "addScore": function (v, pos) {
+            if (pos) {
+                var score = new Score(this.stage, v, pos, function(){
+                    this.scorePopUps.pop();
+                });
+                this.scorePopUps.push(score);
+            }
             this.score += v;
             _statusBarMc.scoreText.text = this.score;
         },
@@ -1229,20 +1235,6 @@ function getMCSymbolPrototype(symbol, nominalBounds, frameBounds) {
 p.nominalBounds = new cjs.Rectangle(0.3,0.6,59.5,58.3);
 
 
-(lib.Text_new_enemy = function(mode,startPosition,loop) {
-	this.initialize(mode,startPosition,loop,{});
-
-	// レイヤー_1
-	this.shape = new cjs.Shape();
-	this.shape.graphics.f("#FF9900").s().p("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");
-	this.shape.setTransform(312.9786,65.4);
-
-	this.timeline.addTween(cjs.Tween.get(this.shape).wait(1));
-
-}).prototype = p = new cjs.MovieClip();
-p.nominalBounds = new cjs.Rectangle(8.1,33.9,609.8,63.00000000000001);
-
-
 (lib.x = function(mode,startPosition,loop) {
 	this.initialize(mode,startPosition,loop,{});
 
@@ -1408,6 +1400,22 @@ p.nominalBounds = new cjs.Rectangle(-18,-18,36,36);
 
 }).prototype = p = new cjs.MovieClip();
 p.nominalBounds = new cjs.Rectangle(-18,-18,36,36);
+
+
+(lib.ScorePopUp = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// レイヤー_1
+	this.tf = new cjs.Text("+", "18px 'TBCineRGothic Std M'", "#FF0000");
+	this.tf.name = "tf";
+	this.tf.textAlign = "center";
+	this.tf.lineHeight = 32;
+	this.tf.parent = this;
+	this.tf.setTransform(0,-32.25);
+
+	this.timeline.addTween(cjs.Tween.get(this.tf).wait(1));
+
+}).prototype = getMCSymbolPrototype(lib.ScorePopUp, new cjs.Rectangle(-9.6,-34.2,19.299999999999997,34.2), null);
 
 
 (lib.Ring = function(mode,startPosition,loop) {
@@ -2905,6 +2913,20 @@ p.nominalBounds = new cjs.Rectangle(-265.6,-144.8,531.2,289.70000000000005);
 
 }).prototype = p = new cjs.MovieClip();
 p.nominalBounds = new cjs.Rectangle(-103,-103,206,206);
+
+
+(lib.Text_new_enemy = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// レイヤー_1
+	this.shape = new cjs.Shape();
+	this.shape.graphics.f("#FF9900").s().p("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");
+	this.shape.setTransform(312.9786,65.4);
+
+	this.timeline.addTween(cjs.Tween.get(this.shape).wait(1));
+
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(8.1,33.9,609.8,63.00000000000001);
 
 
 (lib.Stage_t = function(mode,startPosition,loop) {
@@ -4958,6 +4980,19 @@ p.nominalBounds = new cjs.Rectangle(-6,-6,13.8,12);
 p.nominalBounds = new cjs.Rectangle(-31.4,-27,63.5,54);
 
 
+(lib.Bear_ear_move = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// レイヤー_1
+	this.instance = new lib.Bear_ear("synched",0);
+	this.instance.parent = this;
+
+	this.timeline.addTween(cjs.Tween.get(this.instance).to({x:2},15,cjs.Ease.quadInOut).wait(1).to({x:1.9452},0).wait(1).to({x:1.7957},0).wait(1).to({x:1.5336},0).wait(1).to({x:1.169},0).wait(1).to({x:0.7696},0).wait(1).to({x:0.4276},0).wait(1).to({x:0.1884},0).wait(1).to({x:0.05},0).wait(1));
+
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(-9.8,-9.5,21.700000000000003,19);
+
+
 (lib.TitleAnim_scurve_no_guide = function(mode,startPosition,loop) {
 	this.initialize(mode,startPosition,loop,{});
 
@@ -6722,19 +6757,6 @@ p.nominalBounds = new cjs.Rectangle(26.6,-32.7,2188.2000000000003,639.7);
 
 }).prototype = p = new cjs.MovieClip();
 p.nominalBounds = new cjs.Rectangle(0,0,1200,900);
-
-
-(lib.Bear_ear_move = function(mode,startPosition,loop) {
-	this.initialize(mode,startPosition,loop,{});
-
-	// レイヤー_1
-	this.instance = new lib.Bear_ear("synched",0);
-	this.instance.parent = this;
-
-	this.timeline.addTween(cjs.Tween.get(this.instance).to({x:2},15,cjs.Ease.quadInOut).wait(1).to({x:1.9452},0).wait(1).to({x:1.7957},0).wait(1).to({x:1.5336},0).wait(1).to({x:1.169},0).wait(1).to({x:0.7696},0).wait(1).to({x:0.4276},0).wait(1).to({x:0.1884},0).wait(1).to({x:0.05},0).wait(1));
-
-}).prototype = p = new cjs.MovieClip();
-p.nominalBounds = new cjs.Rectangle(-9.8,-9.5,21.700000000000003,19);
 
 
 (lib.SnakeHead = function(mode,startPosition,loop) {
@@ -8827,65 +8849,72 @@ p.nominalBounds = new cjs.Rectangle(0,0,60,60);
 (lib.tsnake_v004 = function(mode,startPosition,loop) {
 	this.initialize(mode,startPosition,loop,{});
 
-	// Tile
-	this.instance = new lib.Tile("synched",0);
+	// ScorePopUp
+	this.instance = new lib.ScorePopUp();
 	this.instance.parent = this;
-	this.instance.setTransform(30,30,1,1,0,0,0,30,30);
+	this.instance.setTransform(48.4,370.1,1,1,0,0,0,0,-17.2);
 
 	this.timeline.addTween(cjs.Tween.get(this.instance).wait(1));
 
-	// StatusBar
-	this.instance_1 = new lib.StatusBar();
+	// Tile
+	this.instance_1 = new lib.Tile("synched",0);
 	this.instance_1.parent = this;
-	this.instance_1.setTransform(100,20,1,1,0,0,0,100,20);
+	this.instance_1.setTransform(30,30,1,1,0,0,0,30,30);
 
 	this.timeline.addTween(cjs.Tween.get(this.instance_1).wait(1));
 
-	// Snake
-	this.instance_2 = new lib.SnakeHead();
+	// StatusBar
+	this.instance_2 = new lib.StatusBar();
 	this.instance_2.parent = this;
-	this.instance_2.setTransform(180.05,263.45,1,1,0,0,0,27.1,27.1);
+	this.instance_2.setTransform(100,20,1,1,0,0,0,100,20);
 
-	this.instance_3 = new lib.SnakeBody();
+	this.timeline.addTween(cjs.Tween.get(this.instance_2).wait(1));
+
+	// Snake
+	this.instance_3 = new lib.SnakeHead();
 	this.instance_3.parent = this;
-	this.instance_3.setTransform(116.85,264,1,1,0,0,0,27.1,27.1);
+	this.instance_3.setTransform(180.05,263.45,1,1,0,0,0,27.1,27.1);
 
-	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.instance_3},{t:this.instance_2}]}).wait(1));
+	this.instance_4 = new lib.SnakeBody();
+	this.instance_4.parent = this;
+	this.instance_4.setTransform(116.85,264,1,1,0,0,0,27.1,27.1);
+
+	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.instance_4},{t:this.instance_3}]}).wait(1));
 
 	// Enemies
-	this.instance_4 = new lib.Enemies();
-	this.instance_4.parent = this;
-	this.instance_4.setTransform(66.55,138.85,1,1,0,0,0,30,30);
-
-	this.timeline.addTween(cjs.Tween.get(this.instance_4).wait(1));
-
-	// Items
-	this.instance_5 = new lib.Items();
+	this.instance_5 = new lib.Enemies();
 	this.instance_5.parent = this;
-	this.instance_5.setTransform(144.2,104.85);
+	this.instance_5.setTransform(66.55,138.85,1,1,0,0,0,30,30);
 
 	this.timeline.addTween(cjs.Tween.get(this.instance_5).wait(1));
 
-	// MainTitle
-	this.instance_6 = new lib.MainTitle();
+	// Items
+	this.instance_6 = new lib.Items();
 	this.instance_6.parent = this;
-	this.instance_6.setTransform(596.1,431.7,1,1,0,0,0,596.1,431.7);
+	this.instance_6.setTransform(144.2,104.85);
 
 	this.timeline.addTween(cjs.Tween.get(this.instance_6).wait(1));
 
-	// AreaTitle
-	this.instance_7 = new lib.AreaTitle("synched",0);
+	// MainTitle
+	this.instance_7 = new lib.MainTitle();
 	this.instance_7.parent = this;
-	this.instance_7.setTransform(828.05,668.7,1,1,0,0,0,596.1,431.7);
+	this.instance_7.setTransform(596.1,431.7,1,1,0,0,0,596.1,431.7);
 
 	this.timeline.addTween(cjs.Tween.get(this.instance_7).wait(1));
 
-	// Background
-	this.instance_8 = new lib.Background();
+	// AreaTitle
+	this.instance_8 = new lib.AreaTitle("synched",0);
 	this.instance_8.parent = this;
-	this.instance_8.setTransform(600,498.7,1,1,0,0,0,600,498.7);
+	this.instance_8.setTransform(828.05,668.7,1,1,0,0,0,596.1,431.7);
 
 	this.timeline.addTween(cjs.Tween.get(this.instance_8).wait(1));
+
+	// Background
+	this.instance_9 = new lib.Background();
+	this.instance_9.parent = this;
+	this.instance_9.setTransform(600,498.7,1,1,0,0,0,600,498.7);
+
+	this.timeline.addTween(cjs.Tween.get(this.instance_9).wait(1));
 
 }).prototype = p = new cjs.MovieClip();
 p.nominalBounds = new cjs.Rectangle(600,331.3,832,1148.9);
@@ -8973,6 +9002,7 @@ var Cood;
         "MAX_GY":900,
         "MAX_X":14,
         "MAX_Y":14,
+        "_STATUS_BAR_HEIGHT":60,
         "localToWorld": function (local) {
             if(typeof local == "object"){
                 return local.mult(this.UNIT);
@@ -9283,6 +9313,57 @@ var KeyManager;
                 this.listeners[key] = callback;
             }, this));
         }
+    };
+
+})();
+var Score;
+
+(function () {
+
+    const UP_MAX = 60;
+    const UP_SPEED = 1;
+
+    Score = function (stage, score, pos, removeListener) {
+        this.init(stage, score, pos, removeListener);
+    };
+
+    Score.prototype = {
+
+        init: function (stage, score, pos, removeListener) {
+            this.mc = cjsUtil.createMc("ScorePopUp");
+            this.position = new Vector(
+                Cood.localToWorld(pos.x) + Cood.UNIT * 0.5,
+                Cood.localToWorld(pos.y) + Cood._STATUS_BAR_HEIGHT + Cood.UNIT
+            );
+            this.mc.x = this.position.x;
+            this.mc.y = this.position.y;
+            stage.addChild(this.mc);
+            this.up = 0;
+            this.score = score;
+            this.mc.tf.text = "+" + score;
+
+            this.mc.addEventListener("tick", _.bind(this.update, this));
+
+            this.removeListener = removeListener;
+        },
+        remove: function () {
+            this.mc.removeEventListener("tick", this.update);
+            this.mc.stop();
+            this.mc.parent.removeChild(this.mc);
+            this.mc = null;
+            if(this.removeListener){
+                this.removeListener();
+            }
+        },
+        update: function () {
+            this.mc.y = this.position.y - this.up;
+            this.up += UP_SPEED;
+            if (this.up > UP_MAX) {
+                this.remove();
+            }
+        }
+
+
     };
 
 })();
