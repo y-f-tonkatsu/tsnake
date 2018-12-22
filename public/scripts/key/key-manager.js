@@ -2,12 +2,12 @@ var KeyManager;
 
 (function () {
 
-    $(window).keypress(function (e) {
-        console.log("key:" + e.which);
+    window.onkeydown = function (e) {
+        //console.log("key:" + e.which);
         if(KeyManager.listeners[e.which]){
             KeyManager.listeners[e.which]();
         }
-    });
+    };
 
     KeyManager = {
         "listeners": {},

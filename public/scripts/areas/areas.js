@@ -48,7 +48,7 @@ var Areas;
                     "spawnRate": 0.3,
                 },
             ],
-            "initialSpeed": 4
+            "initialSpeed": 0
         },
 
         //2
@@ -100,7 +100,7 @@ var Areas;
                     "spawnRate": 0.2,
                 }
             ],
-            "initialSpeed": 4
+            "initialSpeed": 0
         },
 
         //3
@@ -156,7 +156,7 @@ var Areas;
                     "spawnRate": 0.2,
                 }
             ],
-            "initialSpeed": 4
+            "initialSpeed": 1
         },
 
         //4
@@ -208,7 +208,7 @@ var Areas;
                     "spawnRate": 0.5,
                 },
             ],
-            "initialSpeed": 4
+            "initialSpeed": 1
         },
 
         //5
@@ -268,7 +268,7 @@ var Areas;
                     "spawnRate": 0.2,
                 }
             ],
-            "initialSpeed": 4
+            "initialSpeed": 2
         },
 
         //6
@@ -328,7 +328,7 @@ var Areas;
                     "spawnRate": 0.3,
                 }
             ],
-            "initialSpeed": 4
+            "initialSpeed": 2
         },
 
         //7
@@ -392,7 +392,7 @@ var Areas;
                     "spawnRate": 0.3,
                 }
             ],
-            "initialSpeed": 4
+            "initialSpeed": 2
         },
 
         //8
@@ -456,7 +456,7 @@ var Areas;
                     "spawnRate": 0.3,
                 }
             ],
-            "initialSpeed": 4
+            "initialSpeed": 3
         },
     ];
 

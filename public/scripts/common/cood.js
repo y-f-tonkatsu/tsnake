@@ -4,10 +4,10 @@ var Cood;
 
     Cood = {
         "UNIT":60,
-        "MAX_GX":1200,
-        "MAX_GY":900,
-        "MAX_X":14,
-        "MAX_Y":14,
+        "MAX_GX":780,
+        "MAX_GY":780,
+        "MAX_X":13,
+        "MAX_Y":12,
         "_STATUS_BAR_HEIGHT":60,
         "localToWorld": function (local) {
             if(typeof local == "object"){

@@ -4,14 +4,15 @@ const _CHEAT_ON = true;
 
 (function () {
 
-    const _SPEEDS = [0, 1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30, 60];
+    const _SPEEDS = [3, 4, 5, 6, 10, 12, 15, 20];
 
     var _rootMc;
     var _backgroundMc;
     var _statusBarMc;
     var _mapMc;
 
-    const _TIME_FOR_SPEED_UP = 130;
+    const _SPEED_UP_PROCESS_MAX = 60;
+    const _SPEED_METER_UNIT = 15;
     const _NUM_KEYS_MAX = 4;
     const _SCORE_PER_COIN = 10;
 
@@ -31,12 +32,14 @@ const _CHEAT_ON = true;
         this.time = 0;
         this.totalTime = 0;
         this.speed = this.area.initialSpeed;
+        this.speedUpProcess = 0;
         this.process = 0;
         this.numKeys = 0;
 
         this.vmax = 0;
 
         this.isFinishing = false;
+        this.isDying = false;
         this.isGameLoopLocked = false;
         this.gate = null;
 
@@ -110,15 +113,33 @@ const _CHEAT_ON = true;
                 return obj.state == "removed";
             }, this));
         },
+        "updateSpeedMeter": function () {
+            var targetX = this.speed * _SPEED_METER_UNIT;
+            if (this.isVmax() && this.speed < _SPEEDS.length - 1) {
+                targetX += _SPEED_METER_UNIT;
+            }
+            var currentX = _statusBarMc.speedMeter.needle.x;
+            if (currentX < targetX) {
+                _statusBarMc.speedMeter.needle.x ++;
+            } else if (currentX > targetX) {
+                _statusBarMc.speedMeter.needle.x --;
+            }
+        },
         "updateSpeed": function () {
-            this.speed = Math.min(Math.floor(this.time / _TIME_FOR_SPEED_UP) + this.area.initialSpeed, _SPEEDS.length - 1);
+            if (this.speedUpProcess >= _SPEED_UP_PROCESS_MAX + this.speed * _SPEED_METER_UNIT) {
+                this.speedUpProcess = 0;
+                this.speed = Math.min(this.speed + 1, _SPEEDS.length - 1);
+                console.log("Speed Up: " + this.speed.toString() + " / " + (_SPEEDS.length - 1).toString());
+            }
+            this.speedUpProcess++;
         },
         "speedDown": function () {
-            this.time = Math.min(this.time - (this.time % _TIME_FOR_SPEED_UP) - _TIME_FOR_SPEED_UP, this.area.initialSpeed);
+            this.speedUpProcess = 0;
+            this.speed = Math.max(this.speed - 1, this.area.initialSpeed);
         },
         "updateVmaxGauge": function () {
 
-            if (this.isFinishing) {
+            if (this.isFinishing || this.isDying) {
                 return;
             }
 
@@ -135,11 +156,12 @@ const _CHEAT_ON = true;
         "updateEnemies": function () {
 
             _.forEach(this.enemies, _.bind(function (enemy) {
-                if (enemy.state == "removed") {
+                if (enemy.state == "removed" ||
+                    enemy.state == "defeated") {
                     return;
                 }
                 if (enemy.hitTest(this.snake.bodies[0].position)) {
-                    if (this.vmax > 0 &&
+                    if (this.isVmax() &&
                         enemy.id !== "Bear") {
                         this.addScore(enemy.getScore(), enemy.position);
                         if (enemy.defeat()) {
@@ -148,13 +170,20 @@ const _CHEAT_ON = true;
                     } else {
                         this.gameOver();
                     }
+                } else if (this.isVmax() &&
+                    enemy.id == "Mouse" &&
+                    enemy.position.sdist(this.snake.bodies[0].position) == 1) {
+                    this.addScore(enemy.getScore(), enemy.position);
+                    if (enemy.defeat()) {
+                        this.dropItem(enemy.position.clone());
+                    }
                 } else if (enemy.saHitTest(this.snake.bodies[0].position)) {
                     if (this.vmax <= 0) {
                         enemy.setState("sa");
                         this.gameOver();
                     }
                 } else {
-                    if (this.vmax > 0) {
+                    if (this.isVmax()) {
                         enemy.setFear();
                     } else {
                         enemy.endFear();
@@ -190,7 +219,7 @@ const _CHEAT_ON = true;
 
         },
         "updateVmaxState": function () {
-            if (this.vmax > 0) {
+            if (this.isVmax()) {
                 this.vmax--;
                 if (this.vmax <= 0) {
                     this.endVmax();
@@ -218,13 +247,24 @@ const _CHEAT_ON = true;
             this.addScore(enemy.getScore(), enemy.position);
 
         },
+        "isVmax": function () {
+            return this.vmax > 0;
+        },
         "gameLoop": function () {
+
+            if(this.isDying){
+                this.snake.dieUpdate(_.bind(function(){
+                    this.onGameOverAnimationFinished();
+                }, this));
+                return;
+            }
 
             if (this.isGameLoopLocked) {
                 return;
             }
 
             this.updateVmaxGauge();
+            this.updateSpeedMeter();
 
             if (this.process >= Cood.UNIT) {
 
@@ -264,7 +304,7 @@ const _CHEAT_ON = true;
 
                 this.snake.move(this.process);
                 var currentSpeed = this.speed;
-                if (this.vmax > 0) {
+                if (this.isVmax()) {
                     currentSpeed = Math.min(currentSpeed + 1, _SPEEDS.length - 1);
                 }
                 this.process += _SPEEDS[currentSpeed];
@@ -286,23 +326,35 @@ const _CHEAT_ON = true;
             this.snake = new Snake(_mapMc, new Vector(1, 1));
             this.snake.setDirection(DIRECTION.e.clone());
 
+            const gotoN = _.bind(function () {
+                this.snake.setDirection(DIRECTION.n.clone());
+            }, this);
+
+            const gotoW = _.bind(function () {
+                this.snake.setDirection(DIRECTION.w.clone());
+            }, this);
+
+            const gotoS = _.bind(function () {
+                this.snake.setDirection(DIRECTION.s.clone());
+            }, this);
+
+            const gotoE = _.bind(function () {
+                this.snake.setDirection(DIRECTION.e.clone());
+            }, this);
+
             KeyManager.setKeyListeners({
-                //W
-                "119": _.bind(function () {
-                    this.snake.setDirection(DIRECTION.n.clone());
-                }, this),
-                //A
-                "97": _.bind(function () {
-                    this.snake.setDirection(DIRECTION.w.clone());
-                }, this),
-                //S
-                "115": _.bind(function () {
-                    this.snake.setDirection(DIRECTION.s.clone());
-                }, this),
-                //D
-                "100": _.bind(function () {
-                    this.snake.setDirection(DIRECTION.e.clone());
-                }, this),
+                //W, up
+                "87": gotoN,
+                "38": gotoN,
+                //A, left
+                "65": gotoW,
+                "37": gotoW,
+                //S, down
+                "83": gotoS,
+                "40": gotoS,
+                //D, right
+                "68": gotoE,
+                "39": gotoE,
             });
 
             if (_CHEAT_ON) {
@@ -406,12 +458,20 @@ const _CHEAT_ON = true;
             _.forEach(this.area.comp, _.bind(function (compTime) {
                 if (compTime == this.totalTime) {
                     console.log("comp");
-                    this.spawnItem("Apple");
+                    if (this.getNumItems("Apple") < 1) {
+                        this.spawnItem("Apple");
+                    }
                 }
             }, this));
             _.forEach(this.area.items, _.bind(function (item) {
                 if (item.spawnRate > Math.random()) {
-                    this.spawnItem(item.id);
+                    if (this.getNumItems(item.id) < Item.DROP_LIMITS[item.id]) {
+                        if (item.id == "Berry" &&
+                            this.speed < this.area.initialSpeed + 2) {
+                            return;
+                        }
+                        this.spawnItem(item.id);
+                    }
                 }
             }, this));
 
@@ -422,6 +482,9 @@ const _CHEAT_ON = true;
             }
             _.forEach(this.area.dropItems, _.bind(function (item) {
                 if (!this.hasItemSpace(item.id)) {
+                    return;
+                }
+                if (item.id == "Key" && this.getNumItems("Gate") >= 1) {
                     return;
                 }
                 if (item.dropRate > Math.random()) {
@@ -493,9 +556,9 @@ const _CHEAT_ON = true;
         },
         "addScore": function (v, pos) {
             if (pos) {
-                var score = new Score(this.stage, v, pos, function(){
+                var score = new Score(this.stage, v, pos, _.bind(function () {
                     this.scorePopUps.pop();
-                });
+                }, this));
                 this.scorePopUps.push(score);
             }
             this.score += v;
@@ -532,7 +595,12 @@ const _CHEAT_ON = true;
         },
         "gameOver": function () {
             console.log("GameOver");
-            this.onGameOverListener();
+            this.isGameLoopLocked = true;
+            this.isDying = true;
+            this.snake.die();
+        },
+        "onGameOverAnimationFinished": function () {
+            this.onGameOverListener(this.score);
         },
     };
 

@@ -23,6 +23,11 @@ var SnakeBody;
             this.state = label;
             this.mc.gotoAndStop(label);
         },
+        "die": function (speed) {
+            var dieX = Math.random() - 0.5;
+            var dieY = (0.5 - Math.abs(dieX)) * (Math.random() > 0.5 ? 1 : -1);
+            this.dieDir = new Vector(dieX * speed, dieY * speed);
+        },
         "remove": function () {
             this.map.removeChild(this.mc);
             this.mc = null;
@@ -69,6 +74,10 @@ var SnakeBody;
         "update": function (process) {
             this.mc.x = Cood.localToWorld(this.position.x) + process.x;
             this.mc.y = Cood.localToWorld(this.position.y) + process.y;
+        },
+        "dieUpdate": function () {
+            this.mc.x += this.dieDir.x;
+            this.mc.y += this.dieDir.y;
         }
     };
 

@@ -17,6 +17,7 @@ var Item;
             "Apple": function (game, snake) {
                 game.setVmax(Item.VMAX_DURATION);
                 snake.addBody();
+                snake.addBody();
             },
             "Wine": function (game, snake) {
                 snake.removeBody();
@@ -35,9 +36,9 @@ var Item;
             "Gate": 1,
             "Key": 1,
             "Coin": 30,
-            "Apple": 30,
-            "Wine": 1,
-            "Berry": 15,
+            "Apple": 2,
+            "Wine": 2,
+            "Berry": 2,
         }
 
         Item.LIFETIME = {

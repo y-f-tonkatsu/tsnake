@@ -18,6 +18,13 @@ var Snake;
     };
 
     Snake.prototype = {
+        "die": function () {
+            _.forEach(this.bodies, _.bind(function (b) {
+                b.die(20);
+            }, this));
+            this.getHead().die(5);
+            this.getHead().setState("die");
+        },
         "addBody": function (v) {
             if (!v) {
                 v = this.bodies[this.bodies.length - 1].position.clone();
@@ -73,6 +80,15 @@ var Snake;
             return _.every(this.bodies, function (b) {
                 return b.isStopped();
             });
+        },
+        "dieUpdate": function (onAnimationFinishedListener) {
+            _.forEach(this.bodies, _.bind(function (b) {
+                b.dieUpdate();
+            }, this));
+            const head = this.getHead().mc.bodyDie;
+            if(head.currentFrame == head.totalFrames - 1){
+                onAnimationFinishedListener();
+            }
         },
         "update": function () {
 

@@ -49,6 +49,12 @@ var Enemy;
         }
 
         Enemy.prototype.defeat = function () {
+
+            if (this.state == "removed" ||
+                this.state == "defeated") {
+                return false;
+            }
+
             this.setState("defeated", _.bind(function () {
                 this.remove();
             }, this));

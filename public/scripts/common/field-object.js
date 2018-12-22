@@ -16,8 +16,8 @@ var FieldObject;
             this.mc = cjsUtil.createMc(id);
             this.mc.x = this.position.x;
             this.mc.y = this.position.y;
-            this.map.addChild(this.mc);
-            if(!state || state === "spawn"){
+            this.map.addChildAt(this.mc, 0);
+            if (!state || state === "spawn") {
                 this.spawn();
             } else {
                 this.setState(state);
@@ -33,12 +33,13 @@ var FieldObject;
             this.mc.gotoAndStop(state);
             if (endListener) {
                 this.onEndListener = _.bind(function (e) {
-                    if (this.mc[this.state].currentFrame == this.mc[this.state].totalFrames - 1) {
+                    if (this.state == "removed" ||
+                        this.mc[state].currentFrame == this.mc[this.state].totalFrames - 1) {
                         this.mc.removeEventListener("tick", this.onEndListener);
                         endListener();
                     }
                 }, this);
-                this.mc[this.state].addEventListener("tick", this.onEndListener);
+                this.mc[state].addEventListener("tick", this.onEndListener);
             }
 
         },

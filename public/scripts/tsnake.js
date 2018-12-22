@@ -35,7 +35,8 @@ var TSnake;
 
             this.clearTasks();
 
-            var mainTitleMc = cjsUtil.createMc("MainTitle");
+            var mainTitleMcWrap = cjsUtil.createMc("MainTitle_wrap");
+            var mainTitleMc = mainTitleMcWrap.mainTitle;
             this.stage.addChild(mainTitleMc);
 
             var mainTitleEndListener = _.bind(function () {
@@ -119,7 +120,8 @@ var TSnake;
                     this.game.kill();
                 }, this),
                 //onGameOverListener
-                _.bind(function () {
+                _.bind(function (score) {
+                    //showHiScore(score, function(){});
                     this.resetGame();
                     this.setMainTitle();
                 }, this), this.score);
