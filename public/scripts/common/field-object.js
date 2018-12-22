@@ -31,6 +31,9 @@ var FieldObject;
         "setState": function (state, endListener) {
             this.state = state;
             this.mc.gotoAndStop(state);
+            if(state == "normal" || state == "fear"){
+                this.mc[state].stop();
+            }
             if (endListener) {
                 this.onEndListener = _.bind(function (e) {
                     if (this.state == "removed" ||

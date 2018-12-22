@@ -9242,6 +9242,148 @@ an.getComposition = function(id) {
 
 })(createjs = createjs||{}, AdobeAn = AdobeAn||{});
 var createjs, AdobeAn;
+var Cood;
+
+(function () {
+
+    Cood = {
+        "UNIT":60,
+        "MAX_GX":780,
+        "MAX_GY":780,
+        "MAX_X":13,
+        "MAX_Y":12,
+        "_STATUS_BAR_HEIGHT":60,
+        "localToWorld": function (local) {
+            if(typeof local == "object"){
+                return local.mult(this.UNIT);
+            } else {
+                return local * this.UNIT;
+            }
+        }
+    };
+
+})();
+
+
+
+var FieldObject;
+
+(function () {
+
+    FieldObject = function (map, pos, id) {
+        if (map) {
+            this.init(map, pos, id);
+        }
+    };
+
+    FieldObject.prototype = {
+        "init": function (map, pos, id, state) {
+            this.map = map;
+            this.id = id;
+            this.position = pos.clone();
+            this.mc = cjsUtil.createMc(id);
+            this.mc.x = this.position.x;
+            this.mc.y = this.position.y;
+            this.map.addChildAt(this.mc, 0);
+            if (!state || state === "spawn") {
+                this.spawn();
+            } else {
+                this.setState(state);
+            }
+            this.update(0);
+        },
+        "update": function (process) {
+            this.mc.x = Cood.localToWorld(this.position.x);
+            this.mc.y = Cood.localToWorld(this.position.y);
+        },
+        "setState": function (state, endListener) {
+            this.state = state;
+            this.mc.gotoAndStop(state);
+            if(state == "normal" || state == "fear"){
+                this.mc[state].stop();
+            }
+            if (endListener) {
+                this.onEndListener = _.bind(function (e) {
+                    if (this.state == "removed" ||
+                        this.mc[state].currentFrame == this.mc[this.state].totalFrames - 1) {
+                        this.mc.removeEventListener("tick", this.onEndListener);
+                        endListener();
+                    }
+                }, this);
+                this.mc[state].addEventListener("tick", this.onEndListener);
+            }
+
+        },
+        "spawn": function () {
+            this.setState("spawn", _.bind(function (e) {
+                this.setState("normal");
+            }, this));
+        },
+        "hitTest": function (p) {
+            if (this.state == "spawn") {
+                return false;
+            }
+            return this.position.equals(p);
+        },
+        "remove": function () {
+            this.mc.stop();
+            this.map.removeChild(this.mc);
+            this.mc = null;
+            this.state = "removed";
+        }
+    };
+
+})();
+var Vector = function (x, y) {
+    this.x = x;
+    this.y = y;
+};
+
+var DIRECTION;
+
+Vector.prototype = {
+    "clone": function () {
+        return new Vector(this.x, this.y);
+    },
+    "set": function (v) {
+        this.x = v.x;
+        this.y = v.y;
+    },
+    "add": function (v) {
+        this.x += v.x;
+        this.y += v.y;
+        return this;
+    },
+    "sub": function (v) {
+        this.x -= v.x;
+        this.y -= v.y;
+    },
+    "mult": function (v) {
+        return new Vector(this.x * v, this.y * v);
+    },
+    "dist": function (v) {
+        return Math.sqrt(Math.pow(this.x - v.x, 2) + Math.pow(this.x - v.x, 2));
+    },
+    "sdist": function (v) {
+        return Math.abs(this.x - v.x) + Math.abs(this.y - v.y);
+    },
+    "isZero": function () {
+        return this.x == 0 && this.y == 0;
+    },
+    "equals": function (v) {
+        return this.x == v.x && this.y == v.y;
+    },
+};
+
+DIRECTION = {
+    "n": new Vector(0, -1),
+    "e": new Vector(1, 0),
+    "s": new Vector(0, 1),
+    "w": new Vector(-1, 0)
+};
+
+
+
 var Enemy;
 
 (function () {
@@ -9347,145 +9489,6 @@ var Enemy;
     });
 
 })();
-
-var Cood;
-
-(function () {
-
-    Cood = {
-        "UNIT":60,
-        "MAX_GX":780,
-        "MAX_GY":780,
-        "MAX_X":13,
-        "MAX_Y":12,
-        "_STATUS_BAR_HEIGHT":60,
-        "localToWorld": function (local) {
-            if(typeof local == "object"){
-                return local.mult(this.UNIT);
-            } else {
-                return local * this.UNIT;
-            }
-        }
-    };
-
-})();
-
-
-
-var FieldObject;
-
-(function () {
-
-    FieldObject = function (map, pos, id) {
-        if (map) {
-            this.init(map, pos, id);
-        }
-    };
-
-    FieldObject.prototype = {
-        "init": function (map, pos, id, state) {
-            this.map = map;
-            this.id = id;
-            this.position = pos.clone();
-            this.mc = cjsUtil.createMc(id);
-            this.mc.x = this.position.x;
-            this.mc.y = this.position.y;
-            this.map.addChildAt(this.mc, 0);
-            if (!state || state === "spawn") {
-                this.spawn();
-            } else {
-                this.setState(state);
-            }
-            this.update(0);
-        },
-        "update": function (process) {
-            this.mc.x = Cood.localToWorld(this.position.x);
-            this.mc.y = Cood.localToWorld(this.position.y);
-        },
-        "setState": function (state, endListener) {
-            this.state = state;
-            this.mc.gotoAndStop(state);
-            if (endListener) {
-                this.onEndListener = _.bind(function (e) {
-                    if (this.state == "removed" ||
-                        this.mc[state].currentFrame == this.mc[this.state].totalFrames - 1) {
-                        this.mc.removeEventListener("tick", this.onEndListener);
-                        endListener();
-                    }
-                }, this);
-                this.mc[state].addEventListener("tick", this.onEndListener);
-            }
-
-        },
-        "spawn": function () {
-            this.setState("spawn", _.bind(function (e) {
-                this.setState("normal");
-            }, this));
-        },
-        "hitTest": function (p) {
-            if (this.state == "spawn") {
-                return false;
-            }
-            return this.position.equals(p);
-        },
-        "remove": function () {
-            this.mc.stop();
-            this.map.removeChild(this.mc);
-            this.mc = null;
-            this.state = "removed";
-        }
-    };
-
-})();
-var Vector = function (x, y) {
-    this.x = x;
-    this.y = y;
-};
-
-var DIRECTION;
-
-Vector.prototype = {
-    "clone": function () {
-        return new Vector(this.x, this.y);
-    },
-    "set": function (v) {
-        this.x = v.x;
-        this.y = v.y;
-    },
-    "add": function (v) {
-        this.x += v.x;
-        this.y += v.y;
-        return this;
-    },
-    "sub": function (v) {
-        this.x -= v.x;
-        this.y -= v.y;
-    },
-    "mult": function (v) {
-        return new Vector(this.x * v, this.y * v);
-    },
-    "dist": function (v) {
-        return Math.sqrt(Math.pow(this.x - v.x, 2) + Math.pow(this.x - v.x, 2));
-    },
-    "sdist": function (v) {
-        return Math.abs(this.x - v.x) + Math.abs(this.y - v.y);
-    },
-    "isZero": function () {
-        return this.x == 0 && this.y == 0;
-    },
-    "equals": function (v) {
-        return this.x == v.x && this.y == v.y;
-    },
-};
-
-DIRECTION = {
-    "n": new Vector(0, -1),
-    "e": new Vector(1, 0),
-    "s": new Vector(0, 1),
-    "w": new Vector(-1, 0)
-};
-
-
 
 var KeyManager;
 
