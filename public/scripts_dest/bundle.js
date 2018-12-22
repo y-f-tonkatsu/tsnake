@@ -2585,6 +2585,60 @@ p.nominalBounds = new cjs.Rectangle(0,0,60,60);
 p.nominalBounds = new cjs.Rectangle(0,0,60,60);
 
 
+(lib.Cancer_normal_light = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// レイヤー_2
+	this.shape = new cjs.Shape();
+	this.shape.graphics.f().s("#FF3300").ss(4,1,1).p("ADchYIAcgRIA9AtADWgbIAZgLIA1A3ACzArIArgEIAiBDAi5gCIg6gSIgvA8AjGg+Ig3gaIg3A1AiQA9IhEgRIgsA+");
+	this.shape.setTransform(30.5,45.15);
+
+	this.shape_1 = new cjs.Shape();
+	this.shape_1.graphics.f("#FFFFFF").s().p("AiQAHQgEgCAAgEQAAgDACgDIAAAAQADgDAEAAQAEgBADADQAEACAAAEIAAACIgCAEQgDADgEABIgBAAQgEAAgCgDgACDAGQAAgBgBAAQAAAAAAgBQgBAAAAgBQAAAAAAgBIAAgCQAAgEADgDQADgCAEAAQAEAAADADIAAABQADACAAADQgBAEgDADQgDACgEAAQgEAAgDgDg");
+	this.shape_1.setTransform(29.7208,6.7286);
+
+	this.shape_2 = new cjs.Shape();
+	this.shape_2.graphics.f("#333333").s().p("AilAxQgNgBgMgKQgPgNgCgUQgCgTANgQQANgOAUgCQAUgCAQAMQAPANACAUQACATgNAQQgGAHgIAFQgIAEgLABIgFAAIgGAAgAiLgcQgEABgDACIAAABQgCADAAAEQAAAEAEACQADADAEgBQAEAAADgDIACgEIAAgDQAAgEgEgDQgCgCgEAAIgBAAgACdAwQgKgBgJgEQgIgEgGgHQgOgPABgTQABgUAPgOQAPgNAUABQAUABAOAOQANAQgBATQgBAUgOANQgLAKgOACIgHABIgEAAgACEgaQgDADAAAEIAAADQAAAAAAABQAAAAAAABQABAAAAAAQABABAAAAQADAEAEAAQAEAAADgDQADgCABgEQAAgEgDgDIAAAAQgDgDgEAAQgEAAgDACg");
+	this.shape_2.setTransform(29.7401,8.6841);
+
+	this.shape_3 = new cjs.Shape();
+	this.shape_3.graphics.f("#FF3300").s().p("AiHCkIgGgGQgbgegOgiQgLgdgCgfIgBgTQAAghAJgeQgHAFgLABQgUAEgSgJQgGgDgFgFQgJAFgLADQgpANgzgOQgygOgfgfQgNgOgGgOIBogJIhWg3QAMgJATgFQAogNAzAOQAzAOAeAfQAPAQAFAQQAQgBAPAIQASAIAFARIABACQAOgYAVgWIAGgFQgsgnADgpIALAAQALgBAIgEQgCAjAhAhQA2gnBEAAQA5AAAuAaQAVgcgDgcQAIAEALABQAFAAAFgBQAFAigdAiQAMAJAKAKQANANAJANQAFgEAHgDQAPgIAQABQAFgQAPgQQAegfAzgOQAzgOApANQASAFAMAJIhWA3IBoAJQgFAOgOAOQgeAfgzAOQgzAOgpgNQgLgDgJgFQgFAFgHADQgNAHgOAAQAGAXABAYIAAAIQAAAcgGAaQgKAmgZAhQgJAMgMAMQg9A9hXAAQhWAAg+g9g");
+	this.shape_3.setTransform(30.2,35.475);
+
+	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.shape_3},{t:this.shape_2},{t:this.shape_1},{t:this.shape}]}).wait(1));
+
+}).prototype = getMCSymbolPrototype(lib.Cancer_normal_light, new cjs.Rectangle(-16.4,3.8,93.30000000000001,54.2), null);
+
+
+(lib.Cancer_fear_light = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// レイヤー_4
+	this.shape = new cjs.Shape();
+	this.shape.graphics.f().s("#33CCFF").ss(4,1,1).p("ADJghIBNgLIAlBCAC2AUIBPAMIAPBKADQhkIBKgXIAuA8AicA0IhHAAIgaBIAjThPIhNgOIgnBBAjFgLIhNgCIgdBF");
+	this.shape.setTransform(26.425,46.025);
+
+	this.shape_1 = new cjs.Shape();
+	this.shape_1.graphics.f().s("#333333").ss(1,1,1).p("ABygkIASALIBLAtIAUANAh0gkIgSALIhJAxIgTAN");
+	this.shape_1.setTransform(26.05,7.225);
+
+	this.shape_2 = new cjs.Shape();
+	this.shape_2.graphics.f("#333333").s().p("AilAtQgOgCgLgKQgOgLgCgRIBJgxIAFAEQAQANACAUQABATgNAPQgGAIgHAEQgJAFgKABIgGAAIgFAAgAiLALQgEABgDACIAAABQgDADABAEQAAAEADACQADADAEgBQAEAAADgDIACgEIABgDQgBgEgDgDQgDgCgDAAIgBAAgACdArQgLAAgIgFQgIgDgGgIQgOgOABgTQABgUAPgOIAFgEIBLAtQgCARgNAMQgLAKgOADIgHABIgDgBgACFANQgDACAAAEIAAAEQAAAAABABQAAAAAAABQAAAAABABQAAAAABAAQADADAEAAQAEABADgDQADgDAAgEQAAgEgDgCIAAgBQgDgCgEgBQgEAAgDADg");
+	this.shape_2.setTransform(26.025,9.1125);
+
+	this.shape_3 = new cjs.Shape();
+	this.shape_3.graphics.f("#FFFFFF").s().p("AiRAHQgDgCAAgEQgBgDADgDIAAAAQADgDAEAAQAEgBADADQADACABAEIgBACIgCAEQgDADgEABIgBAAQgDAAgDgDgACMAJQgEAAgDgDQgBAAAAgBQgBAAAAgBQAAAAgBgBQAAAAAAgBIAAgCQAAgEADgDQADgCAEAAQAEAAADADIAAAAQADADAAADQAAAEgDACQgDADgDAAIgBAAg");
+	this.shape_3.setTransform(26.0494,11.1536);
+
+	this.shape_4 = new cjs.Shape();
+	this.shape_4.graphics.f("#33CCFF").s().p("AiWCkIgGgHQgbgdgOgjQgMgfgCgkIAAgLQAAgdAIgcIgCAAQgUAEgSgJQgGgDgFgFQgJAFgLADQgpANgzgOQgzgOgdgfQgOgOgFgOIBmgJIhVg3QAMgJATgFQApgNAyAOQAzAOAeAfQAPAQAFAQQAQgBAQAIQALAFAGAJQALgRAPgQIAOgMQglgkADglIAMAAQAKgBAJgEQgDAfAbAfQAzghA/AAQA/AAAyAhQAZgfgEggQAJAEAKABQAGAAAFgBQAFAmgjAlIAOAMQAQARAMATQAGgLANgGQAQgIAQABQAFgQAPgQQAegfAzgOQAzgOApANQASAFAMAJIhVA3IBmAJQgEAOgPAOQgeAfgyAOQgzAOgpgNQgLgDgJgFQgFAFgHADQgRAJgUgEIgGgBQAHAXABAZIAAAKQAAAegHAaQgOA0goApQg+A9hWAAQhXAAg+g9g");
+	this.shape_4.setTransform(26.45,35.475);
+
+	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.shape_4},{t:this.shape_3},{t:this.shape_2},{t:this.shape_1},{t:this.shape}]}).wait(1));
+
+}).prototype = getMCSymbolPrototype(lib.Cancer_fear_light, new cjs.Rectangle(-20.2,2.5,93.3,58), null);
+
+
 (lib.Cancer_cissor_open_close = function(mode,startPosition,loop) {
 	this.initialize(mode,startPosition,loop,{});
 
@@ -2737,24 +2791,6 @@ p.nominalBounds = new cjs.Rectangle(-4.9,-18.6,9.9,18.6);
 p.nominalBounds = new cjs.Rectangle(-16.4,-15,17.4,26.9);
 
 
-(lib.Cancer_cissor_move = function(mode,startPosition,loop) {
-	this.initialize(mode,startPosition,loop,{});
-
-	// レイヤー_1
-	this.shape = new cjs.Shape();
-	this.shape.graphics.f("#FF3300").s().p("AhNAtQgNgJgIgKIBQgbIhPgZQAHgKANgIQAegSAsgBQApABAfASQAeASAAAaQAAAbgeASQgfASgpABQgsgBgegSg");
-	this.shape.setTransform(-9.85,0);
-
-	this.shape_1 = new cjs.Shape();
-	this.shape_1.graphics.f("#FF3300").s().p("AgOA5QglgOgUgTQgUgUgFgmIAAgBIAAAAQAWgWAggGQAggFAgAJQAhAJAYAaQAYAZgHAZQgHAagiAKQgOAEgPAAQgUAAgUgJg");
-	this.shape_1.setTransform(-9.571,-2.6519);
-
-	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.shape}]}).to({state:[{t:this.shape_1}]},2).wait(1));
-
-}).prototype = p = new cjs.MovieClip();
-p.nominalBounds = new cjs.Rectangle(-19.7,-9.2,19.9,15.6);
-
-
 (lib.Cancer_cissor_minor_fear = function(mode,startPosition,loop) {
 	this.initialize(mode,startPosition,loop,{});
 
@@ -2767,13 +2803,6 @@ p.nominalBounds = new cjs.Rectangle(-19.7,-9.2,19.9,15.6);
 
 }).prototype = p = new cjs.MovieClip();
 p.nominalBounds = new cjs.Rectangle(-9.8,-4,9.8,8.1);
-
-
-(lib.Cancer_cissor_minor_1 = function(mode,startPosition,loop) {
-	this.initialize(mode,startPosition,loop,{});
-
-}).prototype = p = new cjs.MovieClip();
-p.nominalBounds = new cjs.Rectangle(0,0,0,0);
 
 
 (lib.Cancer_cissor_fear = function(mode,startPosition,loop) {
@@ -2835,6 +2864,32 @@ p.nominalBounds = new cjs.Rectangle(-21,-21,42,42);
 
 }).prototype = p = new cjs.MovieClip();
 p.nominalBounds = new cjs.Rectangle(-21,-21,42,42);
+
+
+(lib.Cancer_base_light = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// レイヤー_1
+	this.shape = new cjs.Shape();
+	this.shape.graphics.f().s("#FF3300").ss(4,1,1).p("ADQhTIArgVIA3A1AC7gDIBPgPIAnBAACSA0IA/gMIAoBBAjThVIgngTIg3A1Ai/gEIhKgOIgnBAAiXAzIg5gLIgoBB");
+	this.shape.setTransform(0,15.9);
+
+	this.shape_1 = new cjs.Shape();
+	this.shape_1.graphics.f("#FFFFFF").s().p("AB6AGQgBAAAAAAQAAgBgBAAQAAgBAAAAQAAAAAAgBIgBgDQAAgDADgDQADgCAEAAQAEAAADACIAAAAQADADAAADQAAAEgDACQgDAEgEAAQgEAAgDgEgAiHAGQgDgCAAgEQAAgDADgDIAAAAQADgCAEAAQAEAAADACQADADAAADIgBADQAAABAAAAQAAAAAAABQgBAAAAABQgBAAAAAAQgDAEgEAAQgEAAgDgEg");
+	this.shape_1.setTransform(-0.2,-24.1);
+
+	this.shape_2 = new cjs.Shape();
+	this.shape_2.graphics.f("#333333").s().p("ACEAtQgJgEgGgHQgOgOAAgUQAAgTAOgOQAOgPAUAAQAUAAAPAPQANAOAAATQAAAUgNAOQgLALgOACIgKABQgKAAgJgDgAB6gYQgDADAAAEIABADQAAABAAAAQAAAAAAABQABAAAAABQAAAAABAAQADAEAEAAQAEAAADgEQADgCAAgEQAAgEgDgDIAAAAQgDgCgEAAQgEAAgDACgAihAvQgNgCgKgLQgOgOgBgUQABgTAOgOQAOgPAUAAQAUAAAOAPQAPAOAAATQAAAUgPAOQgHAHgHAEQgJADgLAAIgLgBgAiHgYIAAAAQgDADAAAEQAAAEADACQADAEAEAAQAEAAADgEQAAAAABAAQAAgBABAAQAAgBAAAAQAAAAAAgBIABgDQAAgEgDgDQgDgCgEAAQgEAAgDACg");
+	this.shape_2.setTransform(-0.2,-22.3);
+
+	this.shape_3 = new cjs.Shape();
+	this.shape_3.graphics.f("#FF3300").s().p("AiWCkIAAgBQgagagPgeQgSglgCgsIAAgLQAAhWA9g+IAOgMQgignAHglIALABQALAAAJgEQgGAfAYAgQAyghA/AAQA/AAAyAhQAXgggFgfQAJAEAKAAIAKgBQAIAlgiAnIAOAMQA9A+AABWIAAANQgDArgSAlQgPAegZAaIgBAAQg9A9hWAAQhXAAg+g9gAETgvQgqgMgIgfQgJggAegfQAegfAzgOQAzgOAoANQATAFAMAJIhVA3IBmAJQgFAOgOAOQgdAfgzAOQgaAHgYAAQgWAAgUgGgAlugwQgzgOgdgfQgOgOgFgOIBmgJIhVg3QAMgJASgFQApgNAzAOQAzAOAeAfQAeAfgJAgQgIAfgqAMQgUAGgWAAQgYAAgagHg");
+	this.shape_3.setTransform(0,4.675);
+
+	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.shape_3},{t:this.shape_2},{t:this.shape_1},{t:this.shape}]}).wait(1));
+
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(-46.6,-27.1,93.30000000000001,55.5);
 
 
 (lib.Bear_nose = function(mode,startPosition,loop) {
@@ -4701,104 +4756,6 @@ p.nominalBounds = new cjs.Rectangle(-28.5,-54.4,129.9,215.6);
 p.nominalBounds = new cjs.Rectangle(-8.7,-6.6,17,10.3);
 
 
-(lib.Cancer_fear = function(mode,startPosition,loop) {
-	this.initialize(mode,startPosition,loop,{});
-
-	// Cancer_eye
-	this.instance = new lib.Cancer_eye_fear("synched",0);
-	this.instance.parent = this;
-	this.instance.setTransform(38.8,20.6,1,1,0,2.6858,-177.3142,2.5,-1.7);
-
-	this.timeline.addTween(cjs.Tween.get(this.instance).wait(2).to({x:40.8},0).wait(2));
-
-	// Cancer_eye
-	this.instance_1 = new lib.Cancer_eye_fear("synched",0);
-	this.instance_1.parent = this;
-	this.instance_1.setTransform(13.75,20.45,1,1,-5.231,0,0,2.5,-1.8);
-
-	this.timeline.addTween(cjs.Tween.get(this.instance_1).wait(2).to({x:15.75},0).wait(2));
-
-	// Cancer_cissor_minor
-	this.instance_2 = new lib.Cancer_cissor_minor_fear("synched",0);
-	this.instance_2.parent = this;
-	this.instance_2.setTransform(44.85,29.45,1,1,0,0,180,-1.4,2.2);
-
-	this.timeline.addTween(cjs.Tween.get(this.instance_2).wait(2).to({x:46.85},0).wait(2));
-
-	// Cancer_cissor
-	this.instance_3 = new lib.Cancer_cissor_fear("synched",0);
-	this.instance_3.parent = this;
-	this.instance_3.setTransform(48.65,26.55,1.2249,1.2249,0,-14.9985,165.0015,0.3,0.1);
-
-	this.timeline.addTween(cjs.Tween.get(this.instance_3).wait(2).to({x:50.65},0).wait(2));
-
-	// Cancer_cissor_minor
-	this.instance_4 = new lib.Cancer_cissor_minor_fear("synched",0);
-	this.instance_4.parent = this;
-	this.instance_4.setTransform(8.05,29.45,1,1,0,0,0,-1.4,2.2);
-
-	this.timeline.addTween(cjs.Tween.get(this.instance_4).wait(2).to({x:10.05},0).wait(2));
-
-	// Cancer_cissor
-	this.instance_5 = new lib.Cancer_cissor_fear("synched",0);
-	this.instance_5.parent = this;
-	this.instance_5.setTransform(4.25,26.55,1.2249,1.2249,14.9985,0,0,0.3,0.1);
-
-	this.timeline.addTween(cjs.Tween.get(this.instance_5).wait(2).to({x:6.25},0).wait(2));
-
-	// Cancer_body
-	this.instance_6 = new lib.Cancer_body_fear("synched",0);
-	this.instance_6.parent = this;
-	this.instance_6.setTransform(26.25,37);
-
-	this.timeline.addTween(cjs.Tween.get(this.instance_6).wait(2).to({x:28.25},0).wait(2));
-
-	// Cancer_foot
-	this.instance_7 = new lib.Cancer_foot_fear("synched",0);
-	this.instance_7.parent = this;
-	this.instance_7.setTransform(39.85,44.65,1,1,0,2.9853,-177.0147,6.3,0.6);
-
-	this.timeline.addTween(cjs.Tween.get(this.instance_7).wait(2).to({x:41.85},0).wait(2));
-
-	// Cancer_foot
-	this.instance_8 = new lib.Cancer_foot_fear("synched",0);
-	this.instance_8.parent = this;
-	this.instance_8.setTransform(37.35,47.4,1,1,0,19.4389,-160.5611,7,0.1);
-
-	this.timeline.addTween(cjs.Tween.get(this.instance_8).wait(2).to({x:39.35},0).wait(2));
-
-	// Cancer_foot
-	this.instance_9 = new lib.Cancer_foot_fear("synched",0);
-	this.instance_9.parent = this;
-	this.instance_9.setTransform(40.65,38.2,1,1,0,-6.4984,173.5016,6.5,-0.3);
-
-	this.timeline.addTween(cjs.Tween.get(this.instance_9).wait(2).to({x:42.65},0).wait(2));
-
-	// Cancer_foot
-	this.instance_10 = new lib.Cancer_foot_fear("synched",0);
-	this.instance_10.parent = this;
-	this.instance_10.setTransform(13.45,45.85,1,1,-8.9381,0,0,6.3,0.3);
-
-	this.timeline.addTween(cjs.Tween.get(this.instance_10).wait(2).to({x:15.45},0).wait(2));
-
-	// Cancer_foot
-	this.instance_11 = new lib.Cancer_foot_fear("synched",0);
-	this.instance_11.parent = this;
-	this.instance_11.setTransform(19.1,51.75,1,1,-11.4701,0,0,7.2,0.3);
-
-	this.timeline.addTween(cjs.Tween.get(this.instance_11).wait(2).to({x:21.1},0).wait(2));
-
-	// Cancer_foot
-	this.instance_12 = new lib.Cancer_foot_fear("synched",0);
-	this.instance_12.parent = this;
-	this.instance_12.setTransform(5.45,39.85);
-
-	this.timeline.addTween(cjs.Tween.get(this.instance_12).wait(2).to({x:7.45},0).wait(2));
-
-}).prototype = p = new cjs.MovieClip();
-p.nominalBounds = new cjs.Rectangle(-20.2,2.5,95.3,58);
-
-
 (lib.Cancer_defeated = function(mode,startPosition,loop) {
 	this.initialize(mode,startPosition,loop,{});
 
@@ -4909,68 +4866,6 @@ p.nominalBounds = new cjs.Rectangle(-98.2,-70.8,249,155.1);
 
 }).prototype = p = new cjs.MovieClip();
 p.nominalBounds = new cjs.Rectangle(-22.5,-21,45,42);
-
-
-(lib.Cancer_base = function(mode,startPosition,loop) {
-	this.initialize(mode,startPosition,loop,{});
-
-	// レイヤー_1
-	this.instance = new lib.Cancer_eye("synched",0);
-	this.instance.parent = this;
-	this.instance.setTransform(12.3,-10.3,1,1,0,0,180,2.5,-1.8);
-
-	this.instance_1 = new lib.Cancer_eye("synched",0);
-	this.instance_1.parent = this;
-	this.instance_1.setTransform(-12.7,-10.3,1,1,0,0,0,2.5,-1.8);
-
-	this.instance_2 = new lib.Cancer_cissor_minor_1("synched",0);
-	this.instance_2.parent = this;
-	this.instance_2.setTransform(18.4,-1.35,1,1,0,0,180,-1.4,2.2);
-
-	this.instance_3 = new lib.Cancer_cissor("synched",0);
-	this.instance_3.parent = this;
-	this.instance_3.setTransform(22.2,-4.25,1.2249,1.2249,0,-14.9985,165.0015,0.3,0.1);
-
-	this.instance_4 = new lib.Cancer_cissor_minor_1("synched",0);
-	this.instance_4.parent = this;
-	this.instance_4.setTransform(-18.4,-1.35,1,1,0,0,0,-1.4,2.2);
-
-	this.instance_5 = new lib.Cancer_cissor("synched",0);
-	this.instance_5.parent = this;
-	this.instance_5.setTransform(-22.2,-4.25,1.2249,1.2249,14.9985,0,0,0.3,0.1);
-
-	this.instance_6 = new lib.Cancer_body_base("synched",0);
-	this.instance_6.parent = this;
-	this.instance_6.setTransform(-0.2,6.2);
-
-	this.instance_7 = new lib.Cancer_foot("synched",0);
-	this.instance_7.parent = this;
-	this.instance_7.setTransform(18.55,17.25,1,1,0,0,180,0.1,0);
-
-	this.instance_8 = new lib.Cancer_foot("synched",0);
-	this.instance_8.parent = this;
-	this.instance_8.setTransform(12.9,22.35,1,1,0,0,180,0.1,-0.8);
-
-	this.instance_9 = new lib.Cancer_foot("synched",0);
-	this.instance_9.parent = this;
-	this.instance_9.setTransform(18,8.9,1,1,0,-14.9992,165.0008,-0.2,-1.7);
-
-	this.instance_10 = new lib.Cancer_foot("synched",0);
-	this.instance_10.parent = this;
-	this.instance_10.setTransform(-18.55,17.25,1,1,0,0,0,0.1,0);
-
-	this.instance_11 = new lib.Cancer_foot("synched",0);
-	this.instance_11.parent = this;
-	this.instance_11.setTransform(-12.9,22.35,1,1,0,0,0,0.1,-0.8);
-
-	this.instance_12 = new lib.Cancer_foot("synched",0);
-	this.instance_12.parent = this;
-	this.instance_12.setTransform(-18,8.9,1,1,14.9992,0,0,-0.2,-1.7);
-
-	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.instance_12},{t:this.instance_11},{t:this.instance_10},{t:this.instance_9},{t:this.instance_8},{t:this.instance_7},{t:this.instance_6},{t:this.instance_5},{t:this.instance_4},{t:this.instance_3},{t:this.instance_2},{t:this.instance_1},{t:this.instance}]}).wait(1));
-
-}).prototype = p = new cjs.MovieClip();
-p.nominalBounds = new cjs.Rectangle(-46.6,-27.1,93.30000000000001,55.5);
 
 
 (lib.Bear_fear = function(mode,startPosition,loop) {
@@ -7344,7 +7239,7 @@ p.nominalBounds = new cjs.Rectangle(0,-9.2,97.4,1006.6);
 	this.timeline.addTween(cjs.Tween.get(this.instance).to({_off:true,x:77,y:437.7},119).wait(16));
 
 	// Frog_base
-	this.instance_2 = new lib.Cancer_base("synched",0);
+	this.instance_2 = new lib.Cancer_base_light("synched",0);
 	this.instance_2.parent = this;
 	this.instance_2.setTransform(30.2,31.45,0.054,0.054,0,0,0,0,1);
 	this.instance_2._off = true;
@@ -7480,108 +7375,106 @@ p.nominalBounds = new cjs.Rectangle(-52.1,0.7,157.9,57.3);
 	// Cancer_eye
 	this.instance = new lib.Cancer_eye("synched",0);
 	this.instance.parent = this;
-	this.instance.setTransform(42.55,20.6,1,1,0,2.6851,-177.3149,2.5,-1.7);
+	this.instance.setTransform(40.45,20.7,0.9998,0.9998,0,2.5473,-177.4527,2.4,-1.6);
+	this.instance._off = true;
 
-	this.timeline.addTween(cjs.Tween.get(this.instance).to({x:40.3},46).to({x:42.55},51).to({skewX:17.6846,skewY:-162.3154,x:42.5},5).wait(13).to({startPosition:0},0).to({skewX:2.6851,skewY:-177.3149,x:42.55},5).to({skewX:2.6851,x:40.55},28).to({x:42.55},46).to({regX:2.4,skewX:-12.3137,skewY:-192.3137,x:42.6},5).wait(17).to({startPosition:0},0).to({regX:2.5,skewX:2.6851,skewY:-177.3149,x:42.55},5).wait(19));
+	this.timeline.addTween(cjs.Tween.get(this.instance).wait(47).to({_off:false},0).to({startPosition:0},1).to({_off:true},1).wait(2).to({_off:false},0).to({startPosition:0},7).to({_off:true},1).wait(181));
 
 	// Cancer_eye
 	this.instance_1 = new lib.Cancer_eye("synched",0);
 	this.instance_1.parent = this;
-	this.instance_1.setTransform(17.5,20.45,1,1,-5.231,0,0,2.5,-1.8);
+	this.instance_1.setTransform(20.55,20.55,0.9997,0.9997,-5.0588,0,0,2.6,-1.7);
+	this.instance_1._off = true;
 
-	this.timeline.addTween(cjs.Tween.get(this.instance_1).to({x:20.5},46).to({x:17.5},51).to({regX:2.6,regY:-1.7,rotation:9.7675,x:17.6,y:20.55},5).wait(13).to({startPosition:0},0).to({regX:2.5,regY:-1.8,rotation:-5.231,x:17.5,y:20.45},5).to({x:20.5},28).to({x:17.5},46).to({regY:-1.7,rotation:-17.4424,x:17.55,y:20.6},5).wait(17).to({startPosition:0},0).to({regY:-1.8,rotation:-5.231,x:17.5,y:20.45},5).wait(19));
+	this.timeline.addTween(cjs.Tween.get(this.instance_1).wait(47).to({_off:false},0).to({startPosition:0},1).to({_off:true},1).wait(2).to({_off:false},0).to({startPosition:0},7).to({_off:true},1).wait(181));
 
 	// Cancer_cissor_minor
 	this.instance_2 = new lib.Cancer_cissor_minor("synched",0);
 	this.instance_2.parent = this;
 	this.instance_2.setTransform(48.6,29.45,1,1,0,0,180,-1.4,2.2);
+	this.instance_2._off = true;
 
-	this.timeline.addTween(cjs.Tween.get(this.instance_2).wait(240));
+	this.timeline.addTween(cjs.Tween.get(this.instance_2).wait(47).to({_off:false},0).wait(1).to({startPosition:0},0).to({_off:true},1).wait(2).to({_off:false},0).wait(7).to({startPosition:0},0).to({_off:true},1).wait(181));
 
 	// Cancer_cissor
 	this.instance_3 = new lib.Cancer_cissor("synched",0);
 	this.instance_3.parent = this;
 	this.instance_3.setTransform(52.4,26.55,1.2249,1.2249,0,-14.9985,165.0015,0.3,0.1);
+	this.instance_3._off = true;
 
-	this.instance_4 = new lib.Cancer_cissor_move("synched",0);
-	this.instance_4.parent = this;
-	this.instance_4.setTransform(52.45,26.55,1.2248,1.2248,0,-44.9975,135.0025,0.3,0.1);
-
-	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.instance_3}]}).to({state:[{t:this.instance_3}]},100).to({state:[{t:this.instance_4}]},4).to({state:[{t:this.instance_3}]},10).to({state:[{t:this.instance_3}]},4).wait(122));
-	this.timeline.addTween(cjs.Tween.get(this.instance_3).wait(100).to({startPosition:0},0).to({_off:true,scaleX:1.2248,scaleY:1.2248,skewX:-44.9975,skewY:135.0025,x:52.45},4).wait(10).to({_off:false},0).to({scaleX:1.2249,scaleY:1.2249,skewX:-14.9985,skewY:165.0015,x:52.4},4).wait(122));
+	this.timeline.addTween(cjs.Tween.get(this.instance_3).wait(47).to({_off:false},0).wait(1).to({startPosition:0},0).to({_off:true},1).wait(2).to({_off:false},0).wait(7).to({startPosition:0},0).to({_off:true},1).wait(181));
 
 	// Cancer_cissor_minor
-	this.instance_5 = new lib.Cancer_cissor_minor("synched",0);
-	this.instance_5.parent = this;
-	this.instance_5.setTransform(11.8,29.45,1,1,0,0,0,-1.4,2.2);
+	this.instance_4 = new lib.Cancer_cissor_minor("synched",0);
+	this.instance_4.parent = this;
+	this.instance_4.setTransform(11.8,29.45,1,1,0,0,0,-1.4,2.2);
+	this.instance_4._off = true;
 
-	this.timeline.addTween(cjs.Tween.get(this.instance_5).wait(196).to({startPosition:0},0).to({rotation:9.9404,x:11.6,y:29.35},3).wait(17).to({startPosition:0},0).to({rotation:0,x:11.8,y:29.45},3).wait(21));
+	this.timeline.addTween(cjs.Tween.get(this.instance_4).wait(47).to({_off:false},0).wait(1).to({startPosition:0},0).to({_off:true},1).wait(2).to({_off:false},0).wait(7).to({startPosition:0},0).to({_off:true},1).wait(181));
 
 	// Cancer_cissor
-	this.instance_6 = new lib.Cancer_cissor("synched",0);
-	this.instance_6.parent = this;
-	this.instance_6.setTransform(8,26.55,1.2249,1.2249,14.9985,0,0,0.3,0.1);
+	this.instance_5 = new lib.Cancer_cissor("synched",0);
+	this.instance_5.parent = this;
+	this.instance_5.setTransform(8,26.55,1.2249,1.2249,14.9985,0,0,0.3,0.1);
+	this.instance_5._off = true;
 
-	this.instance_7 = new lib.Cancer_cissor_move("synched",0);
-	this.instance_7.parent = this;
-	this.instance_7.setTransform(8.55,25.95,1.2248,1.2248,38.1707,0,0,0.4,0.1);
-	this.instance_7._off = true;
-
-	this.timeline.addTween(cjs.Tween.get(this.instance_6).wait(196).to({startPosition:0},0).to({_off:true,regX:0.4,scaleX:1.2248,scaleY:1.2248,rotation:38.1707,x:8.55,y:25.95},3).wait(17).to({_off:false,regX:0.3,scaleX:1.2249,scaleY:1.2249,rotation:14.9985,x:8,y:26.55},3).wait(21));
-	this.timeline.addTween(cjs.Tween.get(this.instance_7).wait(196).to({_off:false},3).wait(17).to({startPosition:2},0).to({_off:true,regX:0.3,scaleX:1.2249,scaleY:1.2249,rotation:14.9985,x:8,y:26.55,startPosition:0},3).wait(21));
+	this.timeline.addTween(cjs.Tween.get(this.instance_5).wait(47).to({_off:false},0).wait(1).to({startPosition:0},0).to({_off:true},1).wait(2).to({_off:false},0).wait(7).to({startPosition:0},0).to({_off:true},1).wait(181));
 
 	// Cancer_body
-	this.instance_8 = new lib.Cancer_body_move_1("synched",0);
+	this.instance_6 = new lib.Cancer_body_move_1("synched",15);
+	this.instance_6.parent = this;
+	this.instance_6.setTransform(30,37);
+	this.instance_6._off = true;
+
+	this.timeline.addTween(cjs.Tween.get(this.instance_6).wait(47).to({_off:false},0).wait(1).to({startPosition:16},0).to({_off:true},1).wait(2).to({_off:false,startPosition:19},0).wait(7).to({startPosition:26},0).to({_off:true},1).wait(181));
+
+	// Cancer_foot
+	this.instance_7 = new lib.Cancer_foot_move("synched",15);
+	this.instance_7.parent = this;
+	this.instance_7.setTransform(46.85,45.15,1,1,0,2.9853,-177.0147,6.3,0.6);
+	this.instance_7._off = true;
+
+	this.timeline.addTween(cjs.Tween.get(this.instance_7).wait(47).to({_off:false},0).wait(1).to({startPosition:16},0).to({_off:true},1).wait(2).to({_off:false,startPosition:19},0).wait(7).to({startPosition:26},0).to({_off:true},1).wait(181));
+
+	// Cancer_foot
+	this.instance_8 = new lib.Cancer_foot_move("synched",15);
 	this.instance_8.parent = this;
-	this.instance_8.setTransform(30,37);
+	this.instance_8.setTransform(43.85,49.9,1,1,0,19.4389,-160.5611,7,0.1);
+	this.instance_8._off = true;
 
-	this.instance_9 = new lib.Cancer_body_base("synched",0);
+	this.timeline.addTween(cjs.Tween.get(this.instance_8).wait(47).to({_off:false},0).wait(1).to({startPosition:16},0).to({_off:true},1).wait(2).to({_off:false,startPosition:19},0).wait(7).to({startPosition:26},0).to({_off:true},1).wait(181));
+
+	// Cancer_foot
+	this.instance_9 = new lib.Cancer_foot_move("synched",15);
 	this.instance_9.parent = this;
-	this.instance_9.setTransform(30,37);
+	this.instance_9.setTransform(48.15,38.7,1,1,0,-6.4984,173.5016,6.5,-0.3);
+	this.instance_9._off = true;
 
-	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.instance_8,p:{startPosition:0}}]}).to({state:[{t:this.instance_9}]},99).to({state:[{t:this.instance_8,p:{startPosition:3}}]},20).to({state:[{t:this.instance_9}]},77).to({state:[{t:this.instance_8,p:{startPosition:7}}]},23).wait(21));
+	this.timeline.addTween(cjs.Tween.get(this.instance_9).wait(47).to({_off:false},0).wait(1).to({startPosition:16},0).to({_off:true},1).wait(2).to({_off:false,startPosition:19},0).wait(7).to({startPosition:26},0).to({_off:true},1).wait(181));
 
 	// Cancer_foot
-	this.instance_10 = new lib.Cancer_foot_move("synched",0);
+	this.instance_10 = new lib.Cancer_foot_move("synched",15);
 	this.instance_10.parent = this;
-	this.instance_10.setTransform(46.85,45.15,1,1,0,2.9853,-177.0147,6.3,0.6);
+	this.instance_10.setTransform(13.95,45.85,1,1,-8.9381,0,0,6.3,0.3);
+	this.instance_10._off = true;
 
-	this.timeline.addTween(cjs.Tween.get(this.instance_10).wait(240));
+	this.timeline.addTween(cjs.Tween.get(this.instance_10).wait(47).to({_off:false},0).wait(1).to({startPosition:16},0).to({_off:true},1).wait(2).to({_off:false,startPosition:19},0).wait(7).to({startPosition:26},0).to({_off:true},1).wait(181));
 
 	// Cancer_foot
-	this.instance_11 = new lib.Cancer_foot_move("synched",0);
+	this.instance_11 = new lib.Cancer_foot_move("synched",15);
 	this.instance_11.parent = this;
-	this.instance_11.setTransform(43.85,49.9,1,1,0,19.4389,-160.5611,7,0.1);
+	this.instance_11.setTransform(18.1,51.75,1,1,-11.4701,0,0,7.2,0.3);
+	this.instance_11._off = true;
 
-	this.timeline.addTween(cjs.Tween.get(this.instance_11).wait(240));
+	this.timeline.addTween(cjs.Tween.get(this.instance_11).wait(47).to({_off:false},0).wait(1).to({startPosition:16},0).to({_off:true},1).wait(2).to({_off:false,startPosition:19},0).wait(7).to({startPosition:26},0).to({_off:true},1).wait(181));
 
 	// Cancer_foot
-	this.instance_12 = new lib.Cancer_foot_move("synched",0);
+	this.instance_12 = new lib.Cancer_foot_move("synched",15);
 	this.instance_12.parent = this;
-	this.instance_12.setTransform(48.15,38.7,1,1,0,-6.4984,173.5016,6.5,-0.3);
+	this.instance_12.setTransform(6.2,39.85);
+	this.instance_12._off = true;
 
-	this.timeline.addTween(cjs.Tween.get(this.instance_12).wait(240));
-
-	// Cancer_foot
-	this.instance_13 = new lib.Cancer_foot_move("synched",0);
-	this.instance_13.parent = this;
-	this.instance_13.setTransform(13.95,45.85,1,1,-8.9381,0,0,6.3,0.3);
-
-	this.timeline.addTween(cjs.Tween.get(this.instance_13).wait(240));
-
-	// Cancer_foot
-	this.instance_14 = new lib.Cancer_foot_move("synched",0);
-	this.instance_14.parent = this;
-	this.instance_14.setTransform(18.1,51.75,1,1,-11.4701,0,0,7.2,0.3);
-
-	this.timeline.addTween(cjs.Tween.get(this.instance_14).wait(240));
-
-	// Cancer_foot
-	this.instance_15 = new lib.Cancer_foot_move("synched",0);
-	this.instance_15.parent = this;
-	this.instance_15.setTransform(6.2,39.85);
-
-	this.timeline.addTween(cjs.Tween.get(this.instance_15).wait(240));
+	this.timeline.addTween(cjs.Tween.get(this.instance_12).wait(47).to({_off:false},0).wait(1).to({startPosition:16},0).to({_off:true},1).wait(2).to({_off:false,startPosition:19},0).wait(7).to({startPosition:26},0).to({_off:true},1).wait(181));
 
 }).prototype = p = new cjs.MovieClip();
 p.nominalBounds = new cjs.Rectangle(-16.4,3.3,93.30000000000001,54.7);
@@ -7591,7 +7484,7 @@ p.nominalBounds = new cjs.Rectangle(-16.4,3.3,93.30000000000001,54.7);
 	this.initialize(mode,startPosition,loop,{"normal":0,"spawn":7,"fear":16,"defeated":22,sa:32});
 
 	// Cancer
-	this.normal = new lib.Cancer_normal();
+	this.normal = new lib.Cancer_normal_light();
 	this.normal.name = "normal";
 	this.normal.parent = this;
 
@@ -7599,7 +7492,7 @@ p.nominalBounds = new cjs.Rectangle(-16.4,3.3,93.30000000000001,54.7);
 	this.spawn.name = "spawn";
 	this.spawn.parent = this;
 
-	this.fear = new lib.Cancer_fear();
+	this.fear = new lib.Cancer_fear_light();
 	this.fear.name = "fear";
 	this.fear.parent = this;
 
@@ -7614,7 +7507,7 @@ p.nominalBounds = new cjs.Rectangle(-16.4,3.3,93.30000000000001,54.7);
 	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.normal}]}).to({state:[{t:this.spawn}]},7).to({state:[{t:this.fear}]},9).to({state:[{t:this.defeated}]},6).to({state:[{t:this.sa}]},10).wait(7));
 
 }).prototype = p = new cjs.MovieClip();
-p.nominalBounds = new cjs.Rectangle(-21.3,2.9,118.7,994.5);
+p.nominalBounds = new cjs.Rectangle(-20.2,2.9,117.60000000000001,994.5);
 
 
 (lib.Bear_normal = function(mode,startPosition,loop) {
@@ -8583,7 +8476,7 @@ p.nominalBounds = new cjs.Rectangle(-7.6,-22.9,105,1020.3);
 
 	this.timeline.addTween(cjs.Tween.get(this.instance_5).wait(1));
 
-}).prototype = getMCSymbolPrototype(lib.Enemies, new cjs.Rectangle(-17.6,-10,95.6,77), null);
+}).prototype = getMCSymbolPrototype(lib.Enemies, new cjs.Rectangle(-16.4,-10,93.30000000000001,77), null);
 
 
 (lib.MainTitle_wrap = function(mode,startPosition,loop) {
@@ -9096,7 +8989,7 @@ p.nominalBounds = new cjs.Rectangle(0,0,60,60);
 
 
 // stage content:
-(lib.tsnake_v005 = function(mode,startPosition,loop) {
+(lib.tsnake_v006 = function(mode,startPosition,loop) {
 	this.initialize(mode,startPosition,loop,{});
 
 	// ScorePopUp
@@ -9490,27 +9383,6 @@ var Enemy;
 
 })();
 
-var KeyManager;
-
-(function () {
-
-    window.onkeydown = function (e) {
-        //console.log("key:" + e.which);
-        if(KeyManager.listeners[e.which]){
-            KeyManager.listeners[e.which]();
-        }
-    };
-
-    KeyManager = {
-        "listeners": {},
-        "setKeyListeners": function (args) {
-            _.each(args, _.bind(function (callback, key) {
-                this.listeners[key] = callback;
-            }, this));
-        }
-    };
-
-})();
 var Item;
 
 (function () {
@@ -9577,6 +9449,27 @@ var Item;
 
 })();
 
+var KeyManager;
+
+(function () {
+
+    window.onkeydown = function (e) {
+        //console.log("key:" + e.which);
+        if(KeyManager.listeners[e.which]){
+            KeyManager.listeners[e.which]();
+        }
+    };
+
+    KeyManager = {
+        "listeners": {},
+        "setKeyListeners": function (args) {
+            _.each(args, _.bind(function (callback, key) {
+                this.listeners[key] = callback;
+            }, this));
+        }
+    };
+
+})();
 var Score;
 
 (function () {
