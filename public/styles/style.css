@@ -29,6 +29,7 @@ a {
     vertical-align: middle;
     font-size: 60px;
     font-weight: bold;
+    cursor: pointer;
 }
 
 .button--parent {

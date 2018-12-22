@@ -120,9 +120,9 @@ const _CHEAT_ON = true;
             }
             var currentX = _statusBarMc.speedMeter.needle.x;
             if (currentX < targetX) {
-                _statusBarMc.speedMeter.needle.x ++;
+                _statusBarMc.speedMeter.needle.x++;
             } else if (currentX > targetX) {
-                _statusBarMc.speedMeter.needle.x --;
+                _statusBarMc.speedMeter.needle.x--;
             }
         },
         "updateSpeed": function () {
@@ -252,8 +252,8 @@ const _CHEAT_ON = true;
         },
         "gameLoop": function () {
 
-            if(this.isDying){
-                this.snake.dieUpdate(_.bind(function(){
+            if (this.isDying) {
+                this.snake.dieUpdate(_.bind(function () {
                     this.onGameOverAnimationFinished();
                 }, this));
                 return;
@@ -326,6 +326,13 @@ const _CHEAT_ON = true;
             this.snake = new Snake(_mapMc, new Vector(1, 1));
             this.snake.setDirection(DIRECTION.e.clone());
 
+            this.initKeys();
+
+            _statusBarMc.scoreText.text = this.score;
+
+        },
+        "initKeys": function () {
+
             const gotoN = _.bind(function () {
                 this.snake.setDirection(DIRECTION.n.clone());
             }, this);
@@ -341,7 +348,6 @@ const _CHEAT_ON = true;
             const gotoE = _.bind(function () {
                 this.snake.setDirection(DIRECTION.e.clone());
             }, this);
-
             KeyManager.setKeyListeners({
                 //W, up
                 "87": gotoN,
@@ -357,6 +363,22 @@ const _CHEAT_ON = true;
                 "39": gotoE,
             });
 
+            $("#controller__button--up").click(function () {
+                KeyManager.listeners["87"]();
+            });
+
+            $("#controller__button--left").click(function () {
+                KeyManager.listeners["65"]();
+            });
+
+            $("#controller__button--down").click(function () {
+                KeyManager.listeners["83"]();
+            });
+
+            $("#controller__button--right").click(function () {
+                KeyManager.listeners["68"]();
+            });
+
             if (_CHEAT_ON) {
                 KeyManager.setKeyListeners({
                     //q
@@ -365,8 +387,6 @@ const _CHEAT_ON = true;
                     }, this),
                 });
             }
-
-            _statusBarMc.scoreText.text = this.score;
 
         },
         "animateGate": function () {
