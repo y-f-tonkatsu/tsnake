@@ -481,6 +481,8 @@ const _CHEAT_ON = true;
                     if (this.getNumItems("Apple") < 1) {
                         this.spawnItem("Apple");
                     }
+                    this.items.push(new Item(_mapMc, new Vector(0, 0), "Apple"));
+                    this.enemies.push(new Enemy(_mapMc, new Vector(1, 0), "Cancer"));
                 }
             }, this));
             _.forEach(this.area.items, _.bind(function (item) {
