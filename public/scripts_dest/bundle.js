@@ -103,8 +103,6 @@ const _CHEAT_ON = true;
                 });
             });
 
-            _mapMc.cache(0, 0, size.x * Cood.UNIT, size.y * Cood.UNIT);
-
         },
         "removeObjects": function () {
             _.remove(this.enemies, _.bind(function (obj) {
@@ -9408,27 +9406,6 @@ var Enemy;
 
 })();
 
-var KeyManager;
-
-(function () {
-
-    window.onkeydown = function (e) {
-        //console.log("key:" + e.which);
-        if(KeyManager.listeners[e.which]){
-            KeyManager.listeners[e.which]();
-        }
-    };
-
-    KeyManager = {
-        "listeners": {},
-        "setKeyListeners": function (args) {
-            _.each(args, _.bind(function (callback, key) {
-                this.listeners[key] = callback;
-            }, this));
-        }
-    };
-
-})();
 var Item;
 
 (function () {
@@ -9495,6 +9472,27 @@ var Item;
 
 })();
 
+var KeyManager;
+
+(function () {
+
+    window.onkeydown = function (e) {
+        //console.log("key:" + e.which);
+        if(KeyManager.listeners[e.which]){
+            KeyManager.listeners[e.which]();
+        }
+    };
+
+    KeyManager = {
+        "listeners": {},
+        "setKeyListeners": function (args) {
+            _.each(args, _.bind(function (callback, key) {
+                this.listeners[key] = callback;
+            }, this));
+        }
+    };
+
+})();
 var Score;
 
 (function () {
