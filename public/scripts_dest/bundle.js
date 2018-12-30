@@ -1249,149 +1249,6 @@ var Areas;
     ];
 
 })();
-var Cood;
-
-(function () {
-
-    Cood = {
-        "UNIT":60,
-        "MAX_GX":780,
-        "MAX_GY":780,
-        "MAX_X":13,
-        "MAX_Y":12,
-        "_STATUS_BAR_HEIGHT":60,
-        "localToWorld": function (local) {
-            if(typeof local == "object"){
-                return local.mult(this.UNIT);
-            } else {
-                return local * this.UNIT;
-            }
-        }
-    };
-
-})();
-
-
-
-var FieldObject;
-
-(function () {
-
-    FieldObject = function (map, pos, id) {
-        if (map) {
-            this.init(map, pos, id);
-        }
-    };
-
-    FieldObject.prototype = {
-        "init": function (map, pos, id, state) {
-            this.map = map;
-            this.id = id;
-            this.position = pos.clone();
-            this.mc = cjsUtil.createMc(id);
-            this.mc.x = this.position.x;
-            this.mc.y = this.position.y;
-            this.map.addChildAt(this.mc, 0);
-            if (!state || state === "spawn") {
-                this.spawn();
-            } else {
-                this.setState(state);
-            }
-            this.update(0);
-        },
-        "update": function (process) {
-            this.mc.x = Cood.localToWorld(this.position.x);
-            this.mc.y = Cood.localToWorld(this.position.y);
-        },
-        "setState": function (state, endListener) {
-            this.state = state;
-            this.mc.gotoAndStop(state);
-            if(state == "normal" || state == "fear"){
-                this.mc[state].stop();
-                this.mc.cache();
-            }
-            if (endListener) {
-                this.onEndListener = _.bind(function (e) {
-                    if (this.state == "removed" ||
-                        this.mc[state].currentFrame == this.mc[this.state].totalFrames - 1) {
-                        this.mc.removeEventListener("tick", this.onEndListener);
-                        endListener();
-                    }
-                }, this);
-                this.mc[state].addEventListener("tick", this.onEndListener);
-            }
-
-        },
-        "spawn": function () {
-            this.setState("spawn", _.bind(function (e) {
-                this.setState("normal");
-            }, this));
-        },
-        "hitTest": function (p) {
-            if (this.state == "spawn") {
-                return false;
-            }
-            return this.position.equals(p);
-        },
-        "remove": function () {
-            this.mc.stop();
-            this.map.removeChild(this.mc);
-            this.mc = null;
-            this.state = "removed";
-        }
-    };
-
-})();
-var Vector = function (x, y) {
-    this.x = x;
-    this.y = y;
-};
-
-var DIRECTION;
-
-Vector.prototype = {
-    "clone": function () {
-        return new Vector(this.x, this.y);
-    },
-    "set": function (v) {
-        this.x = v.x;
-        this.y = v.y;
-    },
-    "add": function (v) {
-        this.x += v.x;
-        this.y += v.y;
-        return this;
-    },
-    "sub": function (v) {
-        this.x -= v.x;
-        this.y -= v.y;
-    },
-    "mult": function (v) {
-        return new Vector(this.x * v, this.y * v);
-    },
-    "dist": function (v) {
-        return Math.sqrt(Math.pow(this.x - v.x, 2) + Math.pow(this.x - v.x, 2));
-    },
-    "sdist": function (v) {
-        return Math.abs(this.x - v.x) + Math.abs(this.y - v.y);
-    },
-    "isZero": function () {
-        return this.x == 0 && this.y == 0;
-    },
-    "equals": function (v) {
-        return this.x == v.x && this.y == v.y;
-    },
-};
-
-DIRECTION = {
-    "n": new Vector(0, -1),
-    "e": new Vector(1, 0),
-    "s": new Vector(0, 1),
-    "w": new Vector(-1, 0)
-};
-
-
-
 (function (cjs, an) {
 
 var p; // shortcut to reference prototypes
@@ -9227,7 +9084,7 @@ lib.properties = {
 	id: '12203EAFB022374BAF15F927FCA8A97A',
 	width: 780,
 	height: 780,
-	fps: 12,
+	fps: 24,
 	color: "#CCCCCC",
 	opacity: 1.00,
 	manifest: [
@@ -9296,6 +9153,149 @@ an.getComposition = function(id) {
 
 })(createjs = createjs||{}, AdobeAn = AdobeAn||{});
 var createjs, AdobeAn;
+var Cood;
+
+(function () {
+
+    Cood = {
+        "UNIT":60,
+        "MAX_GX":780,
+        "MAX_GY":780,
+        "MAX_X":13,
+        "MAX_Y":12,
+        "_STATUS_BAR_HEIGHT":60,
+        "localToWorld": function (local) {
+            if(typeof local == "object"){
+                return local.mult(this.UNIT);
+            } else {
+                return local * this.UNIT;
+            }
+        }
+    };
+
+})();
+
+
+
+var FieldObject;
+
+(function () {
+
+    FieldObject = function (map, pos, id) {
+        if (map) {
+            this.init(map, pos, id);
+        }
+    };
+
+    FieldObject.prototype = {
+        "init": function (map, pos, id, state) {
+            this.map = map;
+            this.id = id;
+            this.position = pos.clone();
+            this.mc = cjsUtil.createMc(id);
+            this.mc.x = this.position.x;
+            this.mc.y = this.position.y;
+            this.map.addChildAt(this.mc, 0);
+            if (!state || state === "spawn") {
+                this.spawn();
+            } else {
+                this.setState(state);
+            }
+            this.update(0);
+        },
+        "update": function (process) {
+            this.mc.x = Cood.localToWorld(this.position.x);
+            this.mc.y = Cood.localToWorld(this.position.y);
+        },
+        "setState": function (state, endListener) {
+            this.state = state;
+            this.mc.gotoAndStop(state);
+            if(state == "normal" || state == "fear"){
+                this.mc[state].stop();
+                this.mc.cache(-20, -20, 120, 90);
+            }
+            if (endListener) {
+                this.onEndListener = _.bind(function (e) {
+                    if (this.state == "removed" ||
+                        this.mc[state].currentFrame == this.mc[this.state].totalFrames - 1) {
+                        this.mc.removeEventListener("tick", this.onEndListener);
+                        endListener();
+                    }
+                }, this);
+                this.mc[state].addEventListener("tick", this.onEndListener);
+            }
+
+        },
+        "spawn": function () {
+            this.setState("spawn", _.bind(function (e) {
+                this.setState("normal");
+            }, this));
+        },
+        "hitTest": function (p) {
+            if (this.state == "spawn") {
+                return false;
+            }
+            return this.position.equals(p);
+        },
+        "remove": function () {
+            this.mc.stop();
+            this.map.removeChild(this.mc);
+            this.mc = null;
+            this.state = "removed";
+        }
+    };
+
+})();
+var Vector = function (x, y) {
+    this.x = x;
+    this.y = y;
+};
+
+var DIRECTION;
+
+Vector.prototype = {
+    "clone": function () {
+        return new Vector(this.x, this.y);
+    },
+    "set": function (v) {
+        this.x = v.x;
+        this.y = v.y;
+    },
+    "add": function (v) {
+        this.x += v.x;
+        this.y += v.y;
+        return this;
+    },
+    "sub": function (v) {
+        this.x -= v.x;
+        this.y -= v.y;
+    },
+    "mult": function (v) {
+        return new Vector(this.x * v, this.y * v);
+    },
+    "dist": function (v) {
+        return Math.sqrt(Math.pow(this.x - v.x, 2) + Math.pow(this.x - v.x, 2));
+    },
+    "sdist": function (v) {
+        return Math.abs(this.x - v.x) + Math.abs(this.y - v.y);
+    },
+    "isZero": function () {
+        return this.x == 0 && this.y == 0;
+    },
+    "equals": function (v) {
+        return this.x == v.x && this.y == v.y;
+    },
+};
+
+DIRECTION = {
+    "n": new Vector(0, -1),
+    "e": new Vector(1, 0),
+    "s": new Vector(0, 1),
+    "w": new Vector(-1, 0)
+};
+
+
+
 var Enemy;
 
 (function () {
@@ -9402,6 +9402,72 @@ var Enemy;
 
 })();
 
+var Item;
+
+(function () {
+
+    StartTasks.push(function () {
+
+        var effects = {
+            "Gate": function (game, snake) {
+                game.nextArea(this);
+            },
+            "Key": function (game, snake) {
+                game.addKey(this.position.clone());
+            },
+            "Coin": function (game, snake) {
+                game.addCoin(this.position.clone());
+            },
+            "Apple": function (game, snake) {
+                game.setVmax(Item.VMAX_DURATION);
+                snake.addBody();
+                snake.addBody();
+            },
+            "Wine": function (game, snake) {
+                snake.removeBody();
+            },
+            "Berry": function (game, snake) {
+                game.speedDown();
+            },
+        };
+
+        Item = function (map, pos, id) {
+            this.init(map, pos, id);
+            this.life = Item.LIFETIME[id];
+        };
+
+        Item.DROP_LIMITS = {
+            "Gate": 1,
+            "Key": 1,
+            "Coin": 30,
+            "Apple": 2,
+            "Wine": 2,
+            "Berry": 2,
+        }
+
+        Item.LIFETIME = {
+            "Gate": 0,
+            "Key": 60,
+            "Coin": 60,
+            "Apple": 60,
+            "Wine": 60,
+            "Berry": 60,
+        }
+
+        Item.prototype = new FieldObject();
+
+        Item.LIMIT = 60;
+        Item.VMAX_DURATION = 40;
+
+        Item.prototype.effect = function (game, snake) {
+            _.bind(effects[this.id], this)(game, snake);
+        };
+
+    });
+
+
+})();
+
 var KeyManager;
 
 (function () {
@@ -9474,72 +9540,6 @@ var Score;
     };
 
 })();
-var Item;
-
-(function () {
-
-    StartTasks.push(function () {
-
-        var effects = {
-            "Gate": function (game, snake) {
-                game.nextArea(this);
-            },
-            "Key": function (game, snake) {
-                game.addKey(this.position.clone());
-            },
-            "Coin": function (game, snake) {
-                game.addCoin(this.position.clone());
-            },
-            "Apple": function (game, snake) {
-                game.setVmax(Item.VMAX_DURATION);
-                snake.addBody();
-                snake.addBody();
-            },
-            "Wine": function (game, snake) {
-                snake.removeBody();
-            },
-            "Berry": function (game, snake) {
-                game.speedDown();
-            },
-        };
-
-        Item = function (map, pos, id) {
-            this.init(map, pos, id);
-            this.life = Item.LIFETIME[id];
-        };
-
-        Item.DROP_LIMITS = {
-            "Gate": 1,
-            "Key": 1,
-            "Coin": 30,
-            "Apple": 2,
-            "Wine": 2,
-            "Berry": 2,
-        }
-
-        Item.LIFETIME = {
-            "Gate": 0,
-            "Key": 60,
-            "Coin": 60,
-            "Apple": 60,
-            "Wine": 60,
-            "Berry": 60,
-        }
-
-        Item.prototype = new FieldObject();
-
-        Item.LIMIT = 60;
-        Item.VMAX_DURATION = 40;
-
-        Item.prototype.effect = function (game, snake) {
-            _.bind(effects[this.id], this)(game, snake);
-        };
-
-    });
-
-
-})();
-
 var SnakeBody;
 
 (function () {
