@@ -14,10 +14,10 @@ a {
 }
 
 .canvas--game{
+    object-fit: contain;
     display: block;
     width: 100%;
     max-width: 780px;
-    max-height: 780px;
     margin:auto;
 }
 
