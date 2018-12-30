@@ -97,11 +97,13 @@ const _CHEAT_ON = true;
                 _.times(size.y, function (y) {
                     var tile = cjsUtil.createMc("Tile");
                     that.tiles.push(tile);
-                    tile.x = x * 60;
-                    tile.y = y * 60;
+                    tile.x = x * Cood.UNIT;
+                    tile.y = y * Cood.UNIT;
                     _mapMc.addChild(tile);
                 });
             });
+
+            _mapMc.cache(0, 0, size.x * Cood.UNIT, size.y * Cood.UNIT);
 
         },
         "removeObjects": function () {
@@ -9210,10 +9212,14 @@ var FieldObject;
         "setState": function (state, endListener) {
             this.state = state;
             this.mc.gotoAndStop(state);
+
             if(state == "normal" || state == "fear"){
                 this.mc[state].stop();
                 this.mc.cache(-20, -20, 120, 90);
+            } else {
+                this.mc.uncache();
             }
+
             if (endListener) {
                 this.onEndListener = _.bind(function (e) {
                     if (this.state == "removed" ||
@@ -9402,6 +9408,27 @@ var Enemy;
 
 })();
 
+var KeyManager;
+
+(function () {
+
+    window.onkeydown = function (e) {
+        //console.log("key:" + e.which);
+        if(KeyManager.listeners[e.which]){
+            KeyManager.listeners[e.which]();
+        }
+    };
+
+    KeyManager = {
+        "listeners": {},
+        "setKeyListeners": function (args) {
+            _.each(args, _.bind(function (callback, key) {
+                this.listeners[key] = callback;
+            }, this));
+        }
+    };
+
+})();
 var Item;
 
 (function () {
@@ -9468,27 +9495,6 @@ var Item;
 
 })();
 
-var KeyManager;
-
-(function () {
-
-    window.onkeydown = function (e) {
-        //console.log("key:" + e.which);
-        if(KeyManager.listeners[e.which]){
-            KeyManager.listeners[e.which]();
-        }
-    };
-
-    KeyManager = {
-        "listeners": {},
-        "setKeyListeners": function (args) {
-            _.each(args, _.bind(function (callback, key) {
-                this.listeners[key] = callback;
-            }, this));
-        }
-    };
-
-})();
 var Score;
 
 (function () {

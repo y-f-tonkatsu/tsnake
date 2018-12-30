@@ -31,10 +31,14 @@ var FieldObject;
         "setState": function (state, endListener) {
             this.state = state;
             this.mc.gotoAndStop(state);
+
             if(state == "normal" || state == "fear"){
                 this.mc[state].stop();
                 this.mc.cache(-20, -20, 120, 90);
+            } else {
+                this.mc.uncache();
             }
+
             if (endListener) {
                 this.onEndListener = _.bind(function (e) {
                     if (this.state == "removed" ||

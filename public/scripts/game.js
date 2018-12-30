@@ -97,11 +97,13 @@ const _CHEAT_ON = true;
                 _.times(size.y, function (y) {
                     var tile = cjsUtil.createMc("Tile");
                     that.tiles.push(tile);
-                    tile.x = x * 60;
-                    tile.y = y * 60;
+                    tile.x = x * Cood.UNIT;
+                    tile.y = y * Cood.UNIT;
                     _mapMc.addChild(tile);
                 });
             });
+
+            _mapMc.cache(0, 0, size.x * Cood.UNIT, size.y * Cood.UNIT);
 
         },
         "removeObjects": function () {
