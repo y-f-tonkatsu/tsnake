@@ -7833,7 +7833,7 @@ lib.properties = {
 	id: '12203EAFB022374BAF15F927FCA8A97A',
 	width: 780,
 	height: 780,
-	fps: 12,
+	fps: 24,
 	color: "#CCCCCC",
 	opacity: 1.00,
 	manifest: [
