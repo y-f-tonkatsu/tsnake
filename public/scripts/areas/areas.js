@@ -47,6 +47,10 @@ var Areas;
                     "id": "Frog",
                     "spawnRate": 0.3,
                 },
+                {
+                    "id": "Cancer",
+                    "spawnRate": 0.3,
+                },
             ],
             "initialSpeed": 0
         },
@@ -93,11 +97,11 @@ var Areas;
             "enemies": [
                 {
                     "id": "Frog",
-                    "spawnRate": 0.8,
+                    "spawnRate": 0.2,
                 },
                 {
                     "id": "Cancer",
-                    "spawnRate": 0.2,
+                    "spawnRate": 0.1,
                 }
             ],
             "initialSpeed": 0
@@ -145,15 +149,15 @@ var Areas;
             "enemies": [
                 {
                     "id": "Frog",
-                    "spawnRate": 0.8,
+                    "spawnRate": 0.2,
                 },
                 {
                     "id": "Cancer",
-                    "spawnRate": 0.3,
+                    "spawnRate": 0.05,
                 },
                 {
                     "id": "Hedgehog",
-                    "spawnRate": 0.2,
+                    "spawnRate": 0.05,
                 }
             ],
             "initialSpeed": 1
@@ -201,11 +205,11 @@ var Areas;
             "enemies": [
                 {
                     "id": "Frog",
-                    "spawnRate": 0.8,
+                    "spawnRate": 0.1,
                 },
                 {
                     "id": "Mouse",
-                    "spawnRate": 0.5,
+                    "spawnRate": 0.3,
                 },
             ],
             "initialSpeed": 1
@@ -253,19 +257,19 @@ var Areas;
             "enemies": [
                 {
                     "id": "Frog",
-                    "spawnRate": 0.8,
+                    "spawnRate": 0.1,
                 },
                 {
                     "id": "Mouse",
-                    "spawnRate": 0.4,
+                    "spawnRate": 0.3,
                 },
                 {
                     "id": "Cancer",
-                    "spawnRate": 0.2,
+                    "spawnRate": 0.05,
                 },
                 {
                     "id": "Hedgehog",
-                    "spawnRate": 0.2,
+                    "spawnRate": 0.05,
                 }
             ],
             "initialSpeed": 2
@@ -313,19 +317,19 @@ var Areas;
             "enemies": [
                 {
                     "id": "Frog",
-                    "spawnRate": 0.8,
+                    "spawnRate": 0.12,
                 },
                 {
                     "id": "Bear",
-                    "spawnRate": 0.3,
+                    "spawnRate": 0.08,
                 },
                 {
                     "id": "Cancer",
-                    "spawnRate": 0.3,
+                    "spawnRate": 0.05,
                 },
                 {
                     "id": "Hedgehog",
-                    "spawnRate": 0.3,
+                    "spawnRate": 0.05,
                 }
             ],
             "initialSpeed": 2
@@ -373,23 +377,23 @@ var Areas;
             "enemies": [
                 {
                     "id": "Frog",
-                    "spawnRate": 0.8,
+                    "spawnRate": 0.1,
                 },
                 {
                     "id": "Spider",
-                    "spawnRate": 0.3,
+                    "spawnRate": 0.5,
                 },
                 {
                     "id": "Bear",
-                    "spawnRate": 0.3,
+                    "spawnRate": 0.1,
                 },
                 {
                     "id": "Cancer",
-                    "spawnRate": 0.3,
+                    "spawnRate": 0.05,
                 },
                 {
                     "id": "Hedgehog",
-                    "spawnRate": 0.3,
+                    "spawnRate": 0.05,
                 }
             ],
             "initialSpeed": 2
@@ -437,23 +441,27 @@ var Areas;
             "enemies": [
                 {
                     "id": "Mouse",
-                    "spawnRate": 0.4,
+                    "spawnRate": 0.3,
+                },
+                {
+                    "id": "Frog",
+                    "spawnRate": 0.05,
                 },
                 {
                     "id": "Spider",
-                    "spawnRate": 0.3,
+                    "spawnRate": 0.05,
                 },
                 {
                     "id": "Bear",
-                    "spawnRate": 0.3,
+                    "spawnRate": 0.1,
                 },
                 {
                     "id": "Cancer",
-                    "spawnRate": 0.3,
+                    "spawnRate": 0.05,
                 },
                 {
                     "id": "Hedgehog",
-                    "spawnRate": 0.3,
+                    "spawnRate": 0.05,
                 }
             ],
             "initialSpeed": 3
