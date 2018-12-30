@@ -47,10 +47,6 @@ var Areas;
                     "id": "Frog",
                     "spawnRate": 0.3,
                 },
-                {
-                    "id": "Cancer",
-                    "spawnRate": 0.3,
-                },
             ],
             "initialSpeed": 0
         },

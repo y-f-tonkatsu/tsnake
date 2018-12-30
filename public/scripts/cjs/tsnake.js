@@ -165,6 +165,55 @@ p.nominalBounds = new cjs.Rectangle(-4,-4,208,38);
 }).prototype = getMCSymbolPrototype(lib.SpeedMeter_bg, new cjs.Rectangle(-4,-4,103,8), null);
 
 
+(lib.Sound = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// timeline functions:
+	this.frame_0 = function() {
+		playSound("ok");
+	}
+	this.frame_20 = function() {
+		playSound("defeat");
+	}
+	this.frame_42 = function() {
+		playSound("vmax");
+	}
+	this.frame_88 = function() {
+		playSound("snake_walk");
+	}
+	this.frame_96 = function() {
+		playSound("snake_walk_vmax");
+	}
+	this.frame_103 = function() {
+		playSound("coin");
+	}
+	this.frame_119 = function() {
+		playSound("die");
+	}
+	this.frame_194 = function() {
+		playSound("key");
+	}
+	this.frame_231 = function() {
+		playSound("shrink");
+	}
+	this.frame_271 = function() {
+		playSound("speed_down");
+	}
+
+	// actions tween:
+	this.timeline.addTween(cjs.Tween.get(this).call(this.frame_0).wait(20).call(this.frame_20).wait(22).call(this.frame_42).wait(46).call(this.frame_88).wait(8).call(this.frame_96).wait(7).call(this.frame_103).wait(16).call(this.frame_119).wait(75).call(this.frame_194).wait(37).call(this.frame_231).wait(40).call(this.frame_271).wait(41));
+
+	// レイヤー_1
+	this.shape = new cjs.Shape();
+	this.shape.graphics.f("#33CCFF").s().p("AjXKPQhogphMhDQgggggSgbQgNgfAAgXQAAgkAWgWQAbgbAkAAQAbAAAOAJQASAJASAfQAoBEBRAkQBRAoBeAFQCHgFBIg2QBNg2AAhjQgBhahIg/QhMg/iqg2QiVgxhVg1QhVg2gphIQgkhNAAhjQAAhnA6hNQA3hRBigtQBjgxB9AAQBIAABEAWQBIAXA2AoQA6ApAlA2QAWAbAJAbQAJAWAAASQAAAggWAWQgbAXgkAAQgcAAgNgJQgSgOgJgWQgfhRg/gpQhEgohiAEQh6AAhIA2QhDA7gFBeQAABEAbAtQAXAoA/AkQA/AkBrAgQDhBIBwBrQBxBnAACHQgFBsg6BNQg6BRhoAtQhjAtiHAEQhvgEhogkg");
+	this.shape.setTransform(0,0.025);
+
+	this.timeline.addTween(cjs.Tween.get(this.shape).wait(312));
+
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(-45.9,-69.5,91.8,139.1);
+
+
 (lib.Eye_weak = function(mode,startPosition,loop) {
 	this.initialize(mode,startPosition,loop,{});
 
@@ -7745,51 +7794,58 @@ p.nominalBounds = new cjs.Rectangle(0,0,60,60);
 
 	this.timeline.addTween(cjs.Tween.get(this.instance_1).wait(1));
 
-	// StatusBar
-	this.instance_2 = new lib.StatusBar();
+	// Sound
+	this.instance_2 = new lib.Sound();
 	this.instance_2.parent = this;
-	this.instance_2.setTransform(100,20,1,1,0,0,0,100,20);
+	this.instance_2.setTransform(665.55,169.3);
 
 	this.timeline.addTween(cjs.Tween.get(this.instance_2).wait(1));
 
-	// Snake
-	this.instance_3 = new lib.SnakeHead();
+	// StatusBar
+	this.instance_3 = new lib.StatusBar();
 	this.instance_3.parent = this;
-	this.instance_3.setTransform(180.05,263.45,1,1,0,0,0,27.1,27.1);
+	this.instance_3.setTransform(100,20,1,1,0,0,0,100,20);
 
-	this.instance_4 = new lib.SnakeBody();
+	this.timeline.addTween(cjs.Tween.get(this.instance_3).wait(1));
+
+	// Snake
+	this.instance_4 = new lib.SnakeHead();
 	this.instance_4.parent = this;
-	this.instance_4.setTransform(116.85,264,1,1,0,0,0,27.1,27.1);
+	this.instance_4.setTransform(180.05,263.45,1,1,0,0,0,27.1,27.1);
 
-	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.instance_4},{t:this.instance_3}]}).wait(1));
+	this.instance_5 = new lib.SnakeBody();
+	this.instance_5.parent = this;
+	this.instance_5.setTransform(116.85,264,1,1,0,0,0,27.1,27.1);
+
+	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.instance_5},{t:this.instance_4}]}).wait(1));
 
 	// Enemies
-	this.instance_5 = new lib.Enemies();
-	this.instance_5.parent = this;
-	this.instance_5.setTransform(66.55,138.85,1,1,0,0,0,30,30);
-
-	this.timeline.addTween(cjs.Tween.get(this.instance_5).wait(1));
-
-	// Items
-	this.instance_6 = new lib.Items();
+	this.instance_6 = new lib.Enemies();
 	this.instance_6.parent = this;
-	this.instance_6.setTransform(144.2,104.85);
+	this.instance_6.setTransform(66.55,138.85,1,1,0,0,0,30,30);
 
 	this.timeline.addTween(cjs.Tween.get(this.instance_6).wait(1));
 
-	// MainTitle
-	this.instance_7 = new lib.MainTitle_wrap();
+	// Items
+	this.instance_7 = new lib.Items();
 	this.instance_7.parent = this;
-	this.instance_7.setTransform(390,390,1,1,0,0,0,390,390);
+	this.instance_7.setTransform(144.2,104.85);
 
 	this.timeline.addTween(cjs.Tween.get(this.instance_7).wait(1));
 
-	// AreaTitle
-	this.instance_8 = new lib.AreaTitle("synched",0);
+	// MainTitle
+	this.instance_8 = new lib.MainTitle_wrap();
 	this.instance_8.parent = this;
-	this.instance_8.setTransform(828.05,668.7,1,1,0,0,0,596.1,431.7);
+	this.instance_8.setTransform(390,390,1,1,0,0,0,390,390);
 
 	this.timeline.addTween(cjs.Tween.get(this.instance_8).wait(1));
+
+	// AreaTitle
+	this.instance_9 = new lib.AreaTitle("synched",0);
+	this.instance_9.parent = this;
+	this.instance_9.setTransform(828.05,668.7,1,1,0,0,0,596.1,431.7);
+
+	this.timeline.addTween(cjs.Tween.get(this.instance_9).wait(1));
 
 }).prototype = p = new cjs.MovieClip();
 p.nominalBounds = new cjs.Rectangle(390,390,759.9000000000001,744.7);
@@ -7807,7 +7863,17 @@ lib.properties = {
 		{src:"../../images/tunnel_0002.jpg", id:"tunnel_0002"},
 		{src:"../../images/tunnel_0003.jpg", id:"tunnel_0003"},
 		{src:"../../images/wasd.png", id:"wasd"},
-		{src:"../../images/yfts.png", id:"yfts"}
+		{src:"../../images/yfts.png", id:"yfts"},
+		{src:"sounds/coin.mp3", id:"coin"},
+		{src:"sounds/defeat.mp3", id:"defeat"},
+		{src:"sounds/die.mp3", id:"die"},
+		{src:"sounds/key.mp3", id:"key"},
+		{src:"sounds/ok.mp3", id:"ok"},
+		{src:"sounds/shrink.mp3", id:"shrink"},
+		{src:"sounds/snake_walk.mp3", id:"snake_walk"},
+		{src:"sounds/snake_walk_vmax.mp3", id:"snake_walk_vmax"},
+		{src:"sounds/speed_down.mp3", id:"speed_down"},
+		{src:"sounds/vmax.mp3", id:"vmax"}
 	],
 	preloads: []
 };

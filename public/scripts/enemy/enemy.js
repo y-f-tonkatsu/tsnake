@@ -55,6 +55,7 @@ var Enemy;
                 return false;
             }
 
+            playSound("defeat");
             this.setState("defeated", _.bind(function () {
                 this.remove();
             }, this));

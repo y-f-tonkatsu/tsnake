@@ -10,20 +10,25 @@ var Item;
             },
             "Key": function (game, snake) {
                 game.addKey(this.position.clone());
+                playSound("key");
             },
             "Coin": function (game, snake) {
                 game.addCoin(this.position.clone());
+                playSound("coin");
             },
             "Apple": function (game, snake) {
                 game.setVmax(Item.VMAX_DURATION);
                 snake.addBody();
                 snake.addBody();
+                playSound("vmax");
             },
             "Wine": function (game, snake) {
                 snake.removeBody();
+                playSound("shrink");
             },
             "Berry": function (game, snake) {
                 game.speedDown();
+                playSound("speed_down");
             },
         };
 

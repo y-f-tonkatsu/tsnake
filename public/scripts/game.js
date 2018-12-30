@@ -245,6 +245,12 @@ const _CHEAT_ON = true;
 
             if (this.process >= Cood.UNIT) {
 
+                if(this.isVmax()){
+                    playSound("snake_walk_vmax");
+                } else {
+                    playSound("snake_walk");
+                }
+
                 this.process = 0;
                 this.snake.update();
 
@@ -460,8 +466,6 @@ const _CHEAT_ON = true;
                     if (this.getNumItems("Apple") < 1) {
                         this.spawnItem("Apple");
                     }
-                    this.items.push(new Item(_mapMc, new Vector(0, 0), "Apple"));
-                    this.enemies.push(new Enemy(_mapMc, new Vector(1, 0), "Cancer"));
                 }
             }, this));
             _.forEach(this.area.items, _.bind(function (item) {
@@ -596,6 +600,7 @@ const _CHEAT_ON = true;
         },
         "gameOver": function () {
             console.log("GameOver");
+            playSound("die");
             this.isGameLoopLocked = true;
             this.isDying = true;
             this.snake.die();

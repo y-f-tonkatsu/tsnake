@@ -49,6 +49,7 @@ var TSnake;
 
             var startButtonClickListener = _.bind(function () {
                 mainTitleMc.startButton.removeEventListener("click", startButtonClickListener);
+                playSound("ok");
                 mainTitleMc.gotoAndPlay("toArea");
                 this.stage.addEventListener("tick", mainTitleEndListener);
             }, this);
@@ -80,6 +81,7 @@ var TSnake;
             }, this);
 
             var goButtonClickListener = _.bind(function () {
+                playSound("ok");
                 areaTitleMc.removeEventListener("tick", onAreaTitleStopListener);
                 areaTitleMc.goButton.removeEventListener("click", goButtonClickListener);
                 areaTitleMc.gotoAndPlay("waitToGo");
