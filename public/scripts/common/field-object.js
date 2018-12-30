@@ -33,7 +33,7 @@ var FieldObject;
             this.mc.gotoAndStop(state);
             if(state == "normal" || state == "fear"){
                 this.mc[state].stop();
-                this.mc.cache();
+                this.mc.cache(-20, -20, 120, 90);
             }
             if (endListener) {
                 this.onEndListener = _.bind(function (e) {
