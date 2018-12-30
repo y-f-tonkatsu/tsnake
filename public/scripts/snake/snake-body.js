@@ -76,8 +76,10 @@ var SnakeBody;
             this.mc.y = Cood.localToWorld(this.position.y) + process.y;
         },
         "dieUpdate": function () {
-            this.mc.x += this.dieDir.x;
-            this.mc.y += this.dieDir.y;
+            if(this.dieDir){
+                this.mc.x += this.dieDir.x;
+                this.mc.y += this.dieDir.y;
+            }
         }
     };
 

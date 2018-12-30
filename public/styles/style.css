@@ -6,11 +6,26 @@ a {
     color: #00B7FF;
 }
 
-#canvas--main {
+#wrapper--canvas{
     display: block;
     width: 100%;
     max-width: 780px;
-    margin: auto;
+    margin:auto;
+}
+
+.canvas--game{
+    display: block;
+    width: 100%;
+    max-width: 780px;
+    margin:auto;
+}
+
+#canvas--bg{
+    position: absolute;
+}
+
+#canvas--main {
+    position:relative;
 }
 
 #controller {

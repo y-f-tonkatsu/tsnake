@@ -47,7 +47,10 @@
 
 <body data-static-img="<%= base_url %>">
 
-<canvas id="canvas--main" width="780" height="780"></canvas>
+<div id="wrapper--canvas">
+    <img class="canvas--game" id="canvas--bg" src="images/map.png" width="780" height="780"></img>
+    <canvas class="canvas--game" id="canvas--main" width="780" height="780"></canvas>
+</div>
 
 <div id="controller">
     <div id="controller__button--left" class="button button--parent"><i class="fas fa-caret-left"></i></div>

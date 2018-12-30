@@ -7,9 +7,8 @@ const _CHEAT_ON = true;
     const _SPEEDS = [3, 4, 5, 6, 10, 12, 15, 20];
 
     var _rootMc;
-    var _backgroundMc;
-    var _statusBarMc;
     var _mapMc;
+    var _statusBarMc;
 
     const _SPEED_UP_PROCESS_MAX = 60;
     const _SPEED_METER_UNIT = 15;
@@ -76,32 +75,10 @@ const _CHEAT_ON = true;
             }
             return v;
         },
-        "setBg": function () {
-            _backgroundMc = cjsUtil.createMc("Background");
-            _backgroundMc.gotoAndStop(this.areaNo);
-            _rootMc.addChild(_backgroundMc);
+        "setStatusBar": function () {
 
             _statusBarMc = cjsUtil.createMc("StatusBar");
             _rootMc.addChild(_statusBarMc);
-
-        },
-        "createMap": function (size) {
-
-            _mapMc = new createjs.MovieClip();
-            _mapMc.x = 0;
-            _mapMc.y = Cood._STATUS_BAR_HEIGHT;
-            _rootMc.addChild(_mapMc);
-
-            var that = this;
-            _.times(size.x, function (x) {
-                _.times(size.y, function (y) {
-                    var tile = cjsUtil.createMc("Tile");
-                    that.tiles.push(tile);
-                    tile.x = x * Cood.UNIT;
-                    tile.y = y * Cood.UNIT;
-                    _mapMc.addChild(tile);
-                });
-            });
 
         },
         "removeObjects": function () {
@@ -296,8 +273,8 @@ const _CHEAT_ON = true;
 
                 }
 
-                this.updateEnemies();
                 this.updateItems();
+                this.updateEnemies();
                 this.removeObjects();
 
             } else {
@@ -320,9 +297,11 @@ const _CHEAT_ON = true;
 
             _rootMc = new createjs.MovieClip();
             this.stage.addChild(_rootMc);
+            _mapMc = new createjs.MovieClip();
+            _rootMc.addChild(_mapMc);
+            _mapMc.y = Cood._STATUS_BAR_HEIGHT;
 
-            this.setBg();
-            this.createMap(new Vector(Cood.MAX_X, Cood.MAX_Y));
+            this.setStatusBar();
             this.snake = new Snake(_mapMc, new Vector(1, 1));
             this.snake.setDirection(DIRECTION.e.clone());
 
