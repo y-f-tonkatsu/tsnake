@@ -1,23 +1,23 @@
-var gulp = require('gulp');
+const gulp = require('gulp');
 
-var _ = require('lodash');
+const _ = require('lodash');
 
-var minify = require('gulp-minify');
-var concat = require('gulp-concat');
-var clean = require('gulp-clean');
-var replace = require('gulp-replace');
+const minify = require('gulp-minify');
+const concat = require('gulp-concat');
+const clean = require('gulp-clean');
+const replace = require('gulp-replace');
 
 
-var fs = require('fs');
-var path = require('path');
+const fs = require('fs');
+const path = require('path');
 
-var PATH_BASE_DEST = 'D:/Arts/Web/tnode/tsnake/public/'
+const PATH_BASE_DEST = 'D:/Arts/Web/tnode/tsnake/public/'
 
-var getScriptSrc = function () {
+let getScriptSrc = function () {
     return [PATH_BASE_DEST + 'scripts/**/*.js']
 };
 
-var getScriptDest = function () {
+let getScriptDest = function () {
     return PATH_BASE_DEST + 'scripts_dest/'
 };
 

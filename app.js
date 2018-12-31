@@ -1,16 +1,17 @@
-var express = require('express');
-var http = require('http');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+const express = require('express');
+const http = require('http');
+const path = require('path');
+const favicon = require('serve-favicon');
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 
-var index = require('./routes/main');
-var users = require('./routes/score');
+const index = require('./routes/main');
+const users = require('./routes/score');
 
-var app = express();
+const app = express();
 
+const PORT = 3103;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -45,7 +46,26 @@ app.use(function (err, req, res, next) {
     res.render('error');
 });
 
-http.createServer(app).listen(3103, function () {
+
+const redis = require('redis');
+let client = redis.createClient();
+client.on('connect', function() {
+    console.log('Redis client connected');
+});
+client.on('error', function (err) {
+    console.log('Something went wrong ' + err);
+});
+
+client.set('k', 'v', redis.print);
+client.get('k', function (error, result) {
+    if (error) {
+        console.log(error);
+        throw error;
+    }
+    console.log('GET result ->' + result);
+});
+
+http.createServer(app).listen(PORT, function () {
 
 });
 
