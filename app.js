@@ -46,25 +46,6 @@ app.use(function (err, req, res, next) {
     res.render('error');
 });
 
-
-const redis = require('redis');
-let client = redis.createClient();
-client.on('connect', function() {
-    console.log('Redis client connected');
-});
-client.on('error', function (err) {
-    console.log('Something went wrong ' + err);
-});
-
-client.set('k', 'v', redis.print);
-client.get('k', function (error, result) {
-    if (error) {
-        console.log(error);
-        throw error;
-    }
-    console.log('GET result ->' + result);
-});
-
 http.createServer(app).listen(PORT, function () {
 
 });
