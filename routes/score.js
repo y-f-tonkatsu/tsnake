@@ -39,6 +39,9 @@ router.post('/', function (req, res, next) {
 
     return redisClient.get('high_score', function (err, result) {
         let ranking = JSON.parse(result);
+        if(!ranking){
+            ranking = createNewRanking();
+        }
         ranking.push(data);
         ranking.sort(function (a, b) {
             let x = parseInt(a.score);
