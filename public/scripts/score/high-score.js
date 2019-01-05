@@ -3,6 +3,9 @@ let HighScore;
 (function () {
 
     HighScore = {
+        "getBaseUrl": function () {
+            return $("body").attr("data-base-url");
+        },
         "showInput": function (callback) {
 
             const popup = $("#popup--input-high-score, #bg--high-score");
@@ -61,13 +64,13 @@ let HighScore;
 
         },
         "get": function (callback) {
-            $.get("/score/", _.bind(function (data) {
+            $.get(this.getBaseUrl() + "score/", _.bind(function (data) {
                 callback(data);
             }, this));
         },
         "post": function (name, score, callback) {
 
-            $.post("/score/", {
+            $.post(this.getBaseUrl() + "score/", {
                 "player": name,
                 "score": score
             }, function (data) {
