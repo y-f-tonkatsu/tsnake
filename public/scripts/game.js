@@ -229,14 +229,15 @@ const _CHEAT_ON = true;
         },
         "gameLoop": function () {
 
-            if (this.isDying) {
-                this.snake.dieUpdate(_.bind(function () {
-                    this.onGameOverAnimationFinished();
-                }, this));
+            if (this.isGameLoopLocked) {
                 return;
             }
 
-            if (this.isGameLoopLocked) {
+            if (this.isDying) {
+                this.snake.dieUpdate(_.bind(function () {
+                    this.isGameLoopLocked = true;
+                    this.highScore();
+                }, this));
                 return;
             }
 
@@ -245,7 +246,7 @@ const _CHEAT_ON = true;
 
             if (this.process >= Cood.UNIT) {
 
-                if(this.isVmax()){
+                if (this.isVmax()) {
                     playSound("snake_walk_vmax");
                 } else {
                     playSound("snake_walk");
@@ -601,13 +602,22 @@ const _CHEAT_ON = true;
         "gameOver": function () {
             console.log("GameOver");
             playSound("die");
-            this.isGameLoopLocked = true;
             this.isDying = true;
             this.snake.die();
         },
         "onGameOverAnimationFinished": function () {
             this.onGameOverListener(this.score);
         },
+        "highScore": function () {
+
+            HighScore.showInput(_.bind(function (player) {
+                HighScore.post(player, this.score, _.bind(function () {
+                    HighScore.show(_.bind(function () {
+                        this.onGameOverAnimationFinished();
+                    }, this));
+                }, this));
+            }, this));
+        }
     };
 
 })();

@@ -6,27 +6,134 @@ a {
     color: #00B7FF;
 }
 
-#wrapper--canvas{
+input {
+    font-size: 14pt;
+    padding: 2pt;
+    background: none;
+    border: none;
+    border-bottom: solid;
+}
+
+.buttons {
+    border-radius: 8px;
+    background: #66fa52;
+    font-size: 16pt;
+    padding: 6px;
+    margin: 8pt auto;
+}
+
+.title--input-high-score {
+    display: inline-block;
+    width: 40%;
+    max-width: 500px;
+    font-size: 32pt;
+    text-align: center;
+    margin: 10pt auto;
+}
+
+#popup--input-high-score__label--player{
+    font-size: 16pt;
+    display: inline-block;
+    width: 10%;
+    max-width: 100px;
+}
+
+#popup--input-high-score__button--submit{
+    display: inline-block;
+    width: 10%;
+    max-width: 100px;
+    margin-left: 20px;
+}
+
+.title--high-score {
+    font-size: 24pt;
+    text-align: center;
+}
+
+#popup--input-high-score__button--submit {
+    max-width: 200px;
+}
+
+#popup--input-high-score {
+    margin: 30% 20%;
+    width: 60%;
+    height: 40%;
+    text-align: center;
+}
+
+.column {
+    display: inline-block;
+    margin-top: 12pt;
+    vertical-align: middle;
+}
+
+.column--rank {
+    width: 10%;
+    font-size: 18pt;
+    margin-left: 2%;
+    text-align: center;
+}
+
+.column--player {
+    width: 40%;
+    font-size: 16pt;
+    margin-left: 6%;
+}
+
+.column--score {
+    width: 25%;
+    font-size: 16pt;
+    margin-left: 12%;
+    margin-right: 2%;
+}
+
+#popup--high-score {
+    max-width: 700px;
+    width: 80%;
+    height: 80%;
+    margin: auto auto auto auto;
+    height: 80%;
+    background: white;
+    border-radius: 4px;
+}
+
+#bg--high-score {
+    width: 100%;
+    height: 100%;
+    background: rgba(128, 128, 128, 0.3);
+}
+
+.popups {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    visibility: hidden;
+    z-index: 100;
+}
+
+#wrapper--canvas {
     display: block;
     width: 100%;
     max-width: 780px;
-    margin:auto;
+    margin: auto;
 }
 
-.canvas--game{
+.canvas--game {
     object-fit: contain;
     display: block;
     width: 100%;
     max-width: 780px;
-    margin:auto;
+    margin: auto;
 }
 
-#canvas--bg{
+#canvas--bg {
     position: absolute;
 }
 
 #canvas--main {
-    position:relative;
+    position: relative;
 }
 
 #controller {
@@ -59,12 +166,12 @@ a {
     margin: 45px 0;
 }
 
-#controller__button--left{
+#controller__button--left {
     float: left;
     margin-left: 7%;
 }
 
-#controller__button--right{
+#controller__button--right {
     float: right;
     margin-right: 7%;
 }
@@ -74,13 +181,13 @@ a {
     margin: 0 3%;
 }
 
-#controller__button--up, #controller__button--down{
+#controller__button--up, #controller__button--down {
     width: 100%;
     height: 85px;
     line-height: 85px;
 }
 
-#controller__button--up{
+#controller__button--up {
     margin-bottom: 10px;
 }
 

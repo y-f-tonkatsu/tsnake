@@ -47,6 +47,25 @@
 
 <body data-static-img="<%= base_url %>">
 
+<div id="bg--high-score" class="popups">
+
+</div>
+
+<div id="popup--high-score" class="popups">
+    <h1 class="title--high-score">RANKING</h1>
+    <div id="wrapper--score"></div>
+</div>
+
+<div id="popup--input-high-score" class="popups">
+    <h1 class="title--input-high-score">RANK IN!</h1>
+    <form>
+        <div id="popup--input-high-score__label--player">Name</div>
+        <input id="popup--input-high-score__input--player" type="text" name="Player's Name">
+        <div id="popup--input-high-score__button--submit" class="buttons" type="submit">Submit</div>
+    </form>
+</div>
+
+
 <div id="wrapper--canvas">
     <img class="canvas--game" id="canvas--bg" src="images/map.png">
     <canvas class="canvas--game" id="canvas--main" width="780" height="780"></canvas>

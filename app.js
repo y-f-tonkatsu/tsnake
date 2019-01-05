@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
 const index = require('./routes/main');
-const users = require('./routes/score');
+const score = require('./routes/score');
 
 const app = express();
 
@@ -24,9 +24,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(require('sanitize').middleware);
 
 app.use('/', index);
-app.use('/users', users);
+app.use('/score/', score);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -44,24 +45,6 @@ app.use(function (err, req, res, next) {
     // render the error page
     res.status(err.status || 500);
     res.render('error');
-});
-
-const redis = require('redis');
-let client = redis.createClient();
-client.on('connect', function() {
-    console.log('Redis client connected');
-});
-client.on('error', function (err) {
-    console.log('Something went wrong ' + err);
-});
-
-client.set('k', 'v', redis.print);
-client.get('k', function (error, result) {
-    if (error) {
-        console.log(error);
-        throw error;
-    }
-    console.log('GET result ->' + result);
 });
 
 http.createServer(app).listen(PORT, function () {

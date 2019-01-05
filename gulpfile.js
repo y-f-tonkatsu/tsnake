@@ -21,22 +21,26 @@ let getScriptDest = function () {
     return PATH_BASE_DEST + 'scripts_dest/'
 };
 
-gulp.task('bundle_js', function () {
+const bundleJs = function () {
 
     return gulp.src(getScriptSrc())
         .pipe(concat('bundle.js'))
         .pipe(replace('src:"../../', 'src:"'))
         .pipe(minify())
         .pipe(gulp.dest(getScriptDest()));
-});
+};
 
-gulp.task('clear_script', function () {
+const cleaScript = function () {
     return gulp.src(path.join(getScriptDest(), '*.js'), {read: false})
         .pipe(clean());
-});
+};
 
 gulp.task('tsnake', function () {
     gulp.start(['clear_script', 'bundle_js']);
 });
 
-gulp.task('default', ['tsnake']);
+const defaultTasks = gulp.series(cleaScript, bundleJs)
+
+module.exports = {
+    "default": defaultTasks
+}
