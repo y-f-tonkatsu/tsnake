@@ -47,6 +47,9 @@ var Snake;
             return this.getHead().state;
         },
         "setState":function(state){
+            if(this.getHead().getState() == "die"){
+                return;
+            }
             return this.getHead().setState(state);
         },
         "setNormal":function(){

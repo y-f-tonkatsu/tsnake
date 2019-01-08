@@ -610,12 +610,22 @@ const _CHEAT_ON = true;
         },
         "highScore": function () {
 
-            HighScore.showInput(_.bind(function (player) {
-                HighScore.post(player, this.score, _.bind(function () {
-                    HighScore.show(_.bind(function () {
-                        this.onGameOverAnimationFinished();
+            HighScore.get(_.bind(function (data) {
+                if (this.score > data[data.length - 1].score) {
+                    HighScore.showInput(_.bind(function (player) {
+                        HighScore.post(player, this.score, _.bind(function () {
+                            this.showScoreThenFinish();
+                        }, this));
                     }, this));
-                }, this));
+                } else {
+                    this.showScoreThenFinish();
+                }
+            }, this))
+
+        },
+        "showScoreThenFinish": function () {
+            HighScore.show(_.bind(function () {
+                this.onGameOverAnimationFinished();
             }, this));
         }
     };
@@ -9796,6 +9806,9 @@ var Snake;
             return this.getHead().state;
         },
         "setState":function(state){
+            if(this.getHead().getState() == "die"){
+                return;
+            }
             return this.getHead().setState(state);
         },
         "setNormal":function(){
