@@ -281,7 +281,9 @@ const _CHEAT_ON = true;
                 }
 
                 this.updateItems();
-                this.updateEnemies();
+                if(!this.isFinishing){
+                    this.updateEnemies();
+                }
                 this.removeObjects();
 
             } else {
