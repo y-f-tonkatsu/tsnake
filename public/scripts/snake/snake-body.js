@@ -29,8 +29,19 @@ var SnakeBody;
             this.dieDir = new Vector(dieX * speed, dieY * speed);
         },
         "remove": function () {
+            if (!this.mc) {
+                return;
+            }
+            this.mc.x = -1000;
+            this.mc.y = -1000;
             this.map.removeChild(this.mc);
             this.mc = null;
+        },
+        "show": function () {
+            this.mc.visible = true;
+        },
+        "hide": function () {
+            this.mc.visible = false;
         },
         "effect": function () {
         },
@@ -39,8 +50,7 @@ var SnakeBody;
             this.position.y = p.y;
         },
         "isStopped": function () {
-            return this.direction.x == 0 &&
-                this.direction.y == 0;
+            return this.mc.visible == false;
         },
         "setRotation": function (v) {
             _.forEach([this.mc.body, this.mc.bodyVmax, this.mc.bodyVmaxWeak, this.mc.bodyWeak], _.bind(function (b) {
@@ -72,11 +82,15 @@ var SnakeBody;
             this.mc.body.gotoAndPlay(Math.floor(Math.random() * 60));
         },
         "update": function (process) {
-            this.mc.x = Cood.localToWorld(this.position.x) + process.x;
-            this.mc.y = Cood.localToWorld(this.position.y) + process.y;
+            if (!this.mc || !process) {
+                return;
+            } else {
+                this.mc.x = Cood.localToWorld(this.position.x) + process.x;
+                this.mc.y = Cood.localToWorld(this.position.y) + process.y;
+            }
         },
         "dieUpdate": function () {
-            if(this.dieDir){
+            if (this.dieDir) {
                 this.mc.x += this.dieDir.x;
                 this.mc.y += this.dieDir.y;
             }

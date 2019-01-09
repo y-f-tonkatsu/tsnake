@@ -257,17 +257,16 @@ const _CHEAT_ON = true;
 
                 if (this.isFinishing) {
 
-                    if(this.isLastStage()){
+                    if (this.isLastStage()) {
                         this.animateFinishItem();
                         return
                     }
 
                     if (this.existEnemies()) {
                         this.killAnEnemy();
-                    } else {
-                        if (this.snake.isFinished()) {
-                            this.snake.remove();
-                        }
+                    } else if (this.snake.isFinished()) {
+                        this.snake.remove();
+                        this.animateFinishItem();
                     }
 
                 } else {
@@ -473,7 +472,6 @@ const _CHEAT_ON = true;
             _.forEach(this.area.comp, _.bind(function (compTime) {
                 if (compTime == this.totalTime) {
                     console.log("comp");
-                    this.spawnItem("Mage");
                     if (this.getNumItems("Apple") < 1) {
                         this.spawnItem("Apple");
                     }
@@ -581,8 +579,8 @@ const _CHEAT_ON = true;
             _statusBarMc.scoreText.text = this.score;
         },
         isLastStage: function () {
-            //return this.areaNo == Areas.length - 1;
-            return true;
+            return this.areaNo == Areas.length - 1;
+            //return true;
         }, "addKey": function (pos) {
             this.throwItem("Key", new Vector(
                 Cood.localToWorld(pos.x),

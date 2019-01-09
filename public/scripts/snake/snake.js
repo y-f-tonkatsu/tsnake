@@ -39,32 +39,32 @@ var Snake;
             this.bodies = [];
         },
         "removeBody": function () {
-            if(this.bodies.length > 1){
+            if (this.bodies.length > 1) {
                 this.bodies.pop().remove();
             }
         },
-        "getState":function(){
+        "getState": function () {
             return this.getHead().state;
         },
-        "setState":function(state){
-            if(this.getHead().getState() == "die"){
+        "setState": function (state) {
+            if (this.getHead().getState() == "die") {
                 return;
             }
             return this.getHead().setState(state);
         },
-        "setNormal":function(){
+        "setNormal": function () {
             this.getHead().setState("normal");
         },
-        "setWeak":function(){
+        "setWeak": function () {
             this.getHead().setState("weak");
         },
-        "startVmax":function(){
+        "startVmax": function () {
             this.getHead().setState("vmax");
         },
-        "setVmaxWeak":function(){
+        "setVmaxWeak": function () {
             this.getHead().setState("vmax_weak");
         },
-        "endVmax":function(){
+        "endVmax": function () {
             this.getHead().setState("normal");
         },
         "move": function (process) {
@@ -73,14 +73,15 @@ var Snake;
             }, this));
         },
         "finish": function () {
-            _.forEach(this.bodies, _.bind(function (b) {
-                b.position.sub(b.direction);
-            }, this));
+            this.getHead().position.sub(this.getHead().direction);
+            this.getHead().dir(0, 0);
+            this.getHead().hide();
             this.setDirection(new Vector(0, 0));
             this.isLocked = true;
         },
         "isFinished": function () {
             return _.every(this.bodies, function (b) {
+                console.log(b.direction);
                 return b.isStopped();
             });
         },
@@ -89,7 +90,7 @@ var Snake;
                 b.dieUpdate();
             }, this));
             const head = this.getHead().mc.bodyDie;
-            if(head.currentFrame == head.totalFrames - 1){
+            if (head.currentFrame == head.totalFrames - 1) {
                 onAnimationFinishedListener();
             }
         },
@@ -107,11 +108,12 @@ var Snake;
                 } else {
                     var nextDir = b.direction.clone();
                     var nextPos = b.position.clone();
-                    b.dir(prevDir);
-                    b.pos(prevPos);
+                    b.dir(prevDir.clone());
+                    b.pos(prevPos.clone());
                     prevDir.set(nextDir);
                     prevPos.set(nextPos);
                 }
+                console.log(b.position);
 
                 while (b.position.x >= Cood.MAX_X) {
                     b.position.x -= Cood.MAX_X
@@ -126,9 +128,15 @@ var Snake;
                     b.position.y += Cood.MAX_Y
                 }
 
-                if(!b.direction.isZero()){
+                if (this.isLocked && b.direction.isZero()) {
+                    b.hide();
+                }
+
+                if (b.direction) {
                     b.update(new Vector(0, 0));
                 }
+
+
                 i++;
             }, this));
 

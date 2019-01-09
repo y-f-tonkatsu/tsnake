@@ -257,17 +257,16 @@ const _CHEAT_ON = true;
 
                 if (this.isFinishing) {
 
-                    if(this.isLastStage()){
+                    if (this.isLastStage()) {
                         this.animateFinishItem();
                         return
                     }
 
                     if (this.existEnemies()) {
                         this.killAnEnemy();
-                    } else {
-                        if (this.snake.isFinished()) {
-                            this.snake.remove();
-                        }
+                    } else if (this.snake.isFinished()) {
+                        this.snake.remove();
+                        this.animateFinishItem();
                     }
 
                 } else {
@@ -473,7 +472,6 @@ const _CHEAT_ON = true;
             _.forEach(this.area.comp, _.bind(function (compTime) {
                 if (compTime == this.totalTime) {
                     console.log("comp");
-                    this.spawnItem("Mage");
                     if (this.getNumItems("Apple") < 1) {
                         this.spawnItem("Apple");
                     }
@@ -581,8 +579,8 @@ const _CHEAT_ON = true;
             _statusBarMc.scoreText.text = this.score;
         },
         isLastStage: function () {
-            //return this.areaNo == Areas.length - 1;
-            return true;
+            return this.areaNo == Areas.length - 1;
+            //return true;
         }, "addKey": function (pos) {
             this.throwItem("Key", new Vector(
                 Cood.localToWorld(pos.x),
@@ -660,7 +658,7 @@ const _CHEAT_ON = true;
         },
         "showScoreThenFinish": function () {
             HighScore.show(_.bind(function () {
-                this.onGameOverAnimationFinished();
+                this.onGameOverListener(this.score);
             }, this));
         }
     };
@@ -810,7 +808,6 @@ var TSnake;
                 }, this),
                 //onGameOverListener
                 _.bind(function (score) {
-                    //showHiScore(score, function(){});
                     this.resetGame();
                     this.setMainTitle();
                 }, this), this.score);
@@ -1288,6 +1285,171 @@ var Areas;
     ];
 
 })();
+var Cood;
+
+(function () {
+
+    Cood = {
+        "UNIT":60,
+        "MAX_GX":780,
+        "MAX_GY":780,
+        "MAX_X":13,
+        "MAX_Y":12,
+        "_STATUS_BAR_HEIGHT":60,
+        "localToWorld": function (local) {
+            if(typeof local == "object"){
+                return local.mult(this.UNIT);
+            } else {
+                return local * this.UNIT;
+            }
+        }
+    };
+
+})();
+
+
+
+var FieldObject;
+
+(function () {
+
+    FieldObject = function (map, pos, id) {
+        if (map) {
+            this.init(map, pos, id);
+        }
+    };
+
+    FieldObject.prototype = {
+        "init": function (map, pos, id, state) {
+            this.map = map;
+            this.id = id;
+            this.position = pos.clone();
+            this.mc = cjsUtil.createMc(id);
+            this.mc.x = this.position.x;
+            this.mc.y = this.position.y;
+            this.map.addChildAt(this.mc, 0);
+            if (!state || state === "spawn") {
+                this.spawn();
+            } else {
+                this.setState(state);
+            }
+            this.update(0);
+        },
+        "update": function (process) {
+            this.mc.x = Cood.localToWorld(this.position.x);
+            this.mc.y = Cood.localToWorld(this.position.y);
+        },
+        "setState": function (state, endListener) {
+            this.state = state;
+            this.mc.gotoAndStop(state);
+
+            if(state == "normal" || state == "fear"){
+                this.mc[state].stop();
+                this.mc.cache(-20, -20, 120, 90);
+            } else {
+                this.mc.uncache();
+            }
+
+            if (endListener) {
+                this.onEndListener = _.bind(function (e) {
+                    if (this.state == "removed" ||
+                        this.mc[state].currentFrame == this.mc[this.state].totalFrames - 1) {
+                        this.mc.removeEventListener("tick", this.onEndListener);
+                        endListener();
+                    }
+                }, this);
+                this.mc[state].addEventListener("tick", this.onEndListener);
+            }
+
+        },
+        "spawn": function () {
+            this.setState("spawn", _.bind(function (e) {
+                this.setState("normal");
+            }, this));
+        },
+        "hitTest": function (p) {
+            if (this.state == "spawn") {
+                return false;
+            }
+            return this.position.equals(p);
+        },
+        "remove": function () {
+            this.mc.stop();
+            this.map.removeChild(this.mc);
+            this.mc = null;
+            this.state = "removed";
+        }
+    };
+
+})();
+var Vector = function (x, y) {
+    this.x = x;
+    this.y = y;
+};
+
+var DIRECTION;
+
+Vector.prototype = {
+    "clone": function () {
+        return new Vector(this.x, this.y);
+    },
+    "set": function (v) {
+        if (!v) {
+            return;
+        }
+        this.x = v.x;
+        this.y = v.y;
+    },
+    "add": function (v) {
+        if (!v) {
+            return;
+        }
+        this.x += v.x;
+        this.y += v.y;
+        return this;
+    },
+    "sub": function (v) {
+        if (!v) {
+            return;
+        }
+        this.x -= v.x;
+        this.y -= v.y;
+    },
+    "mult": function (v) {
+        if (!v) {
+            return;
+        }
+        return new Vector(this.x * v, this.y * v);
+    },
+    "dist": function (v) {
+        if (!v) {
+            return;
+        }
+        return Math.sqrt(Math.pow(this.x - v.x, 2) + Math.pow(this.x - v.x, 2));
+    },
+    "sdist": function (v) {
+        if (!v) {
+            return;
+        }
+        return Math.abs(this.x - v.x) + Math.abs(this.y - v.y);
+    },
+    "isZero": function () {
+        return (this.x == 0 && this.y == 0) || (isNaN(this.x));
+    },
+    "equals": function (v) {
+        return this.x == v.x && this.y == v.y;
+    },
+};
+
+DIRECTION = {
+    "n": new Vector(0, -1),
+    "e": new Vector(1, 0),
+    "s": new Vector(0, 1),
+    "w": new Vector(-1, 0)
+};
+
+
+
 (function (cjs, an) {
 
 var p; // shortcut to reference prototypes
@@ -9333,260 +9495,27 @@ an.getComposition = function(id) {
 
 })(createjs = createjs||{}, AdobeAn = AdobeAn||{});
 var createjs, AdobeAn;
-var Cood;
+var KeyManager;
 
 (function () {
 
-    Cood = {
-        "UNIT":60,
-        "MAX_GX":780,
-        "MAX_GY":780,
-        "MAX_X":13,
-        "MAX_Y":12,
-        "_STATUS_BAR_HEIGHT":60,
-        "localToWorld": function (local) {
-            if(typeof local == "object"){
-                return local.mult(this.UNIT);
-            } else {
-                return local * this.UNIT;
-            }
+    window.onkeydown = function (e) {
+        //console.log("key:" + e.which);
+        if(KeyManager.listeners[e.which]){
+            KeyManager.listeners[e.which]();
         }
     };
 
-})();
-
-
-
-var FieldObject;
-
-(function () {
-
-    FieldObject = function (map, pos, id) {
-        if (map) {
-            this.init(map, pos, id);
-        }
-    };
-
-    FieldObject.prototype = {
-        "init": function (map, pos, id, state) {
-            this.map = map;
-            this.id = id;
-            this.position = pos.clone();
-            this.mc = cjsUtil.createMc(id);
-            this.mc.x = this.position.x;
-            this.mc.y = this.position.y;
-            this.map.addChildAt(this.mc, 0);
-            if (!state || state === "spawn") {
-                this.spawn();
-            } else {
-                this.setState(state);
-            }
-            this.update(0);
-        },
-        "update": function (process) {
-            this.mc.x = Cood.localToWorld(this.position.x);
-            this.mc.y = Cood.localToWorld(this.position.y);
-        },
-        "setState": function (state, endListener) {
-            this.state = state;
-            this.mc.gotoAndStop(state);
-
-            if(state == "normal" || state == "fear"){
-                this.mc[state].stop();
-                this.mc.cache(-20, -20, 120, 90);
-            } else {
-                this.mc.uncache();
-            }
-
-            if (endListener) {
-                this.onEndListener = _.bind(function (e) {
-                    if (this.state == "removed" ||
-                        this.mc[state].currentFrame == this.mc[this.state].totalFrames - 1) {
-                        this.mc.removeEventListener("tick", this.onEndListener);
-                        endListener();
-                    }
-                }, this);
-                this.mc[state].addEventListener("tick", this.onEndListener);
-            }
-
-        },
-        "spawn": function () {
-            this.setState("spawn", _.bind(function (e) {
-                this.setState("normal");
+    KeyManager = {
+        "listeners": {},
+        "setKeyListeners": function (args) {
+            _.each(args, _.bind(function (callback, key) {
+                this.listeners[key] = callback;
             }, this));
-        },
-        "hitTest": function (p) {
-            if (this.state == "spawn") {
-                return false;
-            }
-            return this.position.equals(p);
-        },
-        "remove": function () {
-            this.mc.stop();
-            this.map.removeChild(this.mc);
-            this.mc = null;
-            this.state = "removed";
         }
     };
 
 })();
-var Vector = function (x, y) {
-    this.x = x;
-    this.y = y;
-};
-
-var DIRECTION;
-
-Vector.prototype = {
-    "clone": function () {
-        return new Vector(this.x, this.y);
-    },
-    "set": function (v) {
-        this.x = v.x;
-        this.y = v.y;
-    },
-    "add": function (v) {
-        this.x += v.x;
-        this.y += v.y;
-        return this;
-    },
-    "sub": function (v) {
-        this.x -= v.x;
-        this.y -= v.y;
-    },
-    "mult": function (v) {
-        return new Vector(this.x * v, this.y * v);
-    },
-    "dist": function (v) {
-        return Math.sqrt(Math.pow(this.x - v.x, 2) + Math.pow(this.x - v.x, 2));
-    },
-    "sdist": function (v) {
-        return Math.abs(this.x - v.x) + Math.abs(this.y - v.y);
-    },
-    "isZero": function () {
-        return this.x == 0 && this.y == 0;
-    },
-    "equals": function (v) {
-        return this.x == v.x && this.y == v.y;
-    },
-};
-
-DIRECTION = {
-    "n": new Vector(0, -1),
-    "e": new Vector(1, 0),
-    "s": new Vector(0, 1),
-    "w": new Vector(-1, 0)
-};
-
-
-
-var Enemy;
-
-(function () {
-
-    StartTasks.push(function () {
-
-        var data = {
-            "Frog": {
-                "dropItemRate": 0.2,
-                "score": 2
-            },
-            "Cancer": {
-                "dropItemRate": 0.25,
-                "score": 3
-            },
-            "Hedgehog": {
-                "dropItemRate": 0.25,
-                "score": 3
-            },
-            "Mouse": {
-                "dropItemRate": 0.1,
-                "score": 1
-            },
-            "Bear": {
-                "dropItemRate": 0.5,
-                "score": 5
-            },
-            "Spider": {
-                "dropItemRate": 0.3,
-                "score": 5
-            }
-        };
-
-        Enemy = function (map, pos, id) {
-            this.init(map, pos, id);
-        };
-
-        Enemy.LIMIT = 60;
-
-        Enemy.prototype = new FieldObject();
-
-        Enemy.prototype.attackedTest = function (p) {
-            return false;
-        };
-
-        Enemy.prototype.isAlive = function () {
-            return this.state !== "defeated" &&
-                this.state !== "removed";
-        }
-
-        Enemy.prototype.defeat = function () {
-
-            if (this.state == "removed" ||
-                this.state == "defeated") {
-                return false;
-            }
-
-            playSound("defeat");
-            this.setState("defeated", _.bind(function () {
-                this.remove();
-            }, this));
-            return Math.random() < data[this.id].dropItemRate;
-        };
-
-        Enemy.prototype.setFear = function () {
-            if (this.id == "Bear") {
-                return;
-            }
-            if (this.state == "normal") {
-                this.setState("fear");
-            }
-            return false;
-        };
-
-        Enemy.prototype.endFear = function () {
-            if (this.state == "fear") {
-                this.setState("normal");
-            }
-            return false;
-        };
-
-        Enemy.prototype.getScore = function () {
-            return data[this.id].score;
-        };
-
-        Enemy.prototype.saHitTest = function (p) {
-            if (this.state == "spawn") {
-                return false;
-            }
-            if (this.id == "Cancer") {
-                return this.position.y == p.y &&
-                    Math.abs(this.position.x - p.x) == 1;
-            } else if (this.id == "Hedgehog") {
-                return this.position.x == p.x &&
-                    Math.abs(this.position.y - p.y) == 1;
-            } else if (this.id == "Spider") {
-                return Math.abs(this.position.x - p.x) <= 1 &&
-                    Math.abs(this.position.y - p.y) <= 1;
-            } else {
-                return false;
-            }
-        };
-
-    });
-
-})();
-
 var Item;
 
 (function () {
@@ -9667,27 +9596,6 @@ var Item;
 
 })();
 
-var KeyManager;
-
-(function () {
-
-    window.onkeydown = function (e) {
-        //console.log("key:" + e.which);
-        if(KeyManager.listeners[e.which]){
-            KeyManager.listeners[e.which]();
-        }
-    };
-
-    KeyManager = {
-        "listeners": {},
-        "setKeyListeners": function (args) {
-            _.each(args, _.bind(function (callback, key) {
-                this.listeners[key] = callback;
-            }, this));
-        }
-    };
-
-})();
 let HighScore;
 
 (function () {
@@ -9825,6 +9733,113 @@ var Score;
     };
 
 })();
+var Enemy;
+
+(function () {
+
+    StartTasks.push(function () {
+
+        var data = {
+            "Frog": {
+                "dropItemRate": 0.2,
+                "score": 2
+            },
+            "Cancer": {
+                "dropItemRate": 0.25,
+                "score": 3
+            },
+            "Hedgehog": {
+                "dropItemRate": 0.25,
+                "score": 3
+            },
+            "Mouse": {
+                "dropItemRate": 0.1,
+                "score": 1
+            },
+            "Bear": {
+                "dropItemRate": 0.5,
+                "score": 5
+            },
+            "Spider": {
+                "dropItemRate": 0.3,
+                "score": 5
+            }
+        };
+
+        Enemy = function (map, pos, id) {
+            this.init(map, pos, id);
+        };
+
+        Enemy.LIMIT = 60;
+
+        Enemy.prototype = new FieldObject();
+
+        Enemy.prototype.attackedTest = function (p) {
+            return false;
+        };
+
+        Enemy.prototype.isAlive = function () {
+            return this.state !== "defeated" &&
+                this.state !== "removed";
+        }
+
+        Enemy.prototype.defeat = function () {
+
+            if (this.state == "removed" ||
+                this.state == "defeated") {
+                return false;
+            }
+
+            playSound("defeat");
+            this.setState("defeated", _.bind(function () {
+                this.remove();
+            }, this));
+            return Math.random() < data[this.id].dropItemRate;
+        };
+
+        Enemy.prototype.setFear = function () {
+            if (this.id == "Bear") {
+                return;
+            }
+            if (this.state == "normal") {
+                this.setState("fear");
+            }
+            return false;
+        };
+
+        Enemy.prototype.endFear = function () {
+            if (this.state == "fear") {
+                this.setState("normal");
+            }
+            return false;
+        };
+
+        Enemy.prototype.getScore = function () {
+            return data[this.id].score;
+        };
+
+        Enemy.prototype.saHitTest = function (p) {
+            if (this.state == "spawn") {
+                return false;
+            }
+            if (this.id == "Cancer") {
+                return this.position.y == p.y &&
+                    Math.abs(this.position.x - p.x) == 1;
+            } else if (this.id == "Hedgehog") {
+                return this.position.x == p.x &&
+                    Math.abs(this.position.y - p.y) == 1;
+            } else if (this.id == "Spider") {
+                return Math.abs(this.position.x - p.x) <= 1 &&
+                    Math.abs(this.position.y - p.y) <= 1;
+            } else {
+                return false;
+            }
+        };
+
+    });
+
+})();
+
 var SnakeBody;
 
 (function () {
@@ -9856,8 +9871,19 @@ var SnakeBody;
             this.dieDir = new Vector(dieX * speed, dieY * speed);
         },
         "remove": function () {
+            if (!this.mc) {
+                return;
+            }
+            this.mc.x = -1000;
+            this.mc.y = -1000;
             this.map.removeChild(this.mc);
             this.mc = null;
+        },
+        "show": function () {
+            this.mc.visible = true;
+        },
+        "hide": function () {
+            this.mc.visible = false;
         },
         "effect": function () {
         },
@@ -9866,8 +9892,7 @@ var SnakeBody;
             this.position.y = p.y;
         },
         "isStopped": function () {
-            return this.direction.x == 0 &&
-                this.direction.y == 0;
+            return this.mc.visible == false;
         },
         "setRotation": function (v) {
             _.forEach([this.mc.body, this.mc.bodyVmax, this.mc.bodyVmaxWeak, this.mc.bodyWeak], _.bind(function (b) {
@@ -9899,11 +9924,15 @@ var SnakeBody;
             this.mc.body.gotoAndPlay(Math.floor(Math.random() * 60));
         },
         "update": function (process) {
-            this.mc.x = Cood.localToWorld(this.position.x) + process.x;
-            this.mc.y = Cood.localToWorld(this.position.y) + process.y;
+            if (!this.mc || !process) {
+                return;
+            } else {
+                this.mc.x = Cood.localToWorld(this.position.x) + process.x;
+                this.mc.y = Cood.localToWorld(this.position.y) + process.y;
+            }
         },
         "dieUpdate": function () {
-            if(this.dieDir){
+            if (this.dieDir) {
                 this.mc.x += this.dieDir.x;
                 this.mc.y += this.dieDir.y;
             }
@@ -9952,32 +9981,32 @@ var Snake;
             this.bodies = [];
         },
         "removeBody": function () {
-            if(this.bodies.length > 1){
+            if (this.bodies.length > 1) {
                 this.bodies.pop().remove();
             }
         },
-        "getState":function(){
+        "getState": function () {
             return this.getHead().state;
         },
-        "setState":function(state){
-            if(this.getHead().getState() == "die"){
+        "setState": function (state) {
+            if (this.getHead().getState() == "die") {
                 return;
             }
             return this.getHead().setState(state);
         },
-        "setNormal":function(){
+        "setNormal": function () {
             this.getHead().setState("normal");
         },
-        "setWeak":function(){
+        "setWeak": function () {
             this.getHead().setState("weak");
         },
-        "startVmax":function(){
+        "startVmax": function () {
             this.getHead().setState("vmax");
         },
-        "setVmaxWeak":function(){
+        "setVmaxWeak": function () {
             this.getHead().setState("vmax_weak");
         },
-        "endVmax":function(){
+        "endVmax": function () {
             this.getHead().setState("normal");
         },
         "move": function (process) {
@@ -9986,14 +10015,15 @@ var Snake;
             }, this));
         },
         "finish": function () {
-            _.forEach(this.bodies, _.bind(function (b) {
-                b.position.sub(b.direction);
-            }, this));
+            this.getHead().position.sub(this.getHead().direction);
+            this.getHead().dir(0, 0);
+            this.getHead().hide();
             this.setDirection(new Vector(0, 0));
             this.isLocked = true;
         },
         "isFinished": function () {
             return _.every(this.bodies, function (b) {
+                console.log(b.direction);
                 return b.isStopped();
             });
         },
@@ -10002,7 +10032,7 @@ var Snake;
                 b.dieUpdate();
             }, this));
             const head = this.getHead().mc.bodyDie;
-            if(head.currentFrame == head.totalFrames - 1){
+            if (head.currentFrame == head.totalFrames - 1) {
                 onAnimationFinishedListener();
             }
         },
@@ -10020,11 +10050,12 @@ var Snake;
                 } else {
                     var nextDir = b.direction.clone();
                     var nextPos = b.position.clone();
-                    b.dir(prevDir);
-                    b.pos(prevPos);
+                    b.dir(prevDir.clone());
+                    b.pos(prevPos.clone());
                     prevDir.set(nextDir);
                     prevPos.set(nextPos);
                 }
+                console.log(b.position);
 
                 while (b.position.x >= Cood.MAX_X) {
                     b.position.x -= Cood.MAX_X
@@ -10039,9 +10070,15 @@ var Snake;
                     b.position.y += Cood.MAX_Y
                 }
 
-                if(!b.direction.isZero()){
+                if (this.isLocked && b.direction.isZero()) {
+                    b.hide();
+                }
+
+                if (b.direction) {
                     b.update(new Vector(0, 0));
                 }
+
+
                 i++;
             }, this));
 
