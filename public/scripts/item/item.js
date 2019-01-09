@@ -8,6 +8,9 @@ var Item;
             "Gate": function (game, snake) {
                 game.nextArea(this);
             },
+            "Mage": function (game, snake) {
+                game.endGame(this);
+            },
             "Key": function (game, snake) {
                 game.addKey(this.position.clone());
                 playSound("key");
@@ -38,6 +41,7 @@ var Item;
         };
 
         Item.DROP_LIMITS = {
+            "Mage": 1,
             "Gate": 1,
             "Key": 1,
             "Coin": 30,
@@ -47,6 +51,7 @@ var Item;
         }
 
         Item.LIFETIME = {
+            "Mage": 0,
             "Gate": 0,
             "Key": 60,
             "Coin": 60,
@@ -63,6 +68,10 @@ var Item;
         Item.prototype.effect = function (game, snake) {
             _.bind(effects[this.id], this)(game, snake);
         };
+
+        Item.prototype.isFinishItem = function () {
+            return this.id == "Gate" || this.id == "Mage";
+        }
 
     });
 

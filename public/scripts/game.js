@@ -180,11 +180,11 @@ const _CHEAT_ON = true;
                 if (this.snake.bodies.length > 0 &&
                     item.hitTest(this.snake.bodies[0].position)) {
                     item.effect(this, this.snake);
-                    if (item.id !== "Gate") {
+                    if (!item.isFinishItem()) {
                         item.remove();
                     }
                 } else {
-                    if (item.id !== "Gate") {
+                    if (!item.isFinishItem()) {
                         if (item.life <= 0) {
                             item.remove();
                         } else {
@@ -257,12 +257,16 @@ const _CHEAT_ON = true;
 
                 if (this.isFinishing) {
 
+                    if(this.isLastStage()){
+                        this.animateFinishItem();
+                        return
+                    }
+
                     if (this.existEnemies()) {
                         this.killAnEnemy();
                     } else {
                         if (this.snake.isFinished()) {
                             this.snake.remove();
-                            this.animateGate();
                         }
                     }
 
@@ -281,7 +285,7 @@ const _CHEAT_ON = true;
                 }
 
                 this.updateItems();
-                if(!this.isFinishing){
+                if (!this.isFinishing) {
                     this.updateEnemies();
                 }
                 this.removeObjects();
@@ -377,33 +381,36 @@ const _CHEAT_ON = true;
             }
 
         },
-        "animateGate": function () {
-            console.log("gate anim started");
+        "animateFinishItem": function () {
+            if (this.isLastStage()) {
+                id = "Mage";
+            } else {
+                id = "Gate";
+            }
+            console.log("finishItem anim started");
             this.isGameLoopLocked = true;
 
-            var gatePos = this.gate.position.clone();
+            var gatePos = this.finishItem.position.clone();
             var from = new Vector(
                 Cood.localToWorld(gatePos.x),
                 Cood.localToWorld(gatePos.y)
             );
             var to = new Vector(Cood.MAX_GX * 0.5, Cood.MAX_GY * 0.5);
-            this.gate.remove();
+            this.finishItem.remove();
 
-            var mc = cjsUtil.createMc("Gate");
+            var mc = cjsUtil.createMc(id);
             mc.gotoAndStop("go");
-            var tickListener = _.bind(function () {
-                mc.go.areaTitle.gotoAndStop("area_" + (this.areaNo + 1));
-            }, this);
-            mc.addEventListener("tick", tickListener);
+            if (id == "Gate") {
+                var tickListener = _.bind(function () {
+                    mc.go.areaTitle.gotoAndStop("area_" + (this.areaNo + 1));
+                }, this);
+                mc.addEventListener("tick", tickListener);
+            }
             var time = 0.05;
             var speed = new Vector((to.x - from.x) * time, (to.y - from.y) * time);
             mc.x = from.x;
             mc.y = from.y;
             _mapMc.addChild(mc);
-            console.log("from:");
-            console.log(from);
-            console.log("to:");
-            console.log(to);
             var listener = _.bind(function () {
                 if (Math.abs(mc.x - to.x) <= Math.abs(speed.x) &&
                     Math.abs(mc.y - to.y) <= Math.abs(speed.y)) {
@@ -466,6 +473,7 @@ const _CHEAT_ON = true;
             _.forEach(this.area.comp, _.bind(function (compTime) {
                 if (compTime == this.totalTime) {
                     console.log("comp");
+                    this.spawnItem("Mage");
                     if (this.getNumItems("Apple") < 1) {
                         this.spawnItem("Apple");
                     }
@@ -492,7 +500,7 @@ const _CHEAT_ON = true;
                 if (!this.hasItemSpace(item.id)) {
                     return;
                 }
-                if (item.id == "Key" && this.getNumItems("Gate") >= 1) {
+                if (item.id == "Key" && this.getNumItems("Gate") + this.getNumItems("Mage") >= 1) {
                     return;
                 }
                 if (item.dropRate > Math.random()) {
@@ -572,7 +580,10 @@ const _CHEAT_ON = true;
             this.score += v;
             _statusBarMc.scoreText.text = this.score;
         },
-        "addKey": function (pos) {
+        isLastStage: function () {
+            //return this.areaNo == Areas.length - 1;
+            return true;
+        }, "addKey": function (pos) {
             this.throwItem("Key", new Vector(
                 Cood.localToWorld(pos.x),
                 Cood.localToWorld(pos.y)
@@ -581,25 +592,47 @@ const _CHEAT_ON = true;
             }, this));
             this.numKeys++;
             if (this.numKeys >= _NUM_KEYS_MAX) {
-                this.putGate();
+                if (this.isLastStage()) {
+                    this.putMage();
+                } else {
+                    this.putGate();
+                }
             }
         },
         "putGate": function () {
             this.spawnItem("Gate");
+        },
+        "putMage": function () {
+            this.spawnItem("Mage");
         },
         "nextArea": function (gate) {
             if (this.isFinishing) {
                 return;
             }
             console.log("next");
-            this.gate = gate;
-            this.gate.setState("going");
+            this.finishItem = gate;
+            this.finishItem.setState("going");
             this.snake.finish();
+            this.isFinishing = true;
+        },
+        "endGame": function (mage) {
+            if (this.isFinishing) {
+                return;
+            }
+            console.log("end game");
+            this.finishItem = mage;
+            this.finishItem.setState("go");
             this.isFinishing = true;
         },
         "clear": function () {
             console.log("clear");
-            this.onClearListener(this.score);
+            if (this.isLastStage()) {
+                _mapMc.addEventListener("click", _.bind(function () {
+                    this.highScore();
+                }, this));
+            } else {
+                this.onClearListener(this.score);
+            }
         },
         "gameOver": function () {
             console.log("GameOver");
@@ -627,7 +660,7 @@ const _CHEAT_ON = true;
         },
         "showScoreThenFinish": function () {
             HighScore.show(_.bind(function () {
-                this.onGameOverAnimationFinished();
+                this.onGameOverListener(this.score);
             }, this));
         }
     };

@@ -123,7 +123,6 @@ var TSnake;
                 }, this),
                 //onGameOverListener
                 _.bind(function (score) {
-                    //showHiScore(score, function(){});
                     this.resetGame();
                     this.setMainTitle();
                 }, this), this.score);
