@@ -651,8 +651,6 @@ const _CHEAT_ON = true;
         },
         "highScore": function (score) {
 
-            this.score = 1000;
-
             HighScore.get(_.bind(function (data) {
                 var i = 1;
                 var rank = 11;
