@@ -42,7 +42,7 @@ var TSnake;
             var mainTitleEndListener = _.bind(function () {
                 if (mainTitleMc.currentFrame == mainTitleMc.totalFrames - 1) {
                     this.stage.removeEventListener("tick", mainTitleEndListener);
-                    this.stage.removeChild(mainTitleMc);
+                    this.stage.removeAllChildren();
                     this.setAreaTitle();
                 }
             }, this);

@@ -81,7 +81,6 @@ var Snake;
         },
         "isFinished": function () {
             return _.every(this.bodies, function (b) {
-                console.log(b.direction);
                 return b.isStopped();
             });
         },
@@ -113,7 +112,6 @@ var Snake;
                     prevDir.set(nextDir);
                     prevPos.set(nextPos);
                 }
-                console.log(b.position);
 
                 while (b.position.x >= Cood.MAX_X) {
                     b.position.x -= Cood.MAX_X

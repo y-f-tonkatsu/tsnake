@@ -187,6 +187,9 @@ const _CHEAT_ON = true;
                     if (!item.isFinishItem()) {
                         if (item.life <= 0) {
                             item.remove();
+                        } else if (item.life <= 10) {
+                            item.fadeOut(item.life);
+                            item.life--;
                         } else {
                             item.life--;
                         }
@@ -233,6 +236,13 @@ const _CHEAT_ON = true;
                 return;
             }
 
+            if (this.isFinishing) {
+                if (this.isLastStage()) {
+                    this.animateFinishItem();
+                    return
+                }
+            }
+
             if (this.isDying) {
                 this.snake.dieUpdate(_.bind(function () {
                     this.isGameLoopLocked = true;
@@ -256,11 +266,6 @@ const _CHEAT_ON = true;
                 this.snake.update();
 
                 if (this.isFinishing) {
-
-                    if (this.isLastStage()) {
-                        this.animateFinishItem();
-                        return
-                    }
 
                     if (this.existEnemies()) {
                         this.killAnEnemy();
@@ -394,7 +399,7 @@ const _CHEAT_ON = true;
                 Cood.localToWorld(gatePos.x),
                 Cood.localToWorld(gatePos.y)
             );
-            var to = new Vector(Cood.MAX_GX * 0.5, Cood.MAX_GY * 0.5);
+            var to = new Vector(Cood.MAX_GX * 0.5 - Cood.UNIT * 0.5, Cood.MAX_GY * 0.5 - Cood.UNIT * 0.5);
             this.finishItem.remove();
 
             var mc = cjsUtil.createMc(id);
@@ -416,6 +421,9 @@ const _CHEAT_ON = true;
                     if (mc.go.currentFrame == mc.go.totalFrames - 1) {
                         this.stage.removeEventListener("tick", listener);
                         mc.removeEventListener("tick", tickListener);
+                        if (this.isLastStage()) {
+                            mc.go.stop();
+                        }
                         this.clear();
                     }
                 } else {
@@ -469,6 +477,9 @@ const _CHEAT_ON = true;
                     this.spawnEnemy(enemy.id);
                 }
             }, this));
+            if (this.totalTime == 1) {
+                this.spawnItem("Mage");
+            }
             _.forEach(this.area.comp, _.bind(function (compTime) {
                 if (compTime == this.totalTime) {
                     console.log("comp");
@@ -579,8 +590,8 @@ const _CHEAT_ON = true;
             _statusBarMc.scoreText.text = this.score;
         },
         isLastStage: function () {
-            return this.areaNo == Areas.length - 1;
             //return true;
+            return this.areaNo == Areas.length - 1;
         }, "addKey": function (pos) {
             this.throwItem("Key", new Vector(
                 Cood.localToWorld(pos.x),

@@ -71,7 +71,12 @@ var Item;
 
         Item.prototype.isFinishItem = function () {
             return this.id == "Gate" || this.id == "Mage";
-        }
+        };
+
+        Item.prototype.fadeOut = function(life){
+            this.mc.uncache();
+            this.mc.alpha = 0.1 * life;
+        };
 
     });
 
