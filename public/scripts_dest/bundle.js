@@ -477,9 +477,6 @@ const _CHEAT_ON = true;
                     this.spawnEnemy(enemy.id);
                 }
             }, this));
-            if (this.totalTime == 1) {
-                this.spawnItem("Mage");
-            }
             _.forEach(this.area.comp, _.bind(function (compTime) {
                 if (compTime == this.totalTime) {
                     console.log("comp");
@@ -652,23 +649,37 @@ const _CHEAT_ON = true;
         "onGameOverAnimationFinished": function () {
             this.onGameOverListener(this.score);
         },
-        "highScore": function () {
+        "highScore": function (score) {
+
+            this.score = 1000;
 
             HighScore.get(_.bind(function (data) {
+                var i = 1;
+                var rank = 11;
+                _.forEach(data, _.bind(function (d) {
+                    if (this.score >= d.score) {
+                        rank = Math.min(rank, i);
+                    }
+                    i++;
+                }, this));
+                if (rank == 11) {
+                    rank = null;
+                }
+
                 if (this.score > data[data.length - 1].score) {
-                    HighScore.showInput(_.bind(function (player) {
+                    HighScore.showInput(this.score, _.bind(function (player) {
                         HighScore.post(player, this.score, _.bind(function () {
-                            this.showScoreThenFinish();
+                            this.showScoreThenFinish(rank);
                         }, this));
                     }, this));
                 } else {
-                    this.showScoreThenFinish();
+                    this.showScoreThenFinish(rank);
                 }
             }, this))
 
         },
-        "showScoreThenFinish": function () {
-            HighScore.show(_.bind(function () {
+        "showScoreThenFinish": function (rank) {
+            HighScore.show(rank, _.bind(function () {
                 this.onGameOverListener(this.score);
             }, this));
         }
@@ -10135,6 +10146,27 @@ var Item;
 
 })();
 
+var KeyManager;
+
+(function () {
+
+    window.onkeydown = function (e) {
+        //console.log("key:" + e.which);
+        if(KeyManager.listeners[e.which]){
+            KeyManager.listeners[e.which]();
+        }
+    };
+
+    KeyManager = {
+        "listeners": {},
+        "setKeyListeners": function (args) {
+            _.each(args, _.bind(function (callback, key) {
+                this.listeners[key] = callback;
+            }, this));
+        }
+    };
+
+})();
 let HighScore;
 
 (function () {
@@ -10143,12 +10175,14 @@ let HighScore;
         "getBaseUrl": function () {
             return $("body").attr("data-base-url");
         },
-        "showInput": function (callback) {
+        "showInput": function (score, callback) {
 
             const popup = $("#popup--input-high-score, #bg--high-score");
             popup.css({
                 visibility: "visible"
             });
+
+            $("#popup--high-score__text--score").text("SCORE: " + score);
 
             $("#popup--input-high-score__button--submit").click(_.bind(function () {
                 popup.css({
@@ -10161,7 +10195,12 @@ let HighScore;
 
             }, this));
         },
-        "show": function (callback) {
+        "show": function (rank, callback) {
+
+            if(_.isFunction(rank)){
+                callback = rank;
+                rank = null;
+            }
 
             this.get(function (data) {
 
@@ -10174,6 +10213,9 @@ let HighScore;
                         "<div class='column column--player'></div>" +
                         "<div class='column column--score'></div>" +
                         "</div>");
+                    if(rank == i){
+                        $(elem).addClass("popup--high-score__text--your--score");
+                    }
                     $(elem).find(".column--rank").text(i.toString());
                     $(elem).find(".column--player").text(line.player.toString());
                     $(elem).find(".column--score").text(parseInt(line.score).toString());
@@ -10269,27 +10311,6 @@ var Score;
         }
 
 
-    };
-
-})();
-var KeyManager;
-
-(function () {
-
-    window.onkeydown = function (e) {
-        //console.log("key:" + e.which);
-        if(KeyManager.listeners[e.which]){
-            KeyManager.listeners[e.which]();
-        }
-    };
-
-    KeyManager = {
-        "listeners": {},
-        "setKeyListeners": function (args) {
-            _.each(args, _.bind(function (callback, key) {
-                this.listeners[key] = callback;
-            }, this));
-        }
     };
 
 })();

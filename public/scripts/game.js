@@ -649,23 +649,37 @@ const _CHEAT_ON = true;
         "onGameOverAnimationFinished": function () {
             this.onGameOverListener(this.score);
         },
-        "highScore": function () {
+        "highScore": function (score) {
+
+            this.score = 1000;
 
             HighScore.get(_.bind(function (data) {
+                var i = 1;
+                var rank = 11;
+                _.forEach(data, _.bind(function (d) {
+                    if (this.score >= d.score) {
+                        rank = Math.min(rank, i);
+                    }
+                    i++;
+                }, this));
+                if (rank == 11) {
+                    rank = null;
+                }
+
                 if (this.score > data[data.length - 1].score) {
-                    HighScore.showInput(_.bind(function (player) {
+                    HighScore.showInput(this.score, _.bind(function (player) {
                         HighScore.post(player, this.score, _.bind(function () {
-                            this.showScoreThenFinish();
+                            this.showScoreThenFinish(rank);
                         }, this));
                     }, this));
                 } else {
-                    this.showScoreThenFinish();
+                    this.showScoreThenFinish(rank);
                 }
             }, this))
 
         },
-        "showScoreThenFinish": function () {
-            HighScore.show(_.bind(function () {
+        "showScoreThenFinish": function (rank) {
+            HighScore.show(rank, _.bind(function () {
                 this.onGameOverListener(this.score);
             }, this));
         }

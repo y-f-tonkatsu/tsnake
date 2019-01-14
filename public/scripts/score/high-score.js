@@ -6,12 +6,14 @@ let HighScore;
         "getBaseUrl": function () {
             return $("body").attr("data-base-url");
         },
-        "showInput": function (callback) {
+        "showInput": function (score, callback) {
 
             const popup = $("#popup--input-high-score, #bg--high-score");
             popup.css({
                 visibility: "visible"
             });
+
+            $("#popup--high-score__text--score").text("SCORE: " + score);
 
             $("#popup--input-high-score__button--submit").click(_.bind(function () {
                 popup.css({
@@ -24,7 +26,12 @@ let HighScore;
 
             }, this));
         },
-        "show": function (callback) {
+        "show": function (rank, callback) {
+
+            if(_.isFunction(rank)){
+                callback = rank;
+                rank = null;
+            }
 
             this.get(function (data) {
 
@@ -37,6 +44,9 @@ let HighScore;
                         "<div class='column column--player'></div>" +
                         "<div class='column column--score'></div>" +
                         "</div>");
+                    if(rank == i){
+                        $(elem).addClass("popup--high-score__text--your--score");
+                    }
                     $(elem).find(".column--rank").text(i.toString());
                     $(elem).find(".column--player").text(line.player.toString());
                     $(elem).find(".column--score").text(parseInt(line.score).toString());
