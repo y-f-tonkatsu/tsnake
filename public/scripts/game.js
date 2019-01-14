@@ -477,9 +477,6 @@ const _CHEAT_ON = true;
                     this.spawnEnemy(enemy.id);
                 }
             }, this));
-            if (this.totalTime == 1) {
-                this.spawnItem("Mage");
-            }
             _.forEach(this.area.comp, _.bind(function (compTime) {
                 if (compTime == this.totalTime) {
                     console.log("comp");
