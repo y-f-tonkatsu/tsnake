@@ -41,6 +41,8 @@ var TSnake;
 
             var mainTitleEndListener = _.bind(function () {
                 if (mainTitleMc.currentFrame == mainTitleMc.totalFrames - 1) {
+                    mainTitleMc.stop();
+                    mainTitleMc.visible = false;
                     this.stage.removeEventListener("tick", mainTitleEndListener);
                     this.stage.removeAllChildren();
                     this.setAreaTitle();
@@ -49,9 +51,16 @@ var TSnake;
 
             var startButtonClickListener = _.bind(function () {
                 mainTitleMc.startButton.removeEventListener("click", startButtonClickListener);
+                mainTitleMc.rankingButton.removeEventListener("click", rankingButtonClickListener);
                 playSound("ok");
                 mainTitleMc.gotoAndPlay("toArea");
                 this.stage.addEventListener("tick", mainTitleEndListener);
+            }, this);
+
+            var rankingButtonClickListener = _.bind(function () {
+                playSound("ok");
+                HighScore.show(null, _.bind(function () {
+                }, this));
             }, this);
 
             var onMainTitleStopListener = _.bind(function () {
@@ -60,6 +69,8 @@ var TSnake;
                     mainTitleMc.stop();
                     mainTitleMc.startButton.addEventListener("click", startButtonClickListener);
                     mainTitleMc.startButton.cursor = "pointer";
+                    mainTitleMc.rankingButton.addEventListener("click", rankingButtonClickListener);
+                    mainTitleMc.rankingButton.cursor = "pointer";
                 }
             }, this);
 

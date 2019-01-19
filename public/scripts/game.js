@@ -330,18 +330,22 @@ const _CHEAT_ON = true;
         "initKeys": function () {
 
             const gotoN = _.bind(function () {
+                playSound("change_dir");
                 this.snake.setDirection(DIRECTION.n.clone());
             }, this);
 
             const gotoW = _.bind(function () {
+                playSound("change_dir");
                 this.snake.setDirection(DIRECTION.w.clone());
             }, this);
 
             const gotoS = _.bind(function () {
+                playSound("change_dir");
                 this.snake.setDirection(DIRECTION.s.clone());
             }, this);
 
             const gotoE = _.bind(function () {
+                playSound("change_dir");
                 this.snake.setDirection(DIRECTION.e.clone());
             }, this);
             KeyManager.setKeyListeners({
@@ -378,7 +382,7 @@ const _CHEAT_ON = true;
             if (_CHEAT_ON) {
                 KeyManager.setKeyListeners({
                     //q
-                    "113": _.bind(function () {
+                    "81": _.bind(function () {
                         this.addKey(new Vector(0, 0));
                     }, this),
                 });
@@ -511,6 +515,7 @@ const _CHEAT_ON = true;
                 }
                 if (item.dropRate > Math.random()) {
                     var to = this.getFreePosition();
+                    playSound("item_pop");
                     this.throwItem(item.id, Cood.localToWorld(from), Cood.localToWorld(to), _.bind(function () {
                         var newItem = new Item(_mapMc, to, item.id, "normal");
                         this.items.push(newItem);
@@ -526,6 +531,7 @@ const _CHEAT_ON = true;
             if (!this.hasItemSpace(id)) {
                 return;
             }
+            playSound("item_pop");
             this.items.push(new Item(_mapMc, this.getFreePosition(), id));
         },
         "spawnEnemy": function (id) {

@@ -23,7 +23,7 @@ var Enemy;
             },
             "Bear": {
                 "dropItemRate": 0.5,
-                "score": 5
+                "score": 30
             },
             "Spider": {
                 "dropItemRate": 0.3,

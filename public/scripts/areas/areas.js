@@ -3,7 +3,7 @@ var Areas;
 (function () {
 
     Areas = [
-        //1
+        //Area1
         {
             "comp":[20, 60, 110, 180, 270, 450, 600],
             "items": [
@@ -51,7 +51,7 @@ var Areas;
             "initialSpeed": 0
         },
 
-        //2
+        //Area2
         {
             "comp":[30, 70, 140, 220, 320, 460],
             "items": [
@@ -103,7 +103,7 @@ var Areas;
             "initialSpeed": 0
         },
 
-        //3
+        //Area3
         {
             "comp":[30, 70, 150, 230, 340],
             "items": [
@@ -205,7 +205,7 @@ var Areas;
                 },
                 {
                     "id": "Mouse",
-                    "spawnRate": 0.3,
+                    "spawnRate": 0.35,
                 },
             ],
             "initialSpeed": 1
@@ -213,11 +213,11 @@ var Areas;
 
         //5
         {
-            "comp":[40, 100, 200, 400],
+            "comp":[40, 100, 200, 400, 600],
             "items": [
                 {
                     "id": "Apple",
-                    "spawnRate": 0.01,
+                    "spawnRate": 0.018,
                 },
                 {
                     "id": "Berry",
@@ -257,7 +257,7 @@ var Areas;
                 },
                 {
                     "id": "Mouse",
-                    "spawnRate": 0.3,
+                    "spawnRate": 0.32,
                 },
                 {
                     "id": "Cancer",
@@ -268,16 +268,76 @@ var Areas;
                     "spawnRate": 0.05,
                 }
             ],
-            "initialSpeed": 2
+            "initialSpeed": 1
         },
 
         //6
         {
-            "comp":[40, 100, 200, 400],
+            "comp":[40, 100, 200, 400, 600],
             "items": [
                 {
                     "id": "Apple",
-                    "spawnRate": 0.01,
+                    "spawnRate": 0.018,
+                },
+                {
+                    "id": "Berry",
+                    "spawnRate": 0.001,
+                },
+                {
+                    "id": "Wine",
+                    "spawnRate": 0.001,
+                }
+            ],
+            "dropItems": [
+                {
+                    "id": "Apple",
+                    "dropRate": 0.1,
+                },
+                {
+                    "id": "Berry",
+                    "dropRate": 0.05,
+                },
+                {
+                    "id": "Wine",
+                    "dropRate": 0.05,
+                },
+                {
+                    "id": "Coin",
+                    "dropRate": 0.5,
+                },
+                {
+                    "id": "Key",
+                    "dropRate": 0.5,
+                }
+            ],
+            "enemies": [
+                {
+                    "id": "Frog",
+                    "spawnRate": 0.15,
+                },
+                {
+                    "id": "Bear",
+                    "spawnRate": 0.03,
+                },
+                {
+                    "id": "Cancer",
+                    "spawnRate": 0.06,
+                },
+                {
+                    "id": "Hedgehog",
+                    "spawnRate": 0.06,
+                }
+            ],
+            "initialSpeed": 1
+        },
+
+        //7
+        {
+            "comp":[40, 100, 200, 400, 650],
+            "items": [
+                {
+                    "id": "Apple",
+                    "spawnRate": 0.017,
                 },
                 {
                     "id": "Berry",
@@ -316,92 +376,32 @@ var Areas;
                     "spawnRate": 0.12,
                 },
                 {
-                    "id": "Bear",
-                    "spawnRate": 0.08,
-                },
-                {
-                    "id": "Cancer",
-                    "spawnRate": 0.05,
-                },
-                {
-                    "id": "Hedgehog",
-                    "spawnRate": 0.05,
-                }
-            ],
-            "initialSpeed": 2
-        },
-
-        //7
-        {
-            "comp":[40, 100, 200, 400],
-            "items": [
-                {
-                    "id": "Apple",
-                    "spawnRate": 0.01,
-                },
-                {
-                    "id": "Berry",
-                    "spawnRate": 0.001,
-                },
-                {
-                    "id": "Wine",
-                    "spawnRate": 0.001,
-                }
-            ],
-            "dropItems": [
-                {
-                    "id": "Apple",
-                    "dropRate": 0.1,
-                },
-                {
-                    "id": "Berry",
-                    "dropRate": 0.05,
-                },
-                {
-                    "id": "Wine",
-                    "dropRate": 0.05,
-                },
-                {
-                    "id": "Coin",
-                    "dropRate": 0.5,
-                },
-                {
-                    "id": "Key",
-                    "dropRate": 0.5,
-                }
-            ],
-            "enemies": [
-                {
-                    "id": "Frog",
-                    "spawnRate": 0.1,
-                },
-                {
                     "id": "Spider",
-                    "spawnRate": 0.5,
+                    "spawnRate": 0.05,
                 },
                 {
                     "id": "Bear",
-                    "spawnRate": 0.1,
+                    "spawnRate": 0.03,
                 },
                 {
                     "id": "Cancer",
-                    "spawnRate": 0.05,
+                    "spawnRate": 0.06,
                 },
                 {
                     "id": "Hedgehog",
-                    "spawnRate": 0.05,
+                    "spawnRate": 0.06,
                 }
             ],
-            "initialSpeed": 2
+            "initialSpeed": 1
         },
 
         //8
         {
-            "comp":[50, 120, 240, 460],
+            "comp":[40, 120, 240, 460, 700],
             "items": [
                 {
                     "id": "Apple",
-                    "spawnRate": 0.01,
+                    "spawnRate": 0.017,
                 },
                 {
                     "id": "Berry",
@@ -449,7 +449,7 @@ var Areas;
                 },
                 {
                     "id": "Bear",
-                    "spawnRate": 0.1,
+                    "spawnRate": 0.03,
                 },
                 {
                     "id": "Cancer",
@@ -460,7 +460,7 @@ var Areas;
                     "spawnRate": 0.05,
                 }
             ],
-            "initialSpeed": 3
+            "initialSpeed": 1
         },
     ];
 
