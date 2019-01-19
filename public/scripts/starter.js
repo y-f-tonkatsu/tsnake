@@ -13,9 +13,9 @@ $(function () {
 
     var interval = setInterval(function(){
         dots = dots == "." ? ".." : ".";
-        $("#title--loader").text("LOADING RESOURCES" + dots);
+        $("#title--loader").text("LOADING" + dots);
         console.log(dots);
-    }, 1000);
+    }, 300);
 
     cjsUtil = new CjsUtil(AdobeAn, "12203EAFB022374BAF15F927FCA8A97A");
 

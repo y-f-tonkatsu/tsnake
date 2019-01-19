@@ -39,6 +39,8 @@ a {
     width: 50%;
     max-width: 390px;
     padding: 0.5em;
+    border-radius: 1em;
+    margin-top: 1em;
 }
 
 #bg--high-score {
