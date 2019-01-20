@@ -31,18 +31,21 @@ router.get('/', function (req, res, next) {
 router.post('/', function (req, res, next) {
     let player = req.bodyString('player');
     let score = req.bodyInt('score');
-    console.log(player);
-    let data = {
+    console.log("Score Posted");
+    console.log("Player: " + player);
+    console.log("Score: " + score);
+    let record = {
         "player": player,
         "score": score,
+        "date": Date().toString()
     };
 
     return redisClient.get('high_score', function (err, result) {
         let ranking = JSON.parse(result);
-        if(!ranking){
+        if (!ranking) {
             ranking = createNewRanking();
         }
-        ranking.push(data);
+        ranking.push(record);
         ranking.sort(function (a, b) {
             let x = parseInt(a.score);
             let y = parseInt(b.score);
@@ -60,10 +63,18 @@ router.post('/', function (req, res, next) {
 
         //ranking = createNewRanking();
 
-        let dataStr = JSON.stringify(ranking);
+        let highScoreJson = JSON.stringify(ranking);
+        let recordJson = JSON.stringify(record);
 
-        return redisClient.set('high_score', dataStr, function () {
-            return res.send('success');
+        console.log("--RECORD--");
+        console.log(record);
+        console.log("--HIGH SCORE--");
+        console.log(highScoreJson);
+
+        return redisClient.rpush('tsnake:score_record', recordJson, function () {
+            return redisClient.set('high_score', highScoreJson, function () {
+                return res.send('success');
+            });
         });
 
     });
@@ -76,7 +87,7 @@ function createNewRanking() {
     for (var i = 0; i < 10; i++) {
         ranking.push({
             "player": "tonkatsu",
-            "score": i * 10 + 10
+            "score": 1
         });
     }
     return ranking;

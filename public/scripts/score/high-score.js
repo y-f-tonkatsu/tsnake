@@ -16,6 +16,7 @@ let HighScore;
             $("#popup--high-score__text--score").text("SCORE: " + score);
 
             $("#popup--input-high-score__button--submit").click(_.bind(function () {
+                $("#popup--input-high-score__button--submit").unbind("click");
                 popup.css({
                     visibility: "hidden"
                 });
@@ -60,6 +61,7 @@ let HighScore;
                 });
 
                 $("#bg--high-score").click(_.bind(function () {
+                    $("#bg--high-score").unbind("click");
                     popup.css({
                         visibility: "hidden"
                     });

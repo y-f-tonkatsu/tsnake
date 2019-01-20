@@ -10,7 +10,7 @@ const _CHEAT_ON = true;
     var _mapMc;
     var _statusBarMc;
 
-    const _SPEED_UP_PROCESS_MAX = 60;
+    const _SPEED_UP_PROCESS_MAX = 70;
     const _SPEED_METER_UNIT = 15;
     const _NUM_KEYS_MAX = 4;
     const _SCORE_PER_COIN = 10;
@@ -103,7 +103,7 @@ const _CHEAT_ON = true;
             }
         },
         "updateSpeed": function () {
-            if (this.speedUpProcess >= _SPEED_UP_PROCESS_MAX + this.speed * _SPEED_METER_UNIT) {
+            if (this.speedUpProcess >= _SPEED_UP_PROCESS_MAX + this.speed * _SPEED_UP_PROCESS_MAX * 0.5) {
                 this.speedUpProcess = 0;
                 this.speed = Math.min(this.speed + 1, _SPEEDS.length - 1);
                 console.log("Speed Up: " + this.speed.toString() + " / " + (_SPEEDS.length - 1).toString());
@@ -656,7 +656,7 @@ const _CHEAT_ON = true;
             this.onGameOverListener(this.score);
         },
         "highScore": function (score) {
-
+            //this.score = 100000;
             HighScore.get(_.bind(function (data) {
                 var i = 1;
                 var rank = 11;

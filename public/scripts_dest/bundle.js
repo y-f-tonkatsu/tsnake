@@ -10,7 +10,7 @@ const _CHEAT_ON = true;
     var _mapMc;
     var _statusBarMc;
 
-    const _SPEED_UP_PROCESS_MAX = 60;
+    const _SPEED_UP_PROCESS_MAX = 70;
     const _SPEED_METER_UNIT = 15;
     const _NUM_KEYS_MAX = 4;
     const _SCORE_PER_COIN = 10;
@@ -103,7 +103,7 @@ const _CHEAT_ON = true;
             }
         },
         "updateSpeed": function () {
-            if (this.speedUpProcess >= _SPEED_UP_PROCESS_MAX + this.speed * _SPEED_METER_UNIT) {
+            if (this.speedUpProcess >= _SPEED_UP_PROCESS_MAX + this.speed * _SPEED_UP_PROCESS_MAX * 0.5) {
                 this.speedUpProcess = 0;
                 this.speed = Math.min(this.speed + 1, _SPEEDS.length - 1);
                 console.log("Speed Up: " + this.speed.toString() + " / " + (_SPEEDS.length - 1).toString());
@@ -656,7 +656,7 @@ const _CHEAT_ON = true;
             this.onGameOverListener(this.score);
         },
         "highScore": function (score) {
-
+            //this.score = 100000;
             HighScore.get(_.bind(function (data) {
                 var i = 1;
                 var rank = 11;
@@ -702,25 +702,30 @@ $(function () {
         "visibility": "visible"
     });
 
-    var dots = ".";
-
-    var interval = setInterval(function(){
-        dots = dots == "." ? ".." : ".";
-        $("#title--loader").text("LOADING" + dots);
-        console.log(dots);
-    }, 300);
+    $("#popup--loader__button--go").css({
+        "visibility": "hidden"
+    });
 
     cjsUtil = new CjsUtil(AdobeAn, "12203EAFB022374BAF15F927FCA8A97A");
 
     cjsUtil.loadImages(function () {
-        clearInterval(interval);
         $("#title--loader").text("READY");
+        $("#popup--loader__button--go").css({
+            "visibility": "visible"
+        });
         $("#popup--loader__button--go").click(function () {
+            $("#popup--loader__button--go").unbind("click");
+            $("#popup--loader__button--go").css({
+                "visibility": "hidden"
+            });
             $("#popup--loader").css({
                 "visibility": "hidden"
             });
             tSnake = new TSnake();
         });
+    }, function (e) {
+        var prog = Math.floor(e.progress * 100);
+        $("#title--loader").text("LOADING " + prog + "%");
     });
 
     _.forEach(StartTasks, function (task) {
@@ -911,11 +916,11 @@ var Areas;
                 },
                 {
                     "id": "Coin",
-                    "dropRate": 0.5,
+                    "dropRate": 0.4,
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.8,
+                    "dropRate": 0.85,
                 }
             ],
             "enemies": [
@@ -959,11 +964,11 @@ var Areas;
                 },
                 {
                     "id": "Coin",
-                    "dropRate": 0.5,
+                    "dropRate": 0.46,
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.7,
+                    "dropRate": 0.78,
                 }
             ],
             "enemies": [
@@ -985,7 +990,7 @@ var Areas;
             "items": [
                 {
                     "id": "Apple",
-                    "spawnRate": 0.02,
+                    "spawnRate": 0.019,
                 },
                 {
                     "id": "Berry",
@@ -999,7 +1004,7 @@ var Areas;
             "dropItems": [
                 {
                     "id": "Apple",
-                    "dropRate": 0.1,
+                    "dropRate": 0.095,
                 },
                 {
                     "id": "Berry",
@@ -1011,11 +1016,11 @@ var Areas;
                 },
                 {
                     "id": "Coin",
-                    "dropRate": 0.5,
+                    "dropRate": 0.48,
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.7,
+                    "dropRate": 0.72,
                 }
             ],
             "enemies": [
@@ -1041,7 +1046,7 @@ var Areas;
             "items": [
                 {
                     "id": "Apple",
-                    "spawnRate": 0.02,
+                    "spawnRate": 0.019,
                 },
                 {
                     "id": "Berry",
@@ -1055,7 +1060,7 @@ var Areas;
             "dropItems": [
                 {
                     "id": "Apple",
-                    "dropRate": 0.1,
+                    "dropRate": 0.095,
                 },
                 {
                     "id": "Berry",
@@ -1067,11 +1072,11 @@ var Areas;
                 },
                 {
                     "id": "Coin",
-                    "dropRate": 0.5,
+                    "dropRate": 0.52,
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.7,
+                    "dropRate": 0.66,
                 }
             ],
             "enemies": [
@@ -1081,7 +1086,7 @@ var Areas;
                 },
                 {
                     "id": "Mouse",
-                    "spawnRate": 0.35,
+                    "spawnRate": 0.4,
                 },
             ],
             "initialSpeed": 1
@@ -1093,7 +1098,7 @@ var Areas;
             "items": [
                 {
                     "id": "Apple",
-                    "spawnRate": 0.018,
+                    "spawnRate": 0.0187,
                 },
                 {
                     "id": "Berry",
@@ -1107,7 +1112,7 @@ var Areas;
             "dropItems": [
                 {
                     "id": "Apple",
-                    "dropRate": 0.1,
+                    "dropRate": 0.09,
                 },
                 {
                     "id": "Berry",
@@ -1119,11 +1124,11 @@ var Areas;
                 },
                 {
                     "id": "Coin",
-                    "dropRate": 0.5,
+                    "dropRate": 0.54,
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.6,
+                    "dropRate": 0.62,
                 }
             ],
             "enemies": [
@@ -1153,7 +1158,7 @@ var Areas;
             "items": [
                 {
                     "id": "Apple",
-                    "spawnRate": 0.018,
+                    "spawnRate": 0.0184,
                 },
                 {
                     "id": "Berry",
@@ -1167,7 +1172,7 @@ var Areas;
             "dropItems": [
                 {
                     "id": "Apple",
-                    "dropRate": 0.1,
+                    "dropRate": 0.088,
                 },
                 {
                     "id": "Berry",
@@ -1179,11 +1184,11 @@ var Areas;
                 },
                 {
                     "id": "Coin",
-                    "dropRate": 0.5,
+                    "dropRate": 0.57,
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.5,
+                    "dropRate": 0.58,
                 }
             ],
             "enemies": [
@@ -1193,7 +1198,7 @@ var Areas;
                 },
                 {
                     "id": "Bear",
-                    "spawnRate": 0.03,
+                    "spawnRate": 0.04,
                 },
                 {
                     "id": "Cancer",
@@ -1213,7 +1218,7 @@ var Areas;
             "items": [
                 {
                     "id": "Apple",
-                    "spawnRate": 0.017,
+                    "spawnRate": 0.018,
                 },
                 {
                     "id": "Berry",
@@ -1227,7 +1232,7 @@ var Areas;
             "dropItems": [
                 {
                     "id": "Apple",
-                    "dropRate": 0.1,
+                    "dropRate": 0.86,
                 },
                 {
                     "id": "Berry",
@@ -1239,33 +1244,33 @@ var Areas;
                 },
                 {
                     "id": "Coin",
-                    "dropRate": 0.5,
+                    "dropRate": 0.6,
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.5,
+                    "dropRate": 0.52,
                 }
             ],
             "enemies": [
                 {
                     "id": "Frog",
-                    "spawnRate": 0.12,
+                    "spawnRate": 0.10,
                 },
                 {
                     "id": "Spider",
-                    "spawnRate": 0.05,
+                    "spawnRate": 0.04,
                 },
                 {
                     "id": "Bear",
-                    "spawnRate": 0.03,
+                    "spawnRate": 0.04,
                 },
                 {
                     "id": "Cancer",
-                    "spawnRate": 0.06,
+                    "spawnRate": 0.05,
                 },
                 {
                     "id": "Hedgehog",
-                    "spawnRate": 0.06,
+                    "spawnRate": 0.05,
                 }
             ],
             "initialSpeed": 1
@@ -1277,7 +1282,7 @@ var Areas;
             "items": [
                 {
                     "id": "Apple",
-                    "spawnRate": 0.017,
+                    "spawnRate": 0.018,
                 },
                 {
                     "id": "Berry",
@@ -1291,7 +1296,7 @@ var Areas;
             "dropItems": [
                 {
                     "id": "Apple",
-                    "dropRate": 0.1,
+                    "dropRate": 0.084,
                 },
                 {
                     "id": "Berry",
@@ -1303,11 +1308,11 @@ var Areas;
                 },
                 {
                     "id": "Coin",
-                    "dropRate": 0.5,
+                    "dropRate": 0.65,
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.4,
+                    "dropRate": 0.46,
                 }
             ],
             "enemies": [
@@ -1321,15 +1326,15 @@ var Areas;
                 },
                 {
                     "id": "Spider",
-                    "spawnRate": 0.05,
+                    "spawnRate": 0.04,
                 },
                 {
                     "id": "Bear",
-                    "spawnRate": 0.03,
+                    "spawnRate": 0.04,
                 },
                 {
                     "id": "Cancer",
-                    "spawnRate": 0.05,
+                    "spawnRate": 0.07,
                 },
                 {
                     "id": "Hedgehog",
@@ -10164,110 +10169,82 @@ an.getComposition = function(id) {
 
 })(createjs = createjs||{}, AdobeAn = AdobeAn||{});
 var createjs, AdobeAn;
-var Enemy;
+var CjsUtil;
 
 (function () {
 
-    StartTasks.push(function () {
-
-        var data = {
-            "Frog": {
-                "dropItemRate": 0.2,
-                "score": 2
-            },
-            "Cancer": {
-                "dropItemRate": 0.25,
-                "score": 3
-            },
-            "Hedgehog": {
-                "dropItemRate": 0.25,
-                "score": 3
-            },
-            "Mouse": {
-                "dropItemRate": 0.1,
-                "score": 1
-            },
-            "Bear": {
-                "dropItemRate": 0.5,
-                "score": 30
-            },
-            "Spider": {
-                "dropItemRate": 0.3,
-                "score": 5
-            }
-        };
-
-        Enemy = function (map, pos, id) {
-            this.init(map, pos, id);
-        };
-
-        Enemy.LIMIT = 60;
-
-        Enemy.prototype = new FieldObject();
-
-        Enemy.prototype.attackedTest = function (p) {
-            return false;
-        };
-
-        Enemy.prototype.isAlive = function () {
-            return this.state !== "defeated" &&
-                this.state !== "removed";
+    var handleFileLoad = function (e, comp) {
+        var gCjsImages = comp.getImages();
+        if (e && (e.item.type == "image")) {
+            gCjsImages[e.item.id] = e.result;
         }
+    }
 
-        Enemy.prototype.defeat = function () {
+    CjsUtil = function (AdobeAn, compositionId) {
+        this.AdobeAn = AdobeAn;
+        this.comp = AdobeAn.getComposition(compositionId);
+        this.lib = this.comp.getLibrary();
+        createjs.Ticker.setFPS(this.lib.properties.fps);
+    };
 
-            if (this.state == "removed" ||
-                this.state == "defeated") {
-                return false;
-            }
 
-            playSound("defeat");
-            this.setState("defeated", _.bind(function () {
-                this.remove();
+    CjsUtil.prototype = {
+        loadImages: function (completeListener, progressListener,  loadListener, rootPath) {
+            var loader = new createjs.LoadQueue(false);
+            loader.installPlugin(createjs.Sound);
+            var comp = this.comp;
+            loader.addEventListener("progress", function (evt) {
+                if (typeof progressListener === "function") {
+                    progressListener(evt);
+                }
+            });
+            loader.addEventListener("fileload", function (evt) {
+                handleFileLoad(evt, comp);
+                if (typeof loadListener === "function") {
+                    loadListener(evt);
+                }
+            });
+            loader.addEventListener("complete", _.bind(function (evt) {
+                this.AdobeAn.compositionLoaded(this.lib.properties.id);
+                if (typeof completeListener === "function") {
+                    completeListener();
+                }
             }, this));
-            return Math.random() < data[this.id].dropItemRate;
-        };
 
-        Enemy.prototype.setFear = function () {
-            if (this.id == "Bear") {
-                return;
-            }
-            if (this.state == "normal") {
-                this.setState("fear");
-            }
-            return false;
-        };
+            var gCjsLib = this.comp.getLibrary();
 
-        Enemy.prototype.endFear = function () {
-            if (this.state == "fear") {
-                this.setState("normal");
-            }
-            return false;
-        };
+            var staticPath = rootPath || $("body").attr("data-static-img") || "";
 
-        Enemy.prototype.getScore = function () {
-            return data[this.id].score;
-        };
+            var manifest = _.map(this.lib.properties.manifest, function (item) {
+                var newItem = item;
+                newItem["src"] = staticPath + item["src"];
+                return newItem;
+            });
 
-        Enemy.prototype.saHitTest = function (p) {
-            if (this.state == "spawn") {
-                return false;
-            }
-            if (this.id == "Cancer") {
-                return this.position.y == p.y &&
-                    Math.abs(this.position.x - p.x) == 1;
-            } else if (this.id == "Hedgehog") {
-                return this.position.x == p.x &&
-                    Math.abs(this.position.y - p.y) == 1;
-            } else if (this.id == "Spider") {
-                return Math.abs(this.position.x - p.x) <= 1 &&
-                    Math.abs(this.position.y - p.y) <= 1;
-            } else {
-                return false;
-            }
-        };
+            loader.loadManifest(manifest);
 
-    });
+        }, getLib: function () {
+            return this.lib;
+        }, createMc: function (mcName) {
+            return new this.lib[mcName]();
+        }, createStage: function (canvas) {
+            this.stage = new createjs.Stage(canvas);
+            createjs.Ticker.addEventListener("tick", this.stage);
+            return this.stage;
+        }, start: function (canvas, mcName, options) {
+
+            _.defaults(options, {
+                "loop": false,
+            });
+
+            var root = this.createMc(mcName);
+            root.loop = options.loop;
+            this.createStage(canvas);
+            this.stage.addChild(root);
+
+            return this.stage;
+        }
+    };
 
 })();
 
@@ -10436,6 +10413,113 @@ DIRECTION = {
 
 
 
+var Enemy;
+
+(function () {
+
+    StartTasks.push(function () {
+
+        var data = {
+            "Frog": {
+                "dropItemRate": 0.2,
+                "score": 2
+            },
+            "Cancer": {
+                "dropItemRate": 0.25,
+                "score": 3
+            },
+            "Hedgehog": {
+                "dropItemRate": 0.25,
+                "score": 3
+            },
+            "Mouse": {
+                "dropItemRate": 0.1,
+                "score": 1
+            },
+            "Bear": {
+                "dropItemRate": 0.5,
+                "score": 30
+            },
+            "Spider": {
+                "dropItemRate": 0.3,
+                "score": 5
+            }
+        };
+
+        Enemy = function (map, pos, id) {
+            this.init(map, pos, id);
+        };
+
+        Enemy.LIMIT = 60;
+
+        Enemy.prototype = new FieldObject();
+
+        Enemy.prototype.attackedTest = function (p) {
+            return false;
+        };
+
+        Enemy.prototype.isAlive = function () {
+            return this.state !== "defeated" &&
+                this.state !== "removed";
+        }
+
+        Enemy.prototype.defeat = function () {
+
+            if (this.state == "removed" ||
+                this.state == "defeated") {
+                return false;
+            }
+
+            playSound("defeat");
+            this.setState("defeated", _.bind(function () {
+                this.remove();
+            }, this));
+            return Math.random() < data[this.id].dropItemRate;
+        };
+
+        Enemy.prototype.setFear = function () {
+            if (this.id == "Bear") {
+                return;
+            }
+            if (this.state == "normal") {
+                this.setState("fear");
+            }
+            return false;
+        };
+
+        Enemy.prototype.endFear = function () {
+            if (this.state == "fear") {
+                this.setState("normal");
+            }
+            return false;
+        };
+
+        Enemy.prototype.getScore = function () {
+            return data[this.id].score;
+        };
+
+        Enemy.prototype.saHitTest = function (p) {
+            if (this.state == "spawn") {
+                return false;
+            }
+            if (this.id == "Cancer") {
+                return this.position.y == p.y &&
+                    Math.abs(this.position.x - p.x) == 1;
+            } else if (this.id == "Hedgehog") {
+                return this.position.x == p.x &&
+                    Math.abs(this.position.y - p.y) == 1;
+            } else if (this.id == "Spider") {
+                return Math.abs(this.position.x - p.x) <= 1 &&
+                    Math.abs(this.position.y - p.y) <= 1;
+            } else {
+                return false;
+            }
+        };
+
+    });
+
+})();
+
 var Item;
 
 (function () {
@@ -10464,6 +10548,7 @@ var Item;
                 playSound("vmax");
             },
             "Wine": function (game, snake) {
+                snake.removeBody();
                 snake.removeBody();
                 playSound("shrink");
             },
@@ -10560,6 +10645,7 @@ let HighScore;
             $("#popup--high-score__text--score").text("SCORE: " + score);
 
             $("#popup--input-high-score__button--submit").click(_.bind(function () {
+                $("#popup--input-high-score__button--submit").unbind("click");
                 popup.css({
                     visibility: "hidden"
                 });
@@ -10604,6 +10690,7 @@ let HighScore;
                 });
 
                 $("#bg--high-score").click(_.bind(function () {
+                    $("#bg--high-score").unbind("click");
                     popup.css({
                         visibility: "hidden"
                     });

@@ -27,6 +27,7 @@ var Item;
             },
             "Wine": function (game, snake) {
                 snake.removeBody();
+                snake.removeBody();
                 playSound("shrink");
             },
             "Berry": function (game, snake) {
