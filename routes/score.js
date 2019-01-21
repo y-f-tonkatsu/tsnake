@@ -14,23 +14,44 @@ redisClient.on('error', function (err) {
 /* GET High Score */
 router.get('/', function (req, res, next) {
 
-    return redisClient.get('k', function (error, result) {
-        if (error) {
-            console.log(error);
-            throw error;
-        }
-
-        return redisClient.get('high_score', function (err, result) {
-            return res.send(JSON.parse(result));
-        });
-
+    return redisClient.get('high_score', function (err, result) {
+        return res.send(JSON.parse(result));
     });
+
+
+});
+
+let showRec = function (res, from, to) {
+    console.log("Record Requested");
+    console.log(from, to);
+    return redisClient.lrange('tsnake:score_record', from, to, function (err, result) {
+        if(err){
+            return res.send("error");
+        }
+        return res.send(result.toString());
+    });
+}
+
+/* GET Records */
+router.get('/rec/:from-:to', function (req, res, next) {
+
+    let from = parseInt(req.params.from);
+    let to = parseInt(req.params.to);
+
+    return showRec(res, from, to);
+
+});
+
+router.get('/rec/', function (req, res, next) {
+
+    return showRec(res, 0, -1);
 
 });
 
 router.post('/', function (req, res, next) {
     let player = req.bodyString('player');
     let score = req.bodyInt('score');
+    let token = req.bodyInt('token');
     console.log("Score Posted");
     console.log("Player: " + player);
     console.log("Score: " + score);
@@ -41,6 +62,11 @@ router.post('/', function (req, res, next) {
     };
 
     return redisClient.get('high_score', function (err, result) {
+
+        if(err){
+            return res.send("error");
+        }
+
         let ranking = JSON.parse(result);
         if (!ranking) {
             ranking = createNewRanking();
@@ -71,8 +97,16 @@ router.post('/', function (req, res, next) {
         console.log("--HIGH SCORE--");
         console.log(highScoreJson);
 
-        return redisClient.rpush('tsnake:score_record', recordJson, function () {
+        return redisClient.rpush('tsnake:score_record', recordJson, function (err, result) {
+            if(err){
+                return res.send("error");
+            }
+
             return redisClient.set('high_score', highScoreJson, function () {
+                if(err){
+                    return res.send("error");
+                }
+
                 return res.send('success');
             });
         });
