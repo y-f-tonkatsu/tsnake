@@ -34,6 +34,13 @@ a {
     margin-top: 20%;
 }
 
+#title--loader {
+    display: block;
+    font-size: 1.8em;
+    text-align: center;
+    margin-top: 20%;
+}
+
 #popup--loader__button--go {
     font-size: 3em;
     width: 50%;
@@ -59,6 +66,40 @@ a {
     background: white;
     border-radius: 4px;
 }
+
+#popup--author {
+    width: 86%;
+    max-width: 680px;
+    background: white;
+    border-radius: 4px;
+    margin: 20% auto;
+}
+
+.img--author {
+    width: 16%;
+    margin: 2em 0.5em 50% 1em;
+    float: left;
+}
+
+.img--experimental {
+    width: 80%;
+    margin: 1em;
+}
+
+#title--author {
+    display: block;
+    font-size: 1.2em;
+    text-align: left;
+    margin: 1em;
+}
+
+#desc--author {
+    display: block;
+    font-size: 1em;
+    text-align: left;
+    margin: 1em;
+}
+
 
 #popup--input-high-score {
     width: 90%;

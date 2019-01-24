@@ -52,6 +52,7 @@ var TSnake;
             var startButtonClickListener = _.bind(function () {
                 mainTitleMc.startButton.removeEventListener("click", startButtonClickListener);
                 mainTitleMc.rankingButton.removeEventListener("click", rankingButtonClickListener);
+                mainTitleMc.authorButton.removeEventListener("click", authorButtonClickListener);
                 playSound("ok");
                 mainTitleMc.gotoAndPlay("toArea");
                 this.stage.addEventListener("tick", mainTitleEndListener);
@@ -63,12 +64,30 @@ var TSnake;
                 }, this));
             }, this);
 
+            var authorButtonClickListener = _.bind(function () {
+                playSound("ok");
+                const popup = $("#popup--author, #bg--high-score");
+                popup.css({
+                    visibility: "visible"
+                });
+
+                $("#bg--high-score").click(_.bind(function () {
+                    $("#bg--high-score").unbind("click");
+                    popup.css({
+                        visibility: "hidden"
+                    });
+                }, this));
+
+            }, this);
+
             var onMainTitleStopListener = _.bind(function () {
                 if (mainTitleMc.currentLabel == "waitToStart") {
                     mainTitleMc.removeEventListener("tick", onMainTitleStopListener);
                     mainTitleMc.stop();
                     mainTitleMc.startButton.addEventListener("click", startButtonClickListener);
                     mainTitleMc.startButton.cursor = "pointer";
+                    mainTitleMc.authorButton.addEventListener("click", authorButtonClickListener);
+                    mainTitleMc.authorButton.cursor = "pointer";
                     mainTitleMc.rankingButton.addEventListener("click", rankingButtonClickListener);
                     mainTitleMc.rankingButton.cursor = "pointer";
                 }

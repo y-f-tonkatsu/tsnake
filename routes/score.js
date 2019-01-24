@@ -25,7 +25,7 @@ let showRec = function (res, from, to) {
     console.log("Record Requested");
     console.log(from, to);
     return redisClient.lrange('tsnake:score_record', from, to, function (err, result) {
-        if(err){
+        if (err) {
             return res.send("error");
         }
         return res.send(result.toString());
@@ -51,19 +51,27 @@ router.get('/rec/', function (req, res, next) {
 router.post('/', function (req, res, next) {
     let player = req.bodyString('player');
     let score = req.bodyInt('score');
-    let token = req.bodyInt('token');
+    let token = req.bodyString('token');
+    let date = new Date();
     console.log("Score Posted");
     console.log("Player: " + player);
     console.log("Score: " + score);
+    console.log("date: " + date.toString());
+    console.log("timeStamp: " + Date.now());
+    console.log("token: " + token);
+    if (!validateToken(token, player, score)) {
+        return res.send("Invalid Token");
+    }
     let record = {
         "player": player,
         "score": score,
-        "date": Date().toString()
+        "date": date.toString(),
+        "timeStamp": Date.now()
     };
 
     return redisClient.get('high_score', function (err, result) {
 
-        if(err){
+        if (err) {
             return res.send("error");
         }
 
@@ -73,12 +81,28 @@ router.post('/', function (req, res, next) {
         }
         ranking.push(record);
         ranking.sort(function (a, b) {
+
+            if (!a.timeStamp) {
+                a.date = date.toString();
+                a.timeStamp = Date.now();
+            }
+            if (!b.timeStamp) {
+                b.date = date.toString();
+                b.timeStamp = Date.now();
+            }
+
             let x = parseInt(a.score);
             let y = parseInt(b.score);
             if (x > y) {
                 return -1;
-            } else if (x <= y) {
+            } else if (x < y) {
                 return 1;
+            } else {
+                if (parseInt(a.timeStamp) > parseInt(b.timeStamp)) {
+                    return 1;
+                } else {
+                    return -1;
+                }
             }
         });
 
@@ -98,12 +122,12 @@ router.post('/', function (req, res, next) {
         console.log(highScoreJson);
 
         return redisClient.rpush('tsnake:score_record', recordJson, function (err, result) {
-            if(err){
+            if (err) {
                 return res.send("error");
             }
 
             return redisClient.set('high_score', highScoreJson, function () {
-                if(err){
+                if (err) {
                     return res.send("error");
                 }
 
@@ -116,12 +140,20 @@ router.post('/', function (req, res, next) {
 
 });
 
+function validateToken(token, name, score) {
+    let str = (1000000 - 24635 + score).toString();
+    str = str + "tonikaku" + name + "49ganbatta"
+    return token === str;
+}
+
 function createNewRanking() {
     let ranking = [];
     for (var i = 0; i < 10; i++) {
         ranking.push({
             "player": "tonkatsu",
-            "score": 1
+            "score": 1,
+            "date": date.toString(),
+            "timeStamp": Date.now()
         });
     }
     return ranking;

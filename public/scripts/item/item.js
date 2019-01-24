@@ -54,11 +54,11 @@ var Item;
         Item.LIFETIME = {
             "Mage": 0,
             "Gate": 0,
-            "Key": 60,
-            "Coin": 60,
-            "Apple": 60,
-            "Wine": 60,
-            "Berry": 60,
+            "Key": 40,
+            "Coin": 50,
+            "Apple": 30,
+            "Wine": 40,
+            "Berry": 40,
         }
 
         Item.prototype = new FieldObject();

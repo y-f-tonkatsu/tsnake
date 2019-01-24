@@ -48,6 +48,10 @@ var Enemy;
                 this.state !== "removed";
         }
 
+        Enemy.prototype.getDropItemRate = function () {
+            return data[this.id].dropItemRate;
+        };
+
         Enemy.prototype.defeat = function () {
 
             if (this.state == "removed" ||
@@ -59,7 +63,6 @@ var Enemy;
             this.setState("defeated", _.bind(function () {
                 this.remove();
             }, this));
-            return Math.random() < data[this.id].dropItemRate;
         };
 
         Enemy.prototype.setFear = function () {

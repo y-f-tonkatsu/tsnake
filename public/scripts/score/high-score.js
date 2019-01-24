@@ -29,7 +29,7 @@ let HighScore;
         },
         "show": function (rank, callback) {
 
-            if(_.isFunction(rank)){
+            if (_.isFunction(rank)) {
                 callback = rank;
                 rank = null;
             }
@@ -45,7 +45,7 @@ let HighScore;
                         "<div class='column column--player'></div>" +
                         "<div class='column column--score'></div>" +
                         "</div>");
-                    if(rank == i){
+                    if (rank == i) {
                         $(elem).addClass("popup--high-score__text--your--score");
                     }
                     $(elem).find(".column--rank").text(i.toString());
@@ -84,12 +84,17 @@ let HighScore;
 
             $.post(this.getBaseUrl() + "score/", {
                 "player": name,
-                "score": score
+                "score": score,
+                "token": this.makeToken(name, score)
             }, function (data) {
-
                 callback(data);
             });
         },
+        "makeToken": function (name, score) {
+            let str = (-24635 + score + 1000000).toString();
+            str = str + "tonikaku" + name + "49ganbatta";
+            return str;
+        }
     }
 
 

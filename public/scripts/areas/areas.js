@@ -87,7 +87,7 @@ var Areas;
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.78,
+                    "dropRate": 0.75,
                 }
             ],
             "enemies": [
@@ -139,7 +139,7 @@ var Areas;
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.72,
+                    "dropRate": 0.7,
                 }
             ],
             "enemies": [
@@ -195,7 +195,7 @@ var Areas;
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.66,
+                    "dropRate": 0.64,
                 }
             ],
             "enemies": [
@@ -247,7 +247,7 @@ var Areas;
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.62,
+                    "dropRate": 0.6,
                 }
             ],
             "enemies": [
@@ -307,7 +307,7 @@ var Areas;
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.58,
+                    "dropRate": 0.5,
                 }
             ],
             "enemies": [
@@ -367,7 +367,7 @@ var Areas;
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.52,
+                    "dropRate": 0.46,
                 }
             ],
             "enemies": [
@@ -431,7 +431,7 @@ var Areas;
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.46,
+                    "dropRate": 0.38,
                 }
             ],
             "enemies": [

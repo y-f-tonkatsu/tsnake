@@ -15,12 +15,17 @@ const _CHEAT_ON = true;
     const _NUM_KEYS_MAX = 4;
     const _SCORE_PER_COIN = 10;
 
+    const _SPAWN_ENEMY_ADJ_CAP = 15;
+    const _COMP_ENEMY_RATE = 30;
+    const _COMP_DROP_ITEM_RATE = 100;
+    const _ALLOW_NO_APPLE_RATE = 24;
+
     Game = function (stage, areaNo, onClearListener, onGameOverListener, score) {
 
         this.score = score;
 
         this.stage = stage;
-        this.areaNo = areaNo;
+        this.areaNo = 7;
         this.area = Areas[this.areaNo];
 
         this.tiles = [];
@@ -36,6 +41,10 @@ const _CHEAT_ON = true;
         this.numKeys = 0;
 
         this.vmax = 0;
+
+        this.killCount = 0;
+        this.totalKillCount = 0;
+        this.noAppleCount = 0;
 
         this.isFinishing = false;
         this.isDying = false;
@@ -140,20 +149,14 @@ const _CHEAT_ON = true;
                 if (enemy.hitTest(this.snake.bodies[0].position)) {
                     if (this.isVmax() &&
                         enemy.id !== "Bear") {
-                        this.addScore(enemy.getScore(), enemy.position);
-                        if (enemy.defeat()) {
-                            this.dropItem(enemy.position.clone());
-                        }
+                        this.killEnemy(enemy);
                     } else {
                         this.gameOver();
                     }
                 } else if (this.isVmax() &&
                     enemy.id == "Mouse" &&
                     enemy.position.sdist(this.snake.bodies[0].position) == 1) {
-                    this.addScore(enemy.getScore(), enemy.position);
-                    if (enemy.defeat()) {
-                        this.dropItem(enemy.position.clone());
-                    }
+                    this.killEnemy(enemy)
                 } else if (enemy.saHitTest(this.snake.bodies[0].position)) {
                     if (this.vmax <= 0) {
                         enemy.setState("sa");
@@ -169,6 +172,14 @@ const _CHEAT_ON = true;
                 enemy.update();
             }, this));
 
+        },
+        "killEnemy": function (enemy) {
+            this.addScore(enemy.getScore(), enemy.position);
+            this.addKillCount(enemy.getScore());
+            enemy.defeat();
+            if (Math.random() < enemy.getDropItemRate()) {
+                this.dropItem(enemy.position.clone());
+            }
         },
         "updateItems": function () {
 
@@ -476,19 +487,43 @@ const _CHEAT_ON = true;
             return n;
         },
         "spawnObjects": function () {
-            _.forEach(this.area.enemies, _.bind(function (enemy) {
-                if (enemy.spawnRate > Math.random()) {
-                    this.spawnEnemy(enemy.id);
+
+            if (Math.random() * this.getNumAllEnemies() < _SPAWN_ENEMY_ADJ_CAP) {
+
+                if (this.totalTime % _COMP_ENEMY_RATE == 1) {
+                    let enemyId = this.area.enemies[Math.floor(Math.random() * this.area.enemies.length)].id;
+                    //console.log("comp:" + enemyId);
+                    this.spawnEnemy(enemyId);
                 }
-            }, this));
+
+                _.forEach(this.area.enemies, _.bind(function (enemy) {
+                    if (enemy.spawnRate > Math.random()) {
+                        this.spawnEnemy(enemy.id);
+                    }
+                }, this));
+            }
+
             _.forEach(this.area.comp, _.bind(function (compTime) {
                 if (compTime == this.totalTime) {
-                    console.log("comp");
                     if (this.getNumItems("Apple") < 1) {
                         this.spawnItem("Apple");
+                        this.noAppleCount = 0;
                     }
                 }
             }, this));
+
+            if (this.getNumItems("Apple") == 0 && this.vmax <= 0) {
+                this.noAppleCount++;
+                console.log("NoApple:" + this.noAppleCount);
+                if (Math.random() * this.noAppleCount > _ALLOW_NO_APPLE_RATE) {
+                    console.log("Save No Apple State");
+                    this.spawnItem("Apple");
+                    this.noAppleCount = 0;
+                }
+            } else {
+                this.noAppleCount = 0;
+            }
+
             _.forEach(this.area.items, _.bind(function (item) {
                 if (item.spawnRate > Math.random()) {
                     if (this.getNumItems(item.id) < Item.DROP_LIMITS[item.id]) {
@@ -513,9 +548,18 @@ const _CHEAT_ON = true;
                 if (item.id == "Key" && this.getNumItems("Gate") + this.getNumItems("Mage") >= 1) {
                     return;
                 }
-                if (item.dropRate > Math.random()) {
+                let rate = item.dropRate;
+                if (item.id == "Key") {
+                    let difficulty = (this.numKeys + 1) * this.areaNo;
+                    difficulty = difficulty * Math.min((1 - this.killCount / _COMP_DROP_ITEM_RATE), 0);
+                    rate = rate * (1 - difficulty / 40);
+                }
+                if (rate > Math.random()) {
                     var to = this.getFreePosition();
                     playSound("item_pop");
+                    if (item.id == "Key") {
+                        this.killCount = 0;
+                    }
                     this.throwItem(item.id, Cood.localToWorld(from), Cood.localToWorld(to), _.bind(function () {
                         var newItem = new Item(_mapMc, to, item.id, "normal");
                         this.items.push(newItem);
@@ -581,6 +625,10 @@ const _CHEAT_ON = true;
             ), _POS_SCORE_TEXT, _.bind(function () {
                 this.addScore(_SCORE_PER_COIN, pos);
             }, this));
+        },
+        "addKillCount": function (score) {
+            this.killCount += score;
+            this.totalKillCount += score;
         },
         "addScore": function (v, pos) {
             if (pos) {
@@ -656,12 +704,12 @@ const _CHEAT_ON = true;
             this.onGameOverListener(this.score);
         },
         "highScore": function (score) {
-            //this.score = 100000;
+            //this.score = 20;
             HighScore.get(_.bind(function (data) {
                 var i = 1;
                 var rank = 11;
                 _.forEach(data, _.bind(function (d) {
-                    if (this.score >= d.score) {
+                    if (this.score > d.score) {
                         rank = Math.min(rank, i);
                     }
                     i++;
@@ -787,6 +835,7 @@ var TSnake;
             var startButtonClickListener = _.bind(function () {
                 mainTitleMc.startButton.removeEventListener("click", startButtonClickListener);
                 mainTitleMc.rankingButton.removeEventListener("click", rankingButtonClickListener);
+                mainTitleMc.authorButton.removeEventListener("click", authorButtonClickListener);
                 playSound("ok");
                 mainTitleMc.gotoAndPlay("toArea");
                 this.stage.addEventListener("tick", mainTitleEndListener);
@@ -798,12 +847,30 @@ var TSnake;
                 }, this));
             }, this);
 
+            var authorButtonClickListener = _.bind(function () {
+                playSound("ok");
+                const popup = $("#popup--author, #bg--high-score");
+                popup.css({
+                    visibility: "visible"
+                });
+
+                $("#bg--high-score").click(_.bind(function () {
+                    $("#bg--high-score").unbind("click");
+                    popup.css({
+                        visibility: "hidden"
+                    });
+                }, this));
+
+            }, this);
+
             var onMainTitleStopListener = _.bind(function () {
                 if (mainTitleMc.currentLabel == "waitToStart") {
                     mainTitleMc.removeEventListener("tick", onMainTitleStopListener);
                     mainTitleMc.stop();
                     mainTitleMc.startButton.addEventListener("click", startButtonClickListener);
                     mainTitleMc.startButton.cursor = "pointer";
+                    mainTitleMc.authorButton.addEventListener("click", authorButtonClickListener);
+                    mainTitleMc.authorButton.cursor = "pointer";
                     mainTitleMc.rankingButton.addEventListener("click", rankingButtonClickListener);
                     mainTitleMc.rankingButton.cursor = "pointer";
                 }
@@ -968,7 +1035,7 @@ var Areas;
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.78,
+                    "dropRate": 0.75,
                 }
             ],
             "enemies": [
@@ -1020,7 +1087,7 @@ var Areas;
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.72,
+                    "dropRate": 0.7,
                 }
             ],
             "enemies": [
@@ -1076,7 +1143,7 @@ var Areas;
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.66,
+                    "dropRate": 0.64,
                 }
             ],
             "enemies": [
@@ -1128,7 +1195,7 @@ var Areas;
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.62,
+                    "dropRate": 0.6,
                 }
             ],
             "enemies": [
@@ -1188,7 +1255,7 @@ var Areas;
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.58,
+                    "dropRate": 0.5,
                 }
             ],
             "enemies": [
@@ -1248,7 +1315,7 @@ var Areas;
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.52,
+                    "dropRate": 0.46,
                 }
             ],
             "enemies": [
@@ -1312,7 +1379,7 @@ var Areas;
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.46,
+                    "dropRate": 0.38,
                 }
             ],
             "enemies": [
@@ -3698,6 +3765,25 @@ p.nominalBounds = new cjs.Rectangle(0,0,780,780);
 
 }).prototype = p = new cjs.MovieClip();
 p.nominalBounds = new cjs.Rectangle(0,0,780,780);
+
+
+(lib.AuthorButton = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// AUTHOR
+	this.shape = new cjs.Shape();
+	this.shape.graphics.f("#FF9A00").s().p("ArjCJQgFgEAAgGIAGgQIAPgnIAWg3IAag9IAbg/IAFgMIAFgKIABgEQACgEACgCQADgBAFAAQAGAAAEAEQAEADABAFIgBACIAAADIAAABIgBABIgBABIATAuIAWAzIAeA9IAoBTIACADIAAACQAAAGgFAEQgEAEgHAAQgGABgCgDQgDgCgEgJIgXguIgbg8IgjhOIgMgbIgKAZIgQAmIgNAdIgLAcIAsgBIAQAAIAIAAIAHgBIAGAAQAGAAAEAEQADAEAAAGQAAAFgBADQgCAEgDACIgDABIgHAAIgQABIgXAAIgdABIgHAAIgEABIgHgBIgDgBIgDAIIgDAIIgIASIgHAUIgFANIgCAFIgBABQgBACgDABIgGABQgHAAgEgEgAAnCIQgEgEAAgGIAAj2QAAgGAEgDQAEgEAGAAQAHAAAEAEQAEADAAAGIAABkICRgDIAAhjQAAgGAEgEQAEgDAGgBQAHABAEADQAEAEAAAGIAAD3QAAAGgEADQgEAEgHAAQgGAAgEgEQgEgDAAgGIAAh4IiRADIAAB2QAAAGgEAEQgEAEgHAAQgGAAgEgEgALTCIIgEgDIhZhtIgMABIgNAAIgUAAIgBBkQAAAFgFADQgEAEgGAAQgFAAgEgCQgEgDgCgEIAAgCIAAgBIAFjeIgBAAIgDABIgBAAIgBAAIgBAAQgEAAgDgFQgDgEAAgGQAAgEACgDQACgEADgCIAEgBIAJgBIAIAAIAPAAIAbgCIAZgBIASAAQAqAAAVARQAWARAAAgQAAAhgTAWQgUAUgmAJIBOBZIADAFIABAGQAAAHgFAEQgFAFgHAAIgFgBgAJ4hlIgiABIgLABIgBBgIAMAAIAIAAQAmAAAWgFQAXgGAKgNQAKgNgBgWQABgPgGgIQgFgJgMgEQgMgDgVAAIgVAAgAE2BnQgegjAAhAQAAgpAPgfQAPggAagSQAagSAjAAQAiAAAZASQAZARAPAfQAOAfAAAoQAAApgPAfQgOAegbARQgaARgiAAQg3AAgdgigAFhhcQgTAPgLAZQgLAZAAAfQAAA0AUAaQAVAaApAAQAYAAATgOQATgOALgYQALgYAAgfQAAgggLgYQgKgYgSgOQgSgNgZAAQgYAAgTAOgAh9CGQgEgEAAgGIAAjeIgRAAIgOAAIgRAAIgaAAIgOAAIgFAAIgBAAQgEgBgDgEQgDgEAAgFQAAgEACgEQACgEADgCIAGgBIANAAIAWAAIAigBIAmAAIAkAAIAeAAIAQAAIAOgBIAIAAQAHAAADADQAEAEAAAHQAAAGgDAEQgCAEgEABIgNAAIgXABIgdABIgfAAIAADeQAAAGgEAEQgEADgHAAQgGAAgEgDgAmmB9QgWgNgMgXQgMgXAAgfIAAieQAAgFAEgEQAEgEAHAAQAGAAAEAEQAEAEAAAFIAACfQAAAWAJAQQAIAQAQAJQAPAJAVAAQAWAAARgLQASgLAKgTQALgTAAgYIAAiSQAAgGAEgEQAEgEAHAAQAGAAAEAEQAEAEAAAGIAACSQAAAhgOAaQgNAZgZAPQgYAOgfAAQgeAAgWgMg");
+	this.shape.setTransform(-2.425,-0.875);
+
+	this.timeline.addTween(cjs.Tween.get(this.shape).wait(1));
+
+	// レイヤー_2
+	this.shape_1 = new cjs.Shape();
+	this.shape_1.graphics.f("#FFF6E6").s().p("A0AEOQg5AAAAg3IAAmtQAAg3A5AAMAoBAAAQA5AAAAA3IAAGtQAAA3g5AAg");
+
+	this.timeline.addTween(cjs.Tween.get(this.shape_1).wait(1));
+
+}).prototype = getMCSymbolPrototype(lib.AuthorButton, new cjs.Rectangle(-133.8,-27,267.70000000000005,54), null);
 
 
 (lib.warning_move = function(mode,startPosition,loop) {
@@ -8967,69 +9053,88 @@ p.nominalBounds = new cjs.Rectangle(-4.5,-2.9,101.9,1000.3);
 	this.timeline.addTween(cjs.Tween.get(this.instance).wait(129).to({_off:false},0).to({scaleX:1.398,scaleY:1.398},3).to({scaleX:1.0268,scaleY:1.0268,x:600.05,y:780.05},5).to({_off:true},1).wait(49));
 	this.timeline.addTween(cjs.Tween.get(this.instance_1).wait(138).to({_off:false},0).to({regX:0.1,scaleX:9.057,scaleY:9.057,x:600.9,y:-2424.95,mode:"single",startPosition:7},8).to({_off:true},1).wait(40));
 
+	// Author
+	this.authorButton = new lib.AuthorButton();
+	this.authorButton.name = "authorButton";
+	this.authorButton.parent = this;
+	this.authorButton.setTransform(600.75,1107.5);
+
+	this.instance_2 = new lib.AuthorButton("synched",0);
+	this.instance_2.parent = this;
+	this.instance_2.setTransform(600.75,1107.5);
+	this.instance_2._off = true;
+
+	this.timeline.addTween(cjs.Tween.get({}).to({state:[]}).to({state:[{t:this.authorButton}]},110).to({state:[{t:this.instance_2}]},19).to({state:[{t:this.instance_2}]},8).to({state:[]},1).wait(49));
+	this.timeline.addTween(cjs.Tween.get(this.instance_2).wait(129).to({_off:false},0).to({x:1360.65},8,cjs.Ease.none).to({_off:true},1).wait(49));
+
 	// Ranking
 	this.rankingButton = new lib.RankingButton();
 	this.rankingButton.name = "rankingButton";
 	this.rankingButton.parent = this;
 	this.rankingButton.setTransform(600.75,1009.1);
-	this.rankingButton._off = true;
 
-	this.timeline.addTween(cjs.Tween.get(this.rankingButton).wait(110).to({_off:false},0).wait(19).to({y:1265.15},8,cjs.Ease.none).to({_off:true},1).wait(49));
-
-	// T
-	this.instance_2 = new lib.T_1("synched",0);
-	this.instance_2.parent = this;
-	this.instance_2.setTransform(36.6,165.85,6.5115,6.5115,-149.791,0,0,-0.1,0);
-	this.instance_2._off = true;
-
-	this.timeline.addTween(cjs.Tween.get(this.instance_2).wait(34).to({_off:false},0).to({regX:0,scaleX:1,scaleY:1,rotation:0,x:236.35,y:637.95},10).wait(88).to({startPosition:0},0).to({x:-185.5,y:940.4},5).to({_off:true},1).wait(49));
-
-	// Eye
-	this.instance_3 = new lib.Eye("synched",0);
+	this.instance_3 = new lib.RankingButton("synched",0);
 	this.instance_3.parent = this;
-	this.instance_3.setTransform(668.75,573.3,2.7538,2.7538,21.6625);
+	this.instance_3.setTransform(600.75,1009.1);
 	this.instance_3._off = true;
 
-	this.timeline.addTween(cjs.Tween.get(this.instance_3).wait(10).to({_off:false},0).to({scaleX:17.6247,scaleY:17.6247,rotation:21.6626,x:669.1,y:572.5},3).wait(15).to({startPosition:0},0).to({_off:true},1).wait(158));
+	this.timeline.addTween(cjs.Tween.get({}).to({state:[]}).to({state:[{t:this.rankingButton}]},110).to({state:[{t:this.instance_3}]},19).to({state:[{t:this.instance_3}]},1).to({state:[{t:this.instance_3}]},1).to({state:[{t:this.instance_3}]},6).to({state:[]},1).wait(49));
+	this.timeline.addTween(cjs.Tween.get(this.instance_3).wait(129).to({_off:false},0).wait(1).to({y:959.1},0).wait(1).to({y:1009.1},0).to({y:1265.15},6,cjs.Ease.none).to({_off:true},1).wait(49));
 
-	// Eye
-	this.instance_4 = new lib.Eye("synched",0);
+	// T
+	this.instance_4 = new lib.T_1("synched",0);
 	this.instance_4.parent = this;
-	this.instance_4.setTransform(742.45,375.95,2.8426,2.8426,21.6626);
+	this.instance_4.setTransform(36.6,165.85,6.5115,6.5115,-149.791,0,0,-0.1,0);
 	this.instance_4._off = true;
 
-	this.timeline.addTween(cjs.Tween.get(this.instance_4).wait(9).to({_off:false},0).to({scaleX:17.6247,scaleY:17.6247},3).wait(16).to({startPosition:0},0).to({_off:true},1).wait(158));
+	this.timeline.addTween(cjs.Tween.get(this.instance_4).wait(34).to({_off:false},0).to({regX:0,scaleX:1,scaleY:1,rotation:0,x:236.35,y:637.95},10).wait(88).to({startPosition:0},0).to({x:-185.5,y:940.4},5).to({_off:true},1).wait(49));
 
-	// BodyPart
-	this.instance_5 = new lib.BodyPart("synched",0);
+	// Eye
+	this.instance_5 = new lib.Eye("synched",0);
 	this.instance_5.parent = this;
-	this.instance_5.setTransform(599.45,461.4,0.4405,0.4405,21.6621);
+	this.instance_5.setTransform(668.75,573.3,2.7538,2.7538,21.6625);
+	this.instance_5._off = true;
 
-	this.timeline.addTween(cjs.Tween.get(this.instance_5).to({scaleX:17.6247,scaleY:17.6247,rotation:21.6626,x:599.8,y:460.6},4,cjs.Ease.quadOut).wait(24).to({startPosition:0},0).to({_off:true},1).wait(158));
+	this.timeline.addTween(cjs.Tween.get(this.instance_5).wait(10).to({_off:false},0).to({scaleX:17.6247,scaleY:17.6247,rotation:21.6626,x:669.1,y:572.5},3).wait(15).to({startPosition:0},0).to({_off:true},1).wait(158));
 
-	// TitleAnim_scurve
-	this.instance_6 = new lib.TitleAnim_s_no_guide("synched",1,false);
+	// Eye
+	this.instance_6 = new lib.Eye("synched",0);
 	this.instance_6.parent = this;
-	this.instance_6.setTransform(157.7,1187.45,17.6247,17.6247,21.6626,0,0,-2.5,44.8);
+	this.instance_6.setTransform(742.45,375.95,2.8426,2.8426,21.6626);
 	this.instance_6._off = true;
 
-	this.timeline.addTween(cjs.Tween.get(this.instance_6).wait(29).to({_off:false},0).wait(1).to({regX:-38.1,regY:91.6,scaleX:16.0429,scaleY:16.0429,rotation:21.6476,x:-441.9,y:1621.5,startPosition:2},0).wait(1).to({scaleX:14.4871,scaleY:14.4871,rotation:21.6329,x:-158.6,y:1522.35,startPosition:3},0).wait(1).to({scaleX:12.9833,scaleY:12.9833,rotation:21.6186,x:115.15,y:1426.45,startPosition:4},0).wait(1).to({scaleX:11.5554,scaleY:11.5554,rotation:21.6051,x:375,y:1335.3,startPosition:5},0).wait(1).to({scaleX:10.2228,scaleY:10.2228,rotation:21.5924,x:617.6,y:1250.25,startPosition:6},0).wait(1).to({scaleX:8.9972,scaleY:8.9972,rotation:21.5808,x:840.65,y:1171.95,startPosition:7},0).wait(1).to({regX:-2.5,regY:44.8,scaleX:7.8837,scaleY:7.8837,rotation:21.5703,x:1439.95,y:860.95,startPosition:8},0).wait(1).to({regX:-38.1,regY:91.6,scaleX:7.1723,scaleY:7.1723,rotation:21.5685,x:988.95,y:1002.35,startPosition:9},0).wait(1).to({scaleX:6.5357,scaleY:6.5357,rotation:21.5669,x:940.4,y:914.1,startPosition:10},0).wait(1).to({scaleX:5.9684,scaleY:5.9684,rotation:21.5654,x:897,y:835.55,startPosition:11},0).wait(1).to({scaleX:5.4643,scaleY:5.4643,rotation:21.5642,x:858.55,y:765.75,startPosition:12},0).wait(1).to({scaleX:5.0168,scaleY:5.0168,rotation:21.563,x:824.35,y:703.7,startPosition:13},0).wait(1).to({scaleX:4.6201,scaleY:4.6201,rotation:21.562,x:794.05,y:648.8,startPosition:14},0).wait(1).to({scaleX:4.2687,scaleY:4.2687,rotation:21.5611,x:767.2,y:600.15,startPosition:15},0).wait(1).to({scaleX:3.9575,scaleY:3.9575,rotation:21.5604,x:743.45,y:557.05,startPosition:16},0).wait(1).to({regX:-2.5,regY:44.8,scaleX:3.6823,scaleY:3.6823,rotation:21.5597,x:907.55,y:406.7,startPosition:17},0).wait(1).to({regX:-38.1,regY:91.6,scaleX:3.6306,scaleY:3.6306,rotation:21.5754,x:728.2,y:511.95,startPosition:18},0).wait(1).to({scaleX:3.585,scaleY:3.585,rotation:21.5893,x:733.5,y:505.9,startPosition:19},0).wait(1).to({scaleX:3.5449,scaleY:3.5449,rotation:21.6016,x:738.1,y:500.55,startPosition:20},0).wait(1).to({scaleX:3.5098,scaleY:3.5098,rotation:21.6123,x:742.25,y:495.85,startPosition:21},0).wait(1).to({scaleX:3.4791,scaleY:3.4791,rotation:21.6216,x:745.7,y:491.75,startPosition:22},0).wait(1).to({scaleX:3.4525,scaleY:3.4525,rotation:21.6298,x:748.8,y:488.2,startPosition:23},0).wait(1).to({scaleX:3.4295,scaleY:3.4295,rotation:21.6368,x:751.45,y:485.15,startPosition:24},0).wait(1).to({scaleX:3.4099,scaleY:3.4099,rotation:21.6428,x:753.75,y:482.55,startPosition:25},0).wait(1).to({scaleX:3.3933,scaleY:3.3933,rotation:21.6478,x:755.7,y:480.35,startPosition:26},0).wait(1).to({scaleX:3.3796,scaleY:3.3796,rotation:21.652,x:757.25,y:478.5,startPosition:27},0).wait(1).to({scaleX:3.3685,scaleY:3.3685,rotation:21.6554,x:758.55,y:477.05,startPosition:28},0).wait(1).to({scaleX:3.3597,scaleY:3.3597,rotation:21.6581,x:759.55,y:475.85,startPosition:29},0).wait(1).to({scaleX:3.3531,scaleY:3.3531,rotation:21.6601,x:760.3,y:475,startPosition:30},0).wait(1).to({scaleX:3.3486,scaleY:3.3486,rotation:21.6615,x:760.85,y:474.4,startPosition:31},0).wait(1).to({scaleX:3.346,scaleY:3.346,rotation:21.6623,x:761.1,y:474.05,startPosition:32},0).wait(1).to({regX:-2.6,regY:45.1,scaleX:3.3451,scaleY:3.3451,rotation:21.6625,x:929.85,y:372.5,startPosition:33},0).wait(30).to({startPosition:63},0).to({scaleX:2.1042,scaleY:2.1042,rotation:21.5658,x:722.35,y:381.45,startPosition:67},4).to({regX:-2.5,regY:45.2,scaleX:1.3387,scaleY:1.3387,rotation:21.6622,x:547.8,y:406.65,startPosition:70},8).to({regX:-2.6,regY:45.1,scaleX:1.9201,scaleY:1.9201,rotation:21.6625,x:632.1,y:376.25},2).wait(26).to({startPosition:70},0).to({y:-387.9},6).to({_off:true},1).wait(49));
+	this.timeline.addTween(cjs.Tween.get(this.instance_6).wait(9).to({_off:false},0).to({scaleX:17.6247,scaleY:17.6247},3).wait(16).to({startPosition:0},0).to({_off:true},1).wait(158));
 
-	// NAKE
-	this.instance_7 = new lib.Nake("synched",0);
+	// BodyPart
+	this.instance_7 = new lib.BodyPart("synched",0);
 	this.instance_7.parent = this;
-	this.instance_7.setTransform(1477.45,593.75);
-	this.instance_7._off = true;
+	this.instance_7.setTransform(599.45,461.4,0.4405,0.4405,21.6621);
 
-	this.timeline.addTween(cjs.Tween.get(this.instance_7).wait(88).to({_off:false},0).to({x:846.75},14,cjs.Ease.quadOut).to({x:930.5},4).wait(1).to({x:918.5},0).wait(23).to({startPosition:0},0).to({x:1518.15},7).to({_off:true},1).wait(49));
+	this.timeline.addTween(cjs.Tween.get(this.instance_7).to({scaleX:17.6247,scaleY:17.6247,rotation:21.6626,x:599.8,y:460.6},4,cjs.Ease.quadOut).wait(24).to({startPosition:0},0).to({_off:true},1).wait(158));
 
-	// YFTs
-	this.instance_8 = new lib.YFTs("synched",0);
+	// TitleAnim_scurve
+	this.instance_8 = new lib.TitleAnim_s_no_guide("synched",1,false);
 	this.instance_8.parent = this;
-	this.instance_8.setTransform(-3.7,-240.25,3.0753,3.0753,0,0,0,0.1,0.1);
+	this.instance_8.setTransform(157.7,1187.45,17.6247,17.6247,21.6626,0,0,-2.5,44.8);
 	this.instance_8._off = true;
 
-	this.timeline.addTween(cjs.Tween.get(this.instance_8).wait(104).to({_off:false},0).to({regX:0,regY:0,scaleX:0.9207,scaleY:0.9207,x:239.1,y:204.3},5).wait(1).to({scaleX:1,scaleY:1,x:241.8},0).wait(19).to({startPosition:0},0).to({x:-193.3,y:-238.8},8).to({_off:true},1).wait(49));
+	this.timeline.addTween(cjs.Tween.get(this.instance_8).wait(29).to({_off:false},0).wait(1).to({regX:-38.1,regY:91.6,scaleX:16.0429,scaleY:16.0429,rotation:21.6476,x:-441.9,y:1621.5,startPosition:2},0).wait(1).to({scaleX:14.4871,scaleY:14.4871,rotation:21.6329,x:-158.6,y:1522.35,startPosition:3},0).wait(1).to({scaleX:12.9833,scaleY:12.9833,rotation:21.6186,x:115.15,y:1426.45,startPosition:4},0).wait(1).to({scaleX:11.5554,scaleY:11.5554,rotation:21.6051,x:375,y:1335.3,startPosition:5},0).wait(1).to({scaleX:10.2228,scaleY:10.2228,rotation:21.5924,x:617.6,y:1250.25,startPosition:6},0).wait(1).to({scaleX:8.9972,scaleY:8.9972,rotation:21.5808,x:840.65,y:1171.95,startPosition:7},0).wait(1).to({regX:-2.5,regY:44.8,scaleX:7.8837,scaleY:7.8837,rotation:21.5703,x:1439.95,y:860.95,startPosition:8},0).wait(1).to({regX:-38.1,regY:91.6,scaleX:7.1723,scaleY:7.1723,rotation:21.5685,x:988.95,y:1002.35,startPosition:9},0).wait(1).to({scaleX:6.5357,scaleY:6.5357,rotation:21.5669,x:940.4,y:914.1,startPosition:10},0).wait(1).to({scaleX:5.9684,scaleY:5.9684,rotation:21.5654,x:897,y:835.55,startPosition:11},0).wait(1).to({scaleX:5.4643,scaleY:5.4643,rotation:21.5642,x:858.55,y:765.75,startPosition:12},0).wait(1).to({scaleX:5.0168,scaleY:5.0168,rotation:21.563,x:824.35,y:703.7,startPosition:13},0).wait(1).to({scaleX:4.6201,scaleY:4.6201,rotation:21.562,x:794.05,y:648.8,startPosition:14},0).wait(1).to({scaleX:4.2687,scaleY:4.2687,rotation:21.5611,x:767.2,y:600.15,startPosition:15},0).wait(1).to({scaleX:3.9575,scaleY:3.9575,rotation:21.5604,x:743.45,y:557.05,startPosition:16},0).wait(1).to({regX:-2.5,regY:44.8,scaleX:3.6823,scaleY:3.6823,rotation:21.5597,x:907.55,y:406.7,startPosition:17},0).wait(1).to({regX:-38.1,regY:91.6,scaleX:3.6306,scaleY:3.6306,rotation:21.5754,x:728.2,y:511.95,startPosition:18},0).wait(1).to({scaleX:3.585,scaleY:3.585,rotation:21.5893,x:733.5,y:505.9,startPosition:19},0).wait(1).to({scaleX:3.5449,scaleY:3.5449,rotation:21.6016,x:738.1,y:500.55,startPosition:20},0).wait(1).to({scaleX:3.5098,scaleY:3.5098,rotation:21.6123,x:742.25,y:495.85,startPosition:21},0).wait(1).to({scaleX:3.4791,scaleY:3.4791,rotation:21.6216,x:745.7,y:491.75,startPosition:22},0).wait(1).to({scaleX:3.4525,scaleY:3.4525,rotation:21.6298,x:748.8,y:488.2,startPosition:23},0).wait(1).to({scaleX:3.4295,scaleY:3.4295,rotation:21.6368,x:751.45,y:485.15,startPosition:24},0).wait(1).to({scaleX:3.4099,scaleY:3.4099,rotation:21.6428,x:753.75,y:482.55,startPosition:25},0).wait(1).to({scaleX:3.3933,scaleY:3.3933,rotation:21.6478,x:755.7,y:480.35,startPosition:26},0).wait(1).to({scaleX:3.3796,scaleY:3.3796,rotation:21.652,x:757.25,y:478.5,startPosition:27},0).wait(1).to({scaleX:3.3685,scaleY:3.3685,rotation:21.6554,x:758.55,y:477.05,startPosition:28},0).wait(1).to({scaleX:3.3597,scaleY:3.3597,rotation:21.6581,x:759.55,y:475.85,startPosition:29},0).wait(1).to({scaleX:3.3531,scaleY:3.3531,rotation:21.6601,x:760.3,y:475,startPosition:30},0).wait(1).to({scaleX:3.3486,scaleY:3.3486,rotation:21.6615,x:760.85,y:474.4,startPosition:31},0).wait(1).to({scaleX:3.346,scaleY:3.346,rotation:21.6623,x:761.1,y:474.05,startPosition:32},0).wait(1).to({regX:-2.6,regY:45.1,scaleX:3.3451,scaleY:3.3451,rotation:21.6625,x:929.85,y:372.5,startPosition:33},0).wait(30).to({startPosition:63},0).to({scaleX:2.1042,scaleY:2.1042,rotation:21.5658,x:722.35,y:381.45,startPosition:67},4).to({regX:-2.5,regY:45.2,scaleX:1.3387,scaleY:1.3387,rotation:21.6622,x:547.8,y:406.65,startPosition:70},8).to({regX:-2.6,regY:45.1,scaleX:1.9201,scaleY:1.9201,rotation:21.6625,x:632.1,y:326.25},2).wait(26).to({startPosition:70},0).to({y:-387.9},6).to({_off:true},1).wait(49));
+
+	// NAKE
+	this.instance_9 = new lib.Nake("synched",0);
+	this.instance_9.parent = this;
+	this.instance_9.setTransform(1477.45,593.75);
+	this.instance_9._off = true;
+
+	this.timeline.addTween(cjs.Tween.get(this.instance_9).wait(88).to({_off:false},0).to({x:846.75},14,cjs.Ease.quadOut).to({x:930.5},4).wait(1).to({x:918.5,y:543.75},0).wait(23).to({startPosition:0},0).to({x:1518.15,y:593.75},7).to({_off:true},1).wait(49));
+
+	// YFTs
+	this.instance_10 = new lib.YFTs("synched",0);
+	this.instance_10.parent = this;
+	this.instance_10.setTransform(-3.7,-240.25,3.0753,3.0753,0,0,0,0.1,0.1);
+	this.instance_10._off = true;
+
+	this.timeline.addTween(cjs.Tween.get(this.instance_10).wait(104).to({_off:false},0).to({regX:0,regY:0,scaleX:0.9207,scaleY:0.9207,x:239.1,y:204.3},5).wait(1).to({scaleX:1,scaleY:1,x:241.8},0).wait(19).to({startPosition:0},0).to({x:-193.3,y:-238.8},8).to({_off:true},1).wait(49));
 
 	// bg
 	this.shape = new cjs.Shape();
@@ -9043,20 +9148,20 @@ p.nominalBounds = new cjs.Rectangle(-4.5,-2.9,101.9,1000.3);
 	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.shape}]}).to({state:[{t:this.shape_1}]},110).to({state:[]},28).wait(49));
 
 	// Tunnel
-	this.instance_9 = new lib.Tunnel("single",1);
-	this.instance_9.parent = this;
-	this.instance_9.setTransform(597,780.05,1,1,0,0,0,960,540);
-	this.instance_9._off = true;
+	this.instance_11 = new lib.Tunnel("single",1);
+	this.instance_11.parent = this;
+	this.instance_11.setTransform(597,780.05,1,1,0,0,0,960,540);
+	this.instance_11._off = true;
 
-	this.timeline.addTween(cjs.Tween.get(this.instance_9).wait(118).to({_off:false},0).wait(20).to({mode:"synched",startPosition:0},0).to({regX:959.9,regY:539.9,scaleX:1.2885,scaleY:1.2886,x:599.85,y:655.3,startPosition:1},6).to({scaleX:1.3472,scaleY:1.3473,x:599.95,y:632.15,startPosition:0},23).to({regX:959.8,scaleX:1.3702,scaleY:1.3703,x:599.85,y:622.95},9).to({startPosition:0},2).to({regX:959.7,regY:539.5,scaleX:21.4641,scaleY:21.4656,x:676,y:644.95,mode:"single",startPosition:2},8).wait(1));
+	this.timeline.addTween(cjs.Tween.get(this.instance_11).wait(118).to({_off:false},0).wait(20).to({mode:"synched",startPosition:0},0).to({regX:959.9,regY:539.9,scaleX:1.2885,scaleY:1.2886,x:599.85,y:655.3,startPosition:1},6).to({scaleX:1.3472,scaleY:1.3473,x:599.95,y:632.15,startPosition:0},23).to({regX:959.8,scaleX:1.3702,scaleY:1.3703,x:599.85,y:622.95},9).to({startPosition:0},2).to({regX:959.7,regY:539.5,scaleX:21.4641,scaleY:21.4656,x:676,y:644.95,mode:"single",startPosition:2},8).wait(1));
 
 	// area
-	this.instance_10 = new lib.Area_1("single",0);
-	this.instance_10.parent = this;
-	this.instance_10.setTransform(598.7,783.75,0.0385,0.0385,0,0,0,612.5,469.4);
-	this.instance_10._off = true;
+	this.instance_12 = new lib.Area_1("single",0);
+	this.instance_12.parent = this;
+	this.instance_12.setTransform(598.7,783.75,0.0385,0.0385,0,0,0,612.5,469.4);
+	this.instance_12._off = true;
 
-	this.timeline.addTween(cjs.Tween.get(this.instance_10).wait(111).to({_off:false},0).wait(27).to({startPosition:0},0).to({y:658},6).to({regX:613.5,regY:469.6,scaleX:0.1386,scaleY:0.1386,x:588.35,y:607},34).to({regX:602.8,regY:461.9,scaleX:1,scaleY:1,x:602.8,y:461.9},8).wait(1));
+	this.timeline.addTween(cjs.Tween.get(this.instance_12).wait(111).to({_off:false},0).wait(27).to({startPosition:0},0).to({y:658},6).to({regX:613.5,regY:469.6,scaleX:0.1386,scaleY:0.1386,x:588.35,y:607},34).to({regX:602.8,regY:461.9,scaleX:1,scaleY:1,x:602.8,y:461.9},8).wait(1));
 
 	// bg_area
 	this.shape_2 = new cjs.Shape();
@@ -10463,6 +10568,10 @@ var Enemy;
                 this.state !== "removed";
         }
 
+        Enemy.prototype.getDropItemRate = function () {
+            return data[this.id].dropItemRate;
+        };
+
         Enemy.prototype.defeat = function () {
 
             if (this.state == "removed" ||
@@ -10474,7 +10583,6 @@ var Enemy;
             this.setState("defeated", _.bind(function () {
                 this.remove();
             }, this));
-            return Math.random() < data[this.id].dropItemRate;
         };
 
         Enemy.prototype.setFear = function () {
@@ -10520,6 +10628,113 @@ var Enemy;
 
 })();
 
+var Item;
+
+(function () {
+
+    StartTasks.push(function () {
+
+        var effects = {
+            "Gate": function (game, snake) {
+                game.nextArea(this);
+            },
+            "Mage": function (game, snake) {
+                game.endGame(this);
+            },
+            "Key": function (game, snake) {
+                game.addKey(this.position.clone());
+                playSound("key");
+            },
+            "Coin": function (game, snake) {
+                game.addCoin(this.position.clone());
+                playSound("coin");
+            },
+            "Apple": function (game, snake) {
+                game.setVmax(Item.VMAX_DURATION);
+                snake.addBody();
+                snake.addBody();
+                playSound("vmax");
+            },
+            "Wine": function (game, snake) {
+                snake.removeBody();
+                snake.removeBody();
+                playSound("shrink");
+            },
+            "Berry": function (game, snake) {
+                game.speedDown();
+                playSound("speed_down");
+            },
+        };
+
+        Item = function (map, pos, id) {
+            this.init(map, pos, id);
+            this.life = Item.LIFETIME[id];
+        };
+
+        Item.DROP_LIMITS = {
+            "Mage": 1,
+            "Gate": 1,
+            "Key": 1,
+            "Coin": 30,
+            "Apple": 2,
+            "Wine": 2,
+            "Berry": 2,
+        }
+
+        Item.LIFETIME = {
+            "Mage": 0,
+            "Gate": 0,
+            "Key": 40,
+            "Coin": 50,
+            "Apple": 30,
+            "Wine": 40,
+            "Berry": 40,
+        }
+
+        Item.prototype = new FieldObject();
+
+        Item.LIMIT = 60;
+        Item.VMAX_DURATION = 40;
+
+        Item.prototype.effect = function (game, snake) {
+            _.bind(effects[this.id], this)(game, snake);
+        };
+
+        Item.prototype.isFinishItem = function () {
+            return this.id == "Gate" || this.id == "Mage";
+        };
+
+        Item.prototype.fadeOut = function(life){
+            this.mc.uncache();
+            this.mc.alpha = 0.1 * life;
+        };
+
+    });
+
+
+})();
+
+var KeyManager;
+
+(function () {
+
+    window.onkeydown = function (e) {
+        //console.log("key:" + e.which);
+        if(KeyManager.listeners[e.which]){
+            KeyManager.listeners[e.which]();
+        }
+    };
+
+    KeyManager = {
+        "listeners": {},
+        "setKeyListeners": function (args) {
+            _.each(args, _.bind(function (callback, key) {
+                this.listeners[key] = callback;
+            }, this));
+        }
+    };
+
+})();
 let HighScore;
 
 (function () {
@@ -10551,7 +10766,7 @@ let HighScore;
         },
         "show": function (rank, callback) {
 
-            if(_.isFunction(rank)){
+            if (_.isFunction(rank)) {
                 callback = rank;
                 rank = null;
             }
@@ -10567,7 +10782,7 @@ let HighScore;
                         "<div class='column column--player'></div>" +
                         "<div class='column column--score'></div>" +
                         "</div>");
-                    if(rank == i){
+                    if (rank == i) {
                         $(elem).addClass("popup--high-score__text--your--score");
                     }
                     $(elem).find(".column--rank").text(i.toString());
@@ -10606,12 +10821,17 @@ let HighScore;
 
             $.post(this.getBaseUrl() + "score/", {
                 "player": name,
-                "score": score
+                "score": score,
+                "token": this.makeToken(name, score)
             }, function (data) {
-
                 callback(data);
             });
         },
+        "makeToken": function (name, score) {
+            let str = (-24635 + score + 1000000).toString();
+            str = str + "tonikaku" + name + "49ganbatta";
+            return str;
+        }
     }
 
 
@@ -10669,113 +10889,6 @@ var Score;
     };
 
 })();
-var KeyManager;
-
-(function () {
-
-    window.onkeydown = function (e) {
-        //console.log("key:" + e.which);
-        if(KeyManager.listeners[e.which]){
-            KeyManager.listeners[e.which]();
-        }
-    };
-
-    KeyManager = {
-        "listeners": {},
-        "setKeyListeners": function (args) {
-            _.each(args, _.bind(function (callback, key) {
-                this.listeners[key] = callback;
-            }, this));
-        }
-    };
-
-})();
-var Item;
-
-(function () {
-
-    StartTasks.push(function () {
-
-        var effects = {
-            "Gate": function (game, snake) {
-                game.nextArea(this);
-            },
-            "Mage": function (game, snake) {
-                game.endGame(this);
-            },
-            "Key": function (game, snake) {
-                game.addKey(this.position.clone());
-                playSound("key");
-            },
-            "Coin": function (game, snake) {
-                game.addCoin(this.position.clone());
-                playSound("coin");
-            },
-            "Apple": function (game, snake) {
-                game.setVmax(Item.VMAX_DURATION);
-                snake.addBody();
-                snake.addBody();
-                playSound("vmax");
-            },
-            "Wine": function (game, snake) {
-                snake.removeBody();
-                snake.removeBody();
-                playSound("shrink");
-            },
-            "Berry": function (game, snake) {
-                game.speedDown();
-                playSound("speed_down");
-            },
-        };
-
-        Item = function (map, pos, id) {
-            this.init(map, pos, id);
-            this.life = Item.LIFETIME[id];
-        };
-
-        Item.DROP_LIMITS = {
-            "Mage": 1,
-            "Gate": 1,
-            "Key": 1,
-            "Coin": 30,
-            "Apple": 2,
-            "Wine": 2,
-            "Berry": 2,
-        }
-
-        Item.LIFETIME = {
-            "Mage": 0,
-            "Gate": 0,
-            "Key": 60,
-            "Coin": 60,
-            "Apple": 60,
-            "Wine": 60,
-            "Berry": 60,
-        }
-
-        Item.prototype = new FieldObject();
-
-        Item.LIMIT = 60;
-        Item.VMAX_DURATION = 40;
-
-        Item.prototype.effect = function (game, snake) {
-            _.bind(effects[this.id], this)(game, snake);
-        };
-
-        Item.prototype.isFinishItem = function () {
-            return this.id == "Gate" || this.id == "Mage";
-        };
-
-        Item.prototype.fadeOut = function(life){
-            this.mc.uncache();
-            this.mc.alpha = 0.1 * life;
-        };
-
-    });
-
-
-})();
-
 var SnakeBody;
 
 (function () {

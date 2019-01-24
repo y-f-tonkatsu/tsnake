@@ -5,10 +5,10 @@ var router = express.Router();
 router.get('/', function (req, res, next) {
     res.render('main', {
         base_url: process.env.UNKO == "remote" ? 'http://knights.ton-katsu.net/games/tsnake/' : '',
-        og_title: 'TSnake',
-        og_description: 'TSnake',
+        og_title: "YFT's TSnake",
+        og_description: 'クラシックなスネークゲームをアレンジしたシンプルなゲームです。',
         og_url: 'http://knights.ton-katsu.net/games/tsnake/',
-        og_thumb: 'images/og_thumb.png',
+        og_thumb: 'images/ss1.png',
     });
 });
 

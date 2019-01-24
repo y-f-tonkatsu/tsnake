@@ -15,12 +15,17 @@ const _CHEAT_ON = true;
     const _NUM_KEYS_MAX = 4;
     const _SCORE_PER_COIN = 10;
 
+    const _SPAWN_ENEMY_ADJ_CAP = 15;
+    const _COMP_ENEMY_RATE = 30;
+    const _COMP_DROP_ITEM_RATE = 100;
+    const _ALLOW_NO_APPLE_RATE = 24;
+
     Game = function (stage, areaNo, onClearListener, onGameOverListener, score) {
 
         this.score = score;
 
         this.stage = stage;
-        this.areaNo = areaNo;
+        this.areaNo = 7;
         this.area = Areas[this.areaNo];
 
         this.tiles = [];
@@ -36,6 +41,10 @@ const _CHEAT_ON = true;
         this.numKeys = 0;
 
         this.vmax = 0;
+
+        this.killCount = 0;
+        this.totalKillCount = 0;
+        this.noAppleCount = 0;
 
         this.isFinishing = false;
         this.isDying = false;
@@ -140,20 +149,14 @@ const _CHEAT_ON = true;
                 if (enemy.hitTest(this.snake.bodies[0].position)) {
                     if (this.isVmax() &&
                         enemy.id !== "Bear") {
-                        this.addScore(enemy.getScore(), enemy.position);
-                        if (enemy.defeat()) {
-                            this.dropItem(enemy.position.clone());
-                        }
+                        this.killEnemy(enemy);
                     } else {
                         this.gameOver();
                     }
                 } else if (this.isVmax() &&
                     enemy.id == "Mouse" &&
                     enemy.position.sdist(this.snake.bodies[0].position) == 1) {
-                    this.addScore(enemy.getScore(), enemy.position);
-                    if (enemy.defeat()) {
-                        this.dropItem(enemy.position.clone());
-                    }
+                    this.killEnemy(enemy)
                 } else if (enemy.saHitTest(this.snake.bodies[0].position)) {
                     if (this.vmax <= 0) {
                         enemy.setState("sa");
@@ -169,6 +172,14 @@ const _CHEAT_ON = true;
                 enemy.update();
             }, this));
 
+        },
+        "killEnemy": function (enemy) {
+            this.addScore(enemy.getScore(), enemy.position);
+            this.addKillCount(enemy.getScore());
+            enemy.defeat();
+            if (Math.random() < enemy.getDropItemRate()) {
+                this.dropItem(enemy.position.clone());
+            }
         },
         "updateItems": function () {
 
@@ -476,19 +487,43 @@ const _CHEAT_ON = true;
             return n;
         },
         "spawnObjects": function () {
-            _.forEach(this.area.enemies, _.bind(function (enemy) {
-                if (enemy.spawnRate > Math.random()) {
-                    this.spawnEnemy(enemy.id);
+
+            if (Math.random() * this.getNumAllEnemies() < _SPAWN_ENEMY_ADJ_CAP) {
+
+                if (this.totalTime % _COMP_ENEMY_RATE == 1) {
+                    let enemyId = this.area.enemies[Math.floor(Math.random() * this.area.enemies.length)].id;
+                    //console.log("comp:" + enemyId);
+                    this.spawnEnemy(enemyId);
                 }
-            }, this));
+
+                _.forEach(this.area.enemies, _.bind(function (enemy) {
+                    if (enemy.spawnRate > Math.random()) {
+                        this.spawnEnemy(enemy.id);
+                    }
+                }, this));
+            }
+
             _.forEach(this.area.comp, _.bind(function (compTime) {
                 if (compTime == this.totalTime) {
-                    console.log("comp");
                     if (this.getNumItems("Apple") < 1) {
                         this.spawnItem("Apple");
+                        this.noAppleCount = 0;
                     }
                 }
             }, this));
+
+            if (this.getNumItems("Apple") == 0 && this.vmax <= 0) {
+                this.noAppleCount++;
+                console.log("NoApple:" + this.noAppleCount);
+                if (Math.random() * this.noAppleCount > _ALLOW_NO_APPLE_RATE) {
+                    console.log("Save No Apple State");
+                    this.spawnItem("Apple");
+                    this.noAppleCount = 0;
+                }
+            } else {
+                this.noAppleCount = 0;
+            }
+
             _.forEach(this.area.items, _.bind(function (item) {
                 if (item.spawnRate > Math.random()) {
                     if (this.getNumItems(item.id) < Item.DROP_LIMITS[item.id]) {
@@ -513,9 +548,18 @@ const _CHEAT_ON = true;
                 if (item.id == "Key" && this.getNumItems("Gate") + this.getNumItems("Mage") >= 1) {
                     return;
                 }
-                if (item.dropRate > Math.random()) {
+                let rate = item.dropRate;
+                if (item.id == "Key") {
+                    let difficulty = (this.numKeys + 1) * this.areaNo;
+                    difficulty = difficulty * Math.min((1 - this.killCount / _COMP_DROP_ITEM_RATE), 0);
+                    rate = rate * (1 - difficulty / 40);
+                }
+                if (rate > Math.random()) {
                     var to = this.getFreePosition();
                     playSound("item_pop");
+                    if (item.id == "Key") {
+                        this.killCount = 0;
+                    }
                     this.throwItem(item.id, Cood.localToWorld(from), Cood.localToWorld(to), _.bind(function () {
                         var newItem = new Item(_mapMc, to, item.id, "normal");
                         this.items.push(newItem);
@@ -581,6 +625,10 @@ const _CHEAT_ON = true;
             ), _POS_SCORE_TEXT, _.bind(function () {
                 this.addScore(_SCORE_PER_COIN, pos);
             }, this));
+        },
+        "addKillCount": function (score) {
+            this.killCount += score;
+            this.totalKillCount += score;
         },
         "addScore": function (v, pos) {
             if (pos) {
@@ -656,12 +704,12 @@ const _CHEAT_ON = true;
             this.onGameOverListener(this.score);
         },
         "highScore": function (score) {
-            //this.score = 100000;
+            //this.score = 20;
             HighScore.get(_.bind(function (data) {
                 var i = 1;
                 var rank = 11;
                 _.forEach(data, _.bind(function (d) {
-                    if (this.score >= d.score) {
+                    if (this.score > d.score) {
                         rank = Math.min(rank, i);
                     }
                     i++;
