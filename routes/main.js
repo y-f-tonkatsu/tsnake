@@ -8,7 +8,7 @@ router.get('/', function (req, res, next) {
         og_title: "YFT's TSnake",
         og_description: 'クラシックなスネークゲームをアレンジしたシンプルなゲームです。',
         og_url: 'http://knights.ton-katsu.net/games/tsnake/',
-        og_thumb: 'http://knights.ton-katsu.net/games/tsnake/images/ss1.jpg',
+        og_thumb: 'http://knights.ton-katsu.net/games/tsnake/images/ss_og.jpg',
     });
 });
 
