@@ -46,9 +46,9 @@ var Item;
             "Gate": 1,
             "Key": 1,
             "Coin": 30,
-            "Apple": 2,
-            "Wine": 2,
-            "Berry": 2,
+            "Apple": 3,
+            "Wine": 3,
+            "Berry": 3,
         }
 
         Item.LIFETIME = {

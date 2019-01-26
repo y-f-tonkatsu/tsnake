@@ -72,12 +72,12 @@ a {
     max-width: 680px;
     background: white;
     border-radius: 4px;
-    margin: 20% auto;
+    margin: 2em auto;
 }
 
 .img--author {
     width: 16%;
-    margin: 2em 0.5em 50% 1em;
+    margin: 2em 0.5em 4em 1em;
     float: left;
 }
 

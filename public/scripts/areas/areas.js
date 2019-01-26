@@ -9,7 +9,7 @@ var Areas;
             "items": [
                 {
                     "id": "Apple",
-                    "spawnRate": 0.03,
+                    "spawnRate": 0.032,
                 },
                 {
                     "id": "Berry",
@@ -23,7 +23,7 @@ var Areas;
             "dropItems": [
                 {
                     "id": "Apple",
-                    "dropRate": 0.1,
+                    "dropRate": 0.15,
                 },
                 {
                     "id": "Berry",
@@ -39,7 +39,7 @@ var Areas;
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.85,
+                    "dropRate": 0.9,
                 }
             ],
             "enemies": [
@@ -57,7 +57,7 @@ var Areas;
             "items": [
                 {
                     "id": "Apple",
-                    "spawnRate": 0.02,
+                    "spawnRate": 0.026,
                 },
                 {
                     "id": "Berry",
@@ -71,7 +71,7 @@ var Areas;
             "dropItems": [
                 {
                     "id": "Apple",
-                    "dropRate": 0.1,
+                    "dropRate": 0.15,
                 },
                 {
                     "id": "Berry",
@@ -87,7 +87,7 @@ var Areas;
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.75,
+                    "dropRate": 0.78,
                 }
             ],
             "enemies": [
@@ -109,7 +109,7 @@ var Areas;
             "items": [
                 {
                     "id": "Apple",
-                    "spawnRate": 0.019,
+                    "spawnRate": 0.02,
                 },
                 {
                     "id": "Berry",
@@ -139,7 +139,7 @@ var Areas;
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.7,
+                    "dropRate": 0.75,
                 }
             ],
             "enemies": [
@@ -195,7 +195,7 @@ var Areas;
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.64,
+                    "dropRate": 0.68,
                 }
             ],
             "enemies": [
@@ -231,7 +231,7 @@ var Areas;
             "dropItems": [
                 {
                     "id": "Apple",
-                    "dropRate": 0.09,
+                    "dropRate": 0.092,
                 },
                 {
                     "id": "Berry",
@@ -247,7 +247,7 @@ var Areas;
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.6,
+                    "dropRate": 0.62,
                 }
             ],
             "enemies": [
@@ -291,7 +291,7 @@ var Areas;
             "dropItems": [
                 {
                     "id": "Apple",
-                    "dropRate": 0.088,
+                    "dropRate": 0.089,
                 },
                 {
                     "id": "Berry",
@@ -307,7 +307,7 @@ var Areas;
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.5,
+                    "dropRate": 0.55,
                 }
             ],
             "enemies": [
@@ -351,7 +351,7 @@ var Areas;
             "dropItems": [
                 {
                     "id": "Apple",
-                    "dropRate": 0.86,
+                    "dropRate": 0.87,
                 },
                 {
                     "id": "Berry",
@@ -367,7 +367,7 @@ var Areas;
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.46,
+                    "dropRate": 0.48,
                 }
             ],
             "enemies": [
@@ -415,7 +415,7 @@ var Areas;
             "dropItems": [
                 {
                     "id": "Apple",
-                    "dropRate": 0.084,
+                    "dropRate": 0.085,
                 },
                 {
                     "id": "Berry",
@@ -431,7 +431,7 @@ var Areas;
                 },
                 {
                     "id": "Key",
-                    "dropRate": 0.38,
+                    "dropRate": 0.4,
                 }
             ],
             "enemies": [

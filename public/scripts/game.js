@@ -25,7 +25,7 @@ const _CHEAT_ON = true;
         this.score = score;
 
         this.stage = stage;
-        this.areaNo = 7;
+        this.areaNo = areaNo;
         this.area = Areas[this.areaNo];
 
         this.tiles = [];
@@ -155,6 +155,7 @@ const _CHEAT_ON = true;
                     }
                 } else if (this.isVmax() &&
                     enemy.id == "Mouse" &&
+                    enemy.state !== "spawn" &&
                     enemy.position.sdist(this.snake.bodies[0].position) == 1) {
                     this.killEnemy(enemy)
                 } else if (enemy.saHitTest(this.snake.bodies[0].position)) {
