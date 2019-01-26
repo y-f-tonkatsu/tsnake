@@ -15,6 +15,19 @@ redisClient.on('error', function (err) {
 router.get('/', function (req, res, next) {
 
     return redisClient.get('tsnake:high_score', function (err, result) {
+        if (!result) {
+            ranking = createNewRanking();
+
+            let highScoreJson = JSON.stringify(ranking);
+
+            return redisClient.set('tsnake:high_score', highScoreJson, function () {
+                if (err) {
+                    return res.send("error");
+                }
+
+                return res.send(highScoreJson);
+            });
+        }
         return res.send(JSON.parse(result));
     });
 
@@ -28,6 +41,7 @@ let showRec = function (res, from, to) {
         if (err) {
             return res.send("error");
         }
+
         return res.send(result.toString());
     });
 }
@@ -152,7 +166,7 @@ function createNewRanking() {
         ranking.push({
             "player": "tonkatsu",
             "score": 1,
-            "date": date.toString(),
+            "date": new Date().toString(),
             "timeStamp": Date.now()
         });
     }
