@@ -925,7 +925,7 @@ var TSnake;
                 _.bind(function (score) {
                     this.clearTasks();
                     this.area++;
-                    this.score += score;
+                    this.score = score;
                     this.setAreaTitle(this.area);
                     this.game.kill();
                 }, this),
