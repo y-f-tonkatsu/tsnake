@@ -699,7 +699,7 @@ const _CHEAT_ON = true;
             this.onGameOverListener(this.score);
         },
         "highScore": function (score) {
-            this.score = 2000000;
+            //this.score = 2000000;
             HighScore.get(_.bind(function (data) {
                 var i = 1;
                 var rank = 11;

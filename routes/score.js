@@ -111,7 +111,7 @@ router.post('/', function (req, res, next) {
             console.log("pop:" + out.player + " " + out.score);
         }
 
-        ranking = createNewRanking();
+        //ranking = createNewRanking();
 
         let highScoreJson = JSON.stringify(ranking);
         let recordJson = JSON.stringify(record);
