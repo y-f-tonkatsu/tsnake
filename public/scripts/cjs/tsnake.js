@@ -536,6 +536,80 @@ p.nominalBounds = new cjs.Rectangle(0,0,107.9,38.2);
 p.nominalBounds = new cjs.Rectangle(0,0,97.4,97.4);
 
 
+(lib.LoaderCircle_quarter = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// レイヤー_1
+	this.shape = new cjs.Shape();
+	this.shape.graphics.f().s("#333333").ss(1,1,1).p("AgrgBQAsAAArAD");
+	this.shape.setTransform(4.3625,-99.8375);
+
+	this.shape_1 = new cjs.Shape();
+	this.shape_1.graphics.f().s("#333333").ss(1,1,1).p("AhWgGQBZAABUAN");
+	this.shape_1.setTransform(8.7,-99.3125);
+
+	this.shape_2 = new cjs.Shape();
+	this.shape_2.graphics.f().s("#333333").ss(1,1,1).p("AirgcQC3AACgA5");
+	this.shape_2.setTransform(17.15,-97.125);
+
+	this.shape_3 = new cjs.Shape();
+	this.shape_3.graphics.f().s("#333333").ss(1,1,1).p("Aj6hBQEVAADgCD");
+	this.shape_3.setTransform(25.0625,-93.3875);
+
+	this.shape_4 = new cjs.Shape();
+	this.shape_4.graphics.f().s("#333333").ss(1,1,1).p("AkehZQFDAAD6Cz");
+	this.shape_4.setTransform(28.7125,-91);
+
+	this.shape_5 = new cjs.Shape();
+	this.shape_5.graphics.f().s("#333333").ss(1,1,1).p("AlAh0QFwAAERDp");
+	this.shape_5.setTransform(32.1375,-88.3);
+
+	this.shape_6 = new cjs.Shape();
+	this.shape_6.graphics.f().s("#333333").ss(1,1,1).p("AlgiRQGdAAEkEj");
+	this.shape_6.setTransform(35.3,-85.375);
+
+	this.shape_7 = new cjs.Shape();
+	this.shape_7.graphics.f().s("#333333").ss(1,1,1).p("Al+iyQGdAAEkEkQAgAgAcAh");
+	this.shape_7.setTransform(38.3,-82.1375);
+
+	this.shape_8 = new cjs.Shape();
+	this.shape_8.graphics.f().s("#333333").ss(1,1,1).p("AmZjUQGdAAEkEkQBAA/AyBG");
+	this.shape_8.setTransform(41,-78.7);
+
+	this.shape_9 = new cjs.Shape();
+	this.shape_9.graphics.f().s("#333333").ss(1,1,1).p("Amxj5QGeAAEjEkQBhBhBBBt");
+	this.shape_9.setTransform(43.3875,-75.05);
+
+	this.shape_10 = new cjs.Shape();
+	this.shape_10.graphics.f().s("#333333").ss(1,1,1).p("AnGkfQGeAAEjEjQCDCDBJCZ");
+	this.shape_10.setTransform(45.45,-71.1875);
+
+	this.shape_11 = new cjs.Shape();
+	this.shape_11.graphics.f().s("#333333").ss(1,1,1).p("AnWlHQGdAAEkEkQCkCjBIDJ");
+	this.shape_11.setTransform(47.125,-67.15);
+
+	this.shape_12 = new cjs.Shape();
+	this.shape_12.graphics.f().s("#333333").ss(1,1,1).p("AnjlxQGdAAEkEkQDFDEBBD7");
+	this.shape_12.setTransform(48.4125,-62.975);
+
+	this.shape_13 = new cjs.Shape();
+	this.shape_13.graphics.f().s("#333333").ss(1,1,1).p("AnsmcQGdAAEkElQDmDlAyEv");
+	this.shape_13.setTransform(49.3125,-58.7);
+
+	this.shape_14 = new cjs.Shape();
+	this.shape_14.graphics.f().s("#333333").ss(1,1,1).p("AnxnHQGdAAEkEkQEGEGAcFl");
+	this.shape_14.setTransform(49.8375,-54.3625);
+
+	this.shape_15 = new cjs.Shape();
+	this.shape_15.graphics.f().s("#333333").ss(1,1,1).p("AnznzQGeAAEjEkQEmElAAGe");
+	this.shape_15.setTransform(50,-50);
+
+	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.shape}]}).to({state:[{t:this.shape_1}]},1).to({state:[{t:this.shape_2}]},1).to({state:[{t:this.shape_3}]},1).to({state:[{t:this.shape_4}]},1).to({state:[{t:this.shape_5}]},1).to({state:[{t:this.shape_6}]},1).to({state:[{t:this.shape_7}]},1).to({state:[{t:this.shape_8}]},1).to({state:[{t:this.shape_9}]},1).to({state:[{t:this.shape_10}]},1).to({state:[{t:this.shape_11}]},1).to({state:[{t:this.shape_12}]},1).to({state:[{t:this.shape_13}]},1).to({state:[{t:this.shape_14}]},1).to({state:[{t:this.shape_15}]},1).wait(1));
+
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(-1,-101,102,102);
+
+
 (lib.Wine_base = function(mode,startPosition,loop) {
 	this.initialize(mode,startPosition,loop,{});
 
@@ -2731,6 +2805,81 @@ p.nominalBounds = new cjs.Rectangle(-188,-188,473.5,473.5);
 
 }).prototype = p = new cjs.MovieClip();
 p.nominalBounds = new cjs.Rectangle(0,0,128.2,97.4);
+
+
+(lib.LoaderCircle = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// レイヤー_4
+	this.instance = new lib.LoaderCircle_quarter("synched",0,false);
+	this.instance.parent = this;
+	this.instance.setTransform(0,0,1,1,-89.9948);
+	this.instance._off = true;
+
+	this.timeline.addTween(cjs.Tween.get(this.instance).wait(48).to({_off:false},0).wait(16));
+
+	// レイヤー_3
+	this.instance_1 = new lib.LoaderCircle_quarter("synched",0,false);
+	this.instance_1.parent = this;
+	this.instance_1.setTransform(0,0,1,1,180);
+	this.instance_1._off = true;
+
+	this.timeline.addTween(cjs.Tween.get(this.instance_1).wait(32).to({_off:false},0).wait(32));
+
+	// レイヤー_2
+	this.instance_2 = new lib.LoaderCircle_quarter("synched",0,false);
+	this.instance_2.parent = this;
+	this.instance_2.setTransform(0,0,1,1,90);
+	this.instance_2._off = true;
+
+	this.timeline.addTween(cjs.Tween.get(this.instance_2).wait(16).to({_off:false},0).wait(48));
+
+	// レイヤー_1
+	this.instance_3 = new lib.LoaderCircle_quarter("synched",0,false);
+	this.instance_3.parent = this;
+
+	this.timeline.addTween(cjs.Tween.get(this.instance_3).wait(64));
+
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(-101,-101,202,202);
+
+
+(lib.Loader = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// loaderText
+	this.loaderText = new cjs.Text("100", "36px 'TBCineRGothic Std M'", "#333333");
+	this.loaderText.name = "loaderText";
+	this.loaderText.textAlign = "right";
+	this.loaderText.lineHeight = 63;
+	this.loaderText.parent = this;
+	this.loaderText.setTransform(498.35,565.95);
+
+	this.timeline.addTween(cjs.Tween.get(this.loaderText).to({_off:true},1).wait(119));
+
+	// textBase
+	this.shape = new cjs.Shape();
+	this.shape.graphics.f("#333333").s().p("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");
+	this.shape.setTransform(402.675,601.825);
+
+	this.timeline.addTween(cjs.Tween.get(this.shape).to({_off:true},1).wait(119));
+
+	// LoaderCircle
+	this.instance = new lib.LoaderCircle("synched",0,false);
+	this.instance.parent = this;
+	this.instance.setTransform(389.85,301,1.2884,1.2884,-35,0,0,-0.1,0.2);
+
+	this.timeline.addTween(cjs.Tween.get(this.instance).to({_off:true},1).wait(119));
+
+	// bg
+	this.shape_1 = new cjs.Shape();
+	this.shape_1.graphics.f("#FFEDCC").s().p("EhdvBdwMAAAi7fMC7fAAAMAAAC7fg");
+	this.shape_1.setTransform(600,600);
+
+	this.timeline.addTween(cjs.Tween.get(this.shape_1).to({_off:true},1).wait(119));
+
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(0,-119.7,1200,1319.7);
 
 
 (lib.Wine_spawn = function(mode,startPosition,loop) {
@@ -7599,7 +7748,7 @@ p.nominalBounds = new cjs.Rectangle(-4.5,-2.9,101.9,1000.3);
 
 
 (lib.MainTitle = function(mode,startPosition,loop) {
-	this.initialize(mode,startPosition,loop,{"start":0,waitToStart:118,toArea:129,opEnd:186});
+	this.initialize(mode,startPosition,loop,{"start":0,initStart:4,waitToStart:118,toArea:129,opEnd:186});
 
 	// timeline functions:
 	this.frame_8 = function() {
@@ -8751,22 +8900,29 @@ p.nominalBounds = new cjs.Rectangle(0,0,60,60);
 
 	this.timeline.addTween(cjs.Tween.get(this.instance_7).wait(1));
 
-	// MainTitle
-	this.instance_8 = new lib.MainTitle_wrap();
+	// Loader
+	this.instance_8 = new lib.Loader("synched",0,false);
 	this.instance_8.parent = this;
-	this.instance_8.setTransform(390,390,1,1,0,0,0,390,390);
+	this.instance_8.setTransform(600,600,1,1,0,0,0,600,600);
 
 	this.timeline.addTween(cjs.Tween.get(this.instance_8).wait(1));
 
-	// AreaTitle
-	this.instance_9 = new lib.AreaTitle("synched",0);
+	// MainTitle
+	this.instance_9 = new lib.MainTitle_wrap();
 	this.instance_9.parent = this;
-	this.instance_9.setTransform(828.05,668.7,1,1,0,0,0,596.1,431.7);
+	this.instance_9.setTransform(390,390,1,1,0,0,0,390,390);
 
 	this.timeline.addTween(cjs.Tween.get(this.instance_9).wait(1));
 
+	// AreaTitle
+	this.instance_10 = new lib.AreaTitle("synched",0);
+	this.instance_10.parent = this;
+	this.instance_10.setTransform(828.05,668.7,1,1,0,0,0,596.1,431.7);
+
+	this.timeline.addTween(cjs.Tween.get(this.instance_10).wait(1));
+
 }).prototype = p = new cjs.MovieClip();
-p.nominalBounds = new cjs.Rectangle(390,390,759.9000000000001,744.7);
+p.nominalBounds = new cjs.Rectangle(390,390,810,810);
 // library properties:
 lib.properties = {
 	id: '12203EAFB022374BAF15F927FCA8A97A',

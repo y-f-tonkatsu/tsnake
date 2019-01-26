@@ -247,13 +247,6 @@ const _CHEAT_ON = true;
                 return;
             }
 
-            if (this.isFinishing) {
-                if (this.isLastStage()) {
-                    this.animateFinishItem();
-                    return
-                }
-            }
-
             if (this.isDying) {
                 this.snake.dieUpdate(_.bind(function () {
                     this.isGameLoopLocked = true;
@@ -681,7 +674,8 @@ const _CHEAT_ON = true;
             }
             console.log("end game");
             this.finishItem = mage;
-            this.finishItem.setState("go");
+            this.snake.finish();
+            //this.finishItem.setState("go");
             this.isFinishing = true;
         },
         "clear": function () {
