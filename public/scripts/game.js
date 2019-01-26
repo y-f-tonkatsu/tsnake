@@ -1,6 +1,6 @@
 var Game;
 
-const _CHEAT_ON = true;
+const _CHEAT_ON = false;
 
 (function () {
 
