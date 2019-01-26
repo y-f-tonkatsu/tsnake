@@ -14,7 +14,7 @@ redisClient.on('error', function (err) {
 /* GET High Score */
 router.get('/', function (req, res, next) {
 
-    return redisClient.get('high_score', function (err, result) {
+    return redisClient.get('tsnake:high_score', function (err, result) {
         return res.send(JSON.parse(result));
     });
 
@@ -69,7 +69,7 @@ router.post('/', function (req, res, next) {
         "timeStamp": Date.now()
     };
 
-    return redisClient.get('high_score', function (err, result) {
+    return redisClient.get('tsnake:high_score', function (err, result) {
 
         if (err) {
             return res.send("error");
@@ -126,7 +126,7 @@ router.post('/', function (req, res, next) {
                 return res.send("error");
             }
 
-            return redisClient.set('high_score', highScoreJson, function () {
+            return redisClient.set('tsnake:high_score', highScoreJson, function () {
                 if (err) {
                     return res.send("error");
                 }
