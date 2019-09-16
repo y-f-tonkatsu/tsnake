@@ -125,7 +125,7 @@ router.post('/', function (req, res, next) {
             console.log("pop:" + out.player + " " + out.score);
         }
 
-        //ranking = createNewRanking();
+        ranking = createNewRanking();
 
         let highScoreJson = JSON.stringify(ranking);
         let recordJson = JSON.stringify(record);
@@ -161,7 +161,20 @@ function validateToken(token, name, score) {
 }
 
 function createNewRanking() {
-    let ranking = [];
+    let ranking = [
+        {"player":"つるまう","score":3326,"date":"Mon Feb 04 2019 16:19:13 GMT+0900 (JST)","timeStamp":1549264753861},
+        {"player":"つるまう","score":2878,"date":"Thu Jan 31 2019 01:03:02 GMT+0900 (JST)","timeStamp":1548864182690},
+        {"player":"つるまう","score":2699,"date":"Fri Feb 22 2019 12:13:50 GMT+0900 (JST)","timeStamp":1550805230859},
+        {"player":"つるまう","score":2666,"date":"Sun Mar 10 2019 20:58:44 GMT+0900 (JST)","timeStamp":1552219124861},
+        {"player":"つるまう","score":2040,"date":"Mon Feb 18 2019 21:48:07 GMT+0900 (JST)","timeStamp":1550494087262},
+        {"player":"つるまう","score":2013,"date":"Thu Feb 21 2019 12:28:08 GMT+0900 (JST)","timeStamp":1550719688458},
+        {"player":"つるまう","score":1872,"date":"Sat Feb 16 2019 14:03:49 GMT+0900 (JST)","timeStamp":1550293429590},
+        {"player":"つるまう","score":1738,"date":"Wed Feb 20 2019 22:16:39 GMT+0900 (JST)","timeStamp":1550668599659},
+        {"player":"つるまう","score":1738,"date":"Mon Mar 11 2019 14:44:49 GMT+0900 (JST)","timeStamp":1552283089365},
+        {"player":"つるまう","score":1647,"date":"Tue Feb 12 2019 23:55:13 GMT+0900 (JST)","timeStamp":1549983313664}
+        ];
+
+    /*
     for (var i = 0; i < 10; i++) {
         ranking.push({
             "player": "tonkatsu",
@@ -170,6 +183,8 @@ function createNewRanking() {
             "timeStamp": Date.now()
         });
     }
+    */
+
     return ranking;
 }
 
